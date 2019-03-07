@@ -1,10 +1,19 @@
 package com.example.charith.trigym.Entities;
 
 public class Address {
+    Integer id;
     String line1;
     String line2;
     String line3;
     String city;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getLine1() {
         return line1;

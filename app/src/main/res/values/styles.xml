@@ -21,4 +21,29 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    <style name="dialog_title_style">
+        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="dialog_no_btn_style">
+        <item name="android:textColor">@color/radical_red</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="dialog_yes_btn_style">
+        <item name="android:textColor">@color/azure</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="client_view_lable_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/cadet_grey</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="client_view_text_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

@@ -6,4 +6,31 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="buttonHeight">50dp</dimen>
+
+    //Dialogs text sizes
+    <dimen name="dialog_message_font_size">16sp</dimen>
+    <dimen name="dialog_button_font_size">18sp</dimen>
+
+    <dimen name="bottomWrapperButtonWidth">50dp</dimen>
+    <dimen name="bottomWrapperButtonHeight">50dp</dimen>
+    <dimen name="bottomImagePadding">5dp</dimen>
+    <dimen name="bottomWrapperImagePadding">5dp</dimen>
+    <dimen name="contactImageLeftMargin">35dp</dimen>
+    <dimen name="contactImageMargin">15dp</dimen>
+    <dimen name="contactLawyerImageWidth">40dp</dimen>
+    <dimen name="contactListMargin">25dp</dimen>
+
+    <dimen name="listViewContentFontSize">14sp</dimen>
+    <dimen name="listViewTitleFontSize">18sp</dimen>
+
+    <dimen name="contactImageSize">50dp</dimen>
+    <dimen name="lablePadding">20dp</dimen>
+    <dimen name="lableTopPadding">8dp</dimen>
+    <dimen name="lableBottomPadding">8dp</dimen>
+
+    <dimen name="titlePadding">20dp</dimen>
+    <dimen name="titleTopPadding">10dp</dimen>
+    <dimen name="titleBottomPadding">10dp</dimen>
+    <dimen name="editTextBottomMargin">10dp</dimen>
+
 </resources>

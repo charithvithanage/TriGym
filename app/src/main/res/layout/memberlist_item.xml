@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primaryWhite"
+    android:orientation="vertical">
+
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:clickToClose="true">
+
+        <LinearLayout
+            android:id="@+id/bottom_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/buttonRed"
+            android:tag="Bottom1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/buttonRed"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/delete"
+                    android:layout_width="@dimen/bottomWrapperButtonWidth"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/bottomImagePadding"
+                    android:paddingRight="@dimen/bottomImagePadding"
+                    android:src="@mipmap/delete_icon" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="top|center_horizontal"
+                    android:text="Delete"
+                    android:textColor="@color/primaryWhite"
+                    android:textSize="8sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_wrapper_2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:tag="Bottom4">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/buttonGreen"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/email"
+                    android:layout_width="@dimen/bottomWrapperButtonWidth"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/bottomWrapperImagePadding"
+                    android:paddingRight="@dimen/bottomWrapperImagePadding"
+                    android:paddingTop="@dimen/bottomWrapperImagePadding"
+                    android:src="@mipmap/emailicon" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="top|center_horizontal"
+                    android:text="Email"
+                    android:textColor="@color/primaryWhite"
+                    android:textSize="8sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/darkyellow"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/message"
+                    android:layout_width="@dimen/bottomWrapperButtonWidth"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/bottomWrapperImagePadding"
+                    android:paddingRight="@dimen/bottomWrapperImagePadding"
+                    android:paddingTop="@dimen/bottomWrapperImagePadding"
+                    android:src="@mipmap/messageicon" />
+
+                <TextView
+                    android:id="@+id/textViewa4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="top|center_horizontal"
+                    android:text="Message"
+                    android:textColor="@color/primaryWhite"
+                    android:textSize="8sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#007aff"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/call"
+                    android:layout_width="@dimen/bottomWrapperButtonWidth"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/bottomWrapperImagePadding"
+                    android:paddingRight="@dimen/bottomWrapperImagePadding"
+                    android:paddingTop="@dimen/bottomWrapperImagePadding"
+                    android:src="@mipmap/call_icon" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="top|center_horizontal"
+                    android:text="Call"
+                    android:textColor="@color/primaryWhite"
+                    android:textSize="8sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/contactImageLeftMargin"
+                android:layout_marginRight="@dimen/contactImageMargin"
+                android:padding="@dimen/contactImageMargin">
+
+                <ImageView
+                    android:id="@+id/imageProfile"
+                    android:layout_width="@dimen/contactLawyerImageWidth"
+                    android:layout_height="@dimen/contactLawyerImageWidth"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/client_phone_icon"/>
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/charcoal"
+                    android:textSize="@dimen/listViewTitleFontSize" />
+
+                <!--<TextView-->
+                <!--android:id="@+id/tvEmail"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="@dimen/listViewContentFontSize" />-->
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/platinum"
+                    android:textSize="@dimen/listViewContentFontSize" />
+
+            </LinearLayout>
+
+            <!--<ImageView-->
+            <!--android:id="@+id/imgNext"-->
+            <!--android:layout_width="@dimen/contactlistNextButtonSize"-->
+            <!--android:layout_height="@dimen/nextButtonSize"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="@dimen/nextbtn_margin_right"-->
+            <!--android:src="@drawable/nextarrow" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/imgBlueNext"-->
+            <!--android:layout_width="@dimen/contactlistNextButtonSize"-->
+            <!--android:layout_height="@dimen/nextButtonSize"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="@dimen/nextbtn_margin_right"-->
+            <!--android:src="@drawable/blue_next_arrow" />-->
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
+
+    <View
+        android:id="@+id/eventSeperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/contactListMargin"
+        android:background="@color/eventSeperatorColor" />
+</LinearLayout>

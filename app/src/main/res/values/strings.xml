@@ -10,4 +10,7 @@
     //View profile activity messages
     <string name="no_permission_to_camera">Camera access restricted or denieded. Can configure it from settings.</string>
     <string name="no_permission_to_read_external">Read external access restricted or denieded. Can configure it from settings.</string>
+
+    <string name="lawyer_delete_confirmation_message">Do you wish to delete this member?</string>
+    <string name="no_permission_to_call">You have no permission to call</string>
 </resources>

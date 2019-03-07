@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    >
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/dialog_title_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal" />/>
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_toRightOf="@+id/image"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dialog_message_font_size" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialogButtonCancel"
+            style="@style/dialog_no_btn_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text=" No "
+            android:textAllCaps="false"
+            android:textColor="@color/azure" />
+
+        <Button
+            android:id="@+id/dialogButtonOK"
+            style="@style/dialog_yes_btn_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="Yes"
+            android:textAllCaps="false"
+            android:textColor="@color/radical_red" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -12,13 +12,22 @@ public class Member {
     Integer mobile1;
     Integer mobile2;
     String NIC;
-    DateTime DOB;
+    String DOB;
     Integer age;
     String gender;
     Float height;
     Float weight;
-    Map<String,String> images;
+    String profileImage;
     String healthCondition;
+    Integer addressId;
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
+    }
 
     public int getId() {
         return id;
@@ -69,11 +78,11 @@ public class Member {
         this.NIC = NIC;
     }
 
-    public DateTime getDOB() {
+    public String getDOB() {
         return DOB;
     }
 
-    public void setDOB(DateTime DOB) {
+    public void setDOB(String DOB) {
         this.DOB = DOB;
     }
 
@@ -109,12 +118,12 @@ public class Member {
         this.weight = weight;
     }
 
-    public Map<String, String> getImages() {
-        return images;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setImages(Map<String, String> images) {
-        this.images = images;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getHealthCondition() {

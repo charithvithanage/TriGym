@@ -3,25 +3,20 @@ package com.example.charith.trigym;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.system.ErrnoException;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -35,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
 import com.google.gson.Gson;
@@ -46,7 +42,6 @@ import com.orhanobut.dialogplus.ViewHolder;
 import org.joda.time.DateTime;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -167,14 +162,21 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void saveMember() {
+        DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
+        Integer addressId;
+
         Address address = new Address();
         address.setLine1(etLine1.getText().toString());
         address.setLine2(etLine2.getText().toString());
         address.setLine3(etLine3.getText().toString());
         address.setCity(etCity.getText().toString());
 
+        addressId = databaseHandler.addAddress(address).intValue();
+
         member.setName(etName.getText().toString());
         member.setAddress(address);
+        member.setAddressId(address.getId());
+
         member.setHealthCondition(etHealthCondition.getText().toString());
         member.setHeight(Float.valueOf(etHeight.getText().toString()));
         member.setWeight(Float.valueOf(etWeight.getText().toString()));
@@ -188,10 +190,8 @@ public class NewMemberActivity extends AppCompatActivity {
             member.setMobile1(Integer.valueOf(etMobile2.getText().toString()));
         }
 
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("memberString", gson.toJson(member));
-        editor.apply();
+
+        databaseHandler.addMember(member, addressId);
     }
 
     private Integer calculateAge(DateTime dob) {
@@ -230,7 +230,7 @@ public class NewMemberActivity extends AppCompatActivity {
             tvDOB.setText(tempDate.toString("YYYY/MM/dd"));
             member.setAge(calculateAge(tempDate));
             tvAge.setText(calculateAge(tempDate).toString() + " Yrs");
-            member.setDOB(tempDate);
+            member.setDOB(tempDate.toString("YYYY/MM/dd"));
 
 
         }

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.charith.trigym">
 
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewMemberActivity" />
-        <activity android:name=".MemberBioActivity"></activity>
+        <activity android:name=".MemberBioActivity" />
+        <activity android:name=".MemberViewActivity"></activity>
     </application>
 
 </manifest>

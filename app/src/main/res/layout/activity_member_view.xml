@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/viewClientLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/whiteSmoke"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="50dp">
+
+                <TextView
+                    android:id="@+id/profileImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="false"
+                    android:layout_marginTop="50dp"
+                    android:background="@mipmap/client_phone_icon"
+                    android:gravity="center"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingTop="8dp"
+                    android:text="Jay Baldwin"
+                    android:textColor="@color/charcoal"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="client"
+                    android:textColor="@color/azure"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/imgCall"
+                    android:layout_width="@dimen/contactImageSize"
+                    android:layout_height="@dimen/contactImageSize"
+                    android:layout_gravity="center_vertical"
+                    android:background="@mipmap/call_icon" />
+
+                <View
+                    android:id="@+id/imgMessage"
+                    android:layout_width="@dimen/contactImageSize"
+                    android:layout_height="@dimen/contactImageSize"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:background="@mipmap/messageicon" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primaryWhite"
+                android:orientation="vertical">
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titlePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="Mobile Number" />
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/editTextBottomMargin" />
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titleTopPadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="NIC" />
+
+                <TextView
+                    android:id="@+id/tvNIC"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/lablePadding" />
+
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titleTopPadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="Date of Birth" />
+
+                <TextView
+                    android:id="@+id/tvDOB"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/lablePadding" />
+
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titleTopPadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="Age" />
+
+                <TextView
+                    android:id="@+id/tvAge"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/lablePadding" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+
+                            style="@style/client_view_lable_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/lablePadding"
+                            android:paddingTop="@dimen/titleTopPadding"
+                            android:paddingRight="@dimen/lablePadding"
+                            android:paddingBottom="@dimen/titleBottomPadding"
+                            android:text="Height" />
+
+                        <TextView
+                            android:id="@+id/tvHeight"
+                            style="@style/client_view_text_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:paddingLeft="@dimen/lablePadding"
+                            android:paddingRight="@dimen/lablePadding"
+                            android:paddingBottom="@dimen/lablePadding" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+
+                            style="@style/client_view_lable_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/lablePadding"
+                            android:paddingTop="@dimen/titleTopPadding"
+                            android:paddingRight="@dimen/lablePadding"
+                            android:paddingBottom="@dimen/titleBottomPadding"
+                            android:text="Weight" />
+
+                        <TextView
+                            android:id="@+id/tvWeight"
+                            style="@style/client_view_text_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:paddingLeft="@dimen/lablePadding"
+                            android:paddingRight="@dimen/lablePadding"
+                            android:paddingBottom="@dimen/lablePadding" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titleTopPadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="Gender" />
+
+                <TextView
+                    android:id="@+id/tvGender"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/lablePadding" />
+
+
+                <TextView
+
+                    style="@style/client_view_lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingTop="@dimen/titleTopPadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/titleBottomPadding"
+                    android:text="Health Condition" />
+
+                <TextView
+                    android:id="@+id/tvHealthCondition"
+                    style="@style/client_view_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:paddingLeft="@dimen/lablePadding"
+                    android:paddingRight="@dimen/lablePadding"
+                    android:paddingBottom="@dimen/lablePadding" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

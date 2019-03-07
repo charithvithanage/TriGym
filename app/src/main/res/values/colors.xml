@@ -11,4 +11,28 @@
     <color name="error_message_bg_color">#F25050</color>
     <color name="warning_message_bg_color">#FFF3C34E</color>
     <color name="success_message_bg_color">#FF60C43A</color>
+
+    <color name="cadet_grey">#8CA5C1</color>
+    <color name="charcoal">#324152</color>
+    <color name="azure">#FF007AFF</color>
+    <color name="black">#000000</color>
+    <color name="platinum">#FFD9E3EE</color>
+    <color name="slate_grey">#6B7897</color>
+    <color name="yellow_green">#FF7ED321</color>
+    <color name="radical_red">#F23E54</color>
+    <color name="notification_red">#df8c96</color>
+    <color name="whiteSmoke">#FFF6F6F6</color>
+    <color name="outerSpace">#FF494949</color>
+    <color name="bg_color">#FBFDFF</color>
+    <color name="silver">#FFC4C4C4</color>
+    <color name="riffleGreen">#FF3F3F3F</color>
+    <color name="confirm_pwd_green">#FF7ED321</color>
+    <color name="light_gray">#FFCFCFCF</color>
+
+    <color name="buttonRed">#fe3f35</color>
+    <color name="buttonGreen">#21c434</color>
+    <color name="eventSeperatorColor">#FFF6F6F6</color>
+
+    <color name="darkyellow">#ff9500</color>
+
 </resources>
