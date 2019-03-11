@@ -32,5 +32,16 @@
     <dimen name="titleTopPadding">10dp</dimen>
     <dimen name="titleBottomPadding">10dp</dimen>
     <dimen name="editTextBottomMargin">10dp</dimen>
+    //Font sizes
+    <dimen name="smaller_font_size">10sp</dimen>
+    <dimen name="small_font_size">18sp</dimen>
+    <dimen name="medium_font_size">20sp</dimen>
+    <dimen name="large_font_size">22sp</dimen>
+    <dimen name="normal_font_size">28sp</dimen>
+    <dimen name="seperator_font_size">18sp</dimen>
 
+    <dimen name="loginButtonTopMargin">20dp</dimen>
+    <dimen name="loginButtonBottomMargin">20dp</dimen>
+    <dimen name="loginButtonRightMargin">40dp</dimen>
+    <dimen name="loginButtonLeftMargin">40dp</dimen>
 </resources>
