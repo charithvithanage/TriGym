@@ -46,4 +46,12 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+
+    <style name="login_btn_style" parent="android:Widget.Button">
+        <item name="android:textColor">@color/primaryWhite</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:textStyle">normal</item>
+
+    </style>
+
 </resources>

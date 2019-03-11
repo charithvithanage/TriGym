@@ -1,6 +1,8 @@
 package com.example.charith.trigym;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import com.example.charith.trigym.DB.DatabaseHandler;
@@ -53,8 +57,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                startActivity(intent);
+
+                selectMemberType();
+
             }
         });
 
@@ -95,6 +100,103 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
+
+    private void selectMemberType() {
+
+
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.member_type_dialog);
+        dialog.setCancelable(true);
+        Button btnAdult = dialog.findViewById(R.id.btnAdult);
+        Button btnStudent = dialog.findViewById(R.id.btnStudent);
+        Button btnArobicks = dialog.findViewById(R.id.btnArobicks);
+        Button btnYoga = dialog.findViewById(R.id.btnYoga);
+        Button btnZumba = dialog.findViewById(R.id.btnZumba);
+        Button btnCancel = dialog.findViewById(R.id.btnCancel);
+
+        btnAdult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
+                intent.putExtra("memberType","Adult");
+                startActivity(intent);
+
+
+            }
+        });
+
+        btnStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
+                intent.putExtra("memberType","Adult");
+                startActivity(intent);
+            }
+        });
+
+        btnArobicks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+
+                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
+                intent.putExtra("memberType","Arobicks");
+                startActivity(intent);
+            }
+        });
+
+        btnYoga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
+                intent.putExtra("memberType","Yoga");
+                startActivity(intent);
+
+            }
+        });
+
+        btnZumba.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+
+                Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
+                intent.putExtra("memberType","Zumba");
+                startActivity(intent);
+            }
+        });
+
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        //close the dialog when pressed the back key
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    dialog.dismiss();
+                }
+                return true;
+            }
+        });
+
+        dialog.show();
+
+    }
+
 
     private void loadMemberList() {
 

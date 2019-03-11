@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="left|center_vertical"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Select Member Type"
+        android:textColor="@color/azure"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnAdult"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Adult"
+        android:textAllCaps="false"
+        android:textColor="@color/charcoal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnStudent"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Student"
+        android:textAllCaps="false"
+        android:textColor="@color/charcoal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnArobicks"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Arobicks"
+        android:textAllCaps="false"
+        android:textColor="@color/charcoal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnYoga"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Yoga"
+        android:textAllCaps="false"
+        android:textColor="@color/charcoal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnZumba"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Zumba"
+        android:textAllCaps="false"
+        android:textColor="@color/charcoal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/login_btn_style"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingLeft="@dimen/loginButtonLeftMargin"
+        android:paddingRight="@dimen/loginButtonRightMargin"
+        android:text="Cancel"
+        android:textAllCaps="false" />
+</LinearLayout>

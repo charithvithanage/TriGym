@@ -195,8 +195,7 @@
                     android:id="@+id/etNIC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="NIC Number"
-                    android:inputType="number" />
+                    android:hint="NIC Number"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView
