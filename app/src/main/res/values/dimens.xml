@@ -44,4 +44,11 @@
     <dimen name="loginButtonBottomMargin">20dp</dimen>
     <dimen name="loginButtonRightMargin">40dp</dimen>
     <dimen name="loginButtonLeftMargin">40dp</dimen>
+
+    <dimen name="actionBarSize">50dp</dimen>
+    <dimen name="actionButtonSize">50dp</dimen>
+    <dimen name="actionButtonWidth">20dp</dimen>
+    <dimen name="actionButtonPadding">8dp</dimen>
+    <dimen name="actionbarFontSize">24sp</dimen>
+
 </resources>

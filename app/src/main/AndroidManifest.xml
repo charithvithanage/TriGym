@@ -3,6 +3,8 @@
     package="com.example.charith.trigym">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +25,11 @@
         </activity>
         <activity android:name=".NewMemberActivity" />
         <activity android:name=".MemberBioActivity" />
-        <activity android:name=".MemberViewActivity"></activity>
+        <activity
+            android:name=".MemberViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
     </application>
 
 </manifest>

@@ -3,12 +3,8 @@ package com.example.charith.trigym;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -21,17 +17,14 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
@@ -47,11 +40,8 @@ import org.joda.time.DateTime;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NewMemberActivity extends AppCompatActivity {
-    Spinner genderSpinner;
 
     TextView tvDOB, tvAge;
 
@@ -67,7 +57,7 @@ public class NewMemberActivity extends AppCompatActivity {
 
     Member member;
 
-    TextInputEditText etName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight, etHealthCondition;
+    TextInputEditText etGuardianName, etGuardianTelephone, etGuardianRelationship, etFirstName, etLastName, etSurName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight;
 
 
     @Override
@@ -75,16 +65,26 @@ public class NewMemberActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_member);
 
+
         init();
     }
 
     private void init() {
         member = new Member();
+
+        String memberType=getIntent().getStringExtra("memberType");
+        member.setType(memberType);
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
         gson = builder.create();
 
-        etName = findViewById(R.id.etName);
+        etGuardianName = findViewById(R.id.etGuardianName);
+        etGuardianTelephone = findViewById(R.id.etGuardianTel);
+        etGuardianRelationship = findViewById(R.id.etGuardianRelationship);
+
+        etFirstName = findViewById(R.id.etFirstName);
+        etLastName = findViewById(R.id.etLastName);
+        etSurName = findViewById(R.id.etSurname);
         etLine1 = findViewById(R.id.etLine1);
         etLine2 = findViewById(R.id.etLine2);
         etLine3 = findViewById(R.id.etLine3);
@@ -94,39 +94,13 @@ public class NewMemberActivity extends AppCompatActivity {
         etNIC = findViewById(R.id.etNIC);
         etHeight = findViewById(R.id.etHeight);
         etWeight = findViewById(R.id.etWeight);
-        etHealthCondition = findViewById(R.id.etHealthConditoin);
 
-        genderSpinner = findViewById(R.id.spinner);
         btnNext = findViewById(R.id.btnNext);
         tvDOB = findViewById(R.id.tvDOB);
         tvAge = findViewById(R.id.tvAge);
         btnEdit = findViewById(R.id.btnEdit);
         profileImage = findViewById(R.id.profileImage);
 
-        List<String> gender = new ArrayList<>();
-        gender.add("Male");
-        gender.add("Female");
-
-        member.setGender(gender.get(0));
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gender);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderSpinner.setAdapter(arrayAdapter);
-
-        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                member.setGender(item);
-
-                Toast.makeText(getApplicationContext(), item, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +139,19 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void saveMember() {
+
+
+        final RadioGroup rbgGender = findViewById(R.id.radioGroupGender);
+        final RadioGroup rbgMarriedStatus = findViewById(R.id.radioGroudMarriedStatus);
+
+        int selectedGenderRadioButton = rbgGender.getCheckedRadioButtonId();
+        int selectedMarriedStatusRadioButton = rbgMarriedStatus.getCheckedRadioButtonId();
+        RadioButton gender = findViewById(selectedGenderRadioButton);
+        RadioButton marriedStatus = findViewById(selectedMarriedStatusRadioButton);
+
+        member.setGender(gender.getText().toString());
+        member.setMarriedStatus(marriedStatus.getText().toString());
+
         DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
         Integer addressId;
 
@@ -176,11 +163,17 @@ public class NewMemberActivity extends AppCompatActivity {
 
         addressId = databaseHandler.addAddress(address).intValue();
 
-        member.setName(etName.getText().toString());
+        member.setFirstName(etFirstName.getText().toString());
+        member.setLastName(etLastName.getText().toString());
+        member.setSurName(etSurName.getText().toString());
+
+        member.setGuardianName(etGuardianName.getText().toString());
+        member.setGuardianTel(Integer.valueOf(etGuardianTelephone.getText().toString()));
+        member.setGuardianRelationship(etGuardianRelationship.getText().toString());
+
         member.setAddress(address);
         member.setAddressId(address.getId());
 
-        member.setHealthCondition(etHealthCondition.getText().toString());
         member.setHeight(Float.valueOf(etHeight.getText().toString()));
         member.setWeight(Float.valueOf(etWeight.getText().toString()));
         member.setNIC(etNIC.getText().toString());
@@ -190,11 +183,18 @@ public class NewMemberActivity extends AppCompatActivity {
         }
 
         if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
-            member.setMobile1(Integer.valueOf(etMobile2.getText().toString()));
+            member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
         }
 
+        member.setAddressId(addressId);
 
-        databaseHandler.addMember(member, addressId);
+
+
+        Intent intent=new Intent(NewMemberActivity.this,MemberBioActivity.class);
+        intent.putExtra("memberString",gson.toJson(member));
+        startActivity(intent);
+
+//        databaseHandler.addMember(member, addressId);
     }
 
     private Integer calculateAge(DateTime dob) {
@@ -238,7 +238,6 @@ public class NewMemberActivity extends AppCompatActivity {
 
         }
     };
-
 
 
     public Intent getPickImageChooserIntent() {
