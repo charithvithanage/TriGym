@@ -20,7 +20,7 @@ public class MemberViewActivity extends AppCompatActivity {
 
     Member member;
     Gson gson;
-    Address address=null;
+    Address address = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class MemberViewActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-        tvName.setText(member.getName());
+        tvName.setText(member.getFirstName() + " " + member.getLastName());
         tvAddress.setText(getAddress(address));
         tvmobile.setText(getMobile(String.valueOf(member.getMobile1()), String.valueOf(member.getMobile2())));
         tvNIC.setText(member.getNIC());
@@ -68,7 +68,9 @@ public class MemberViewActivity extends AppCompatActivity {
         tvGender.setText(member.getGender());
         tvHeight.setText(String.valueOf(member.getHeight() + " cm"));
         tvWeight.setText(String.valueOf(member.getWeight() + " kg"));
-        tvHealthConditiom.setText(member.getHealthCondition());
+
+
+
 
 
     }

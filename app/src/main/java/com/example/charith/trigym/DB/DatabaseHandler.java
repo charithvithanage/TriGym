@@ -28,23 +28,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_MEMBERS = "table_members";
     private static final String TABLE_ADDRESSES = "table_addresses";
+    private static final String TABLE_HEALTH_CONDITION = "table_health_condition";
+    private static final String TABLE_MEMBER_HEALTH = "table_member_health";
     // Common column names
     // Common column names
     private static final String KEY_ID = "id";
 
     // NOTE_TAGS Table - column names
     private static final String KEY_MEMBER_ID = "member_id";
-    private static final String KEY_NAME = "member_name";
+    private static final String KEY_FIRST_NAME = "member_first_name";
+    private static final String KEY_LAST_NAME = "member_last_name";
+    private static final String KEY_SURNAME = "member_surname";
     private static final String KEY_MOBILE_1 = "member_mobile_1";
     private static final String KEY_MOBILE_2 = "member_mobile_2";
     private static final String KEY_NIC = "member_nic";
     private static final String KEY_DOB = "member_dob";
     private static final String KEY_AGE = "member_age";
     private static final String KEY_GENDER = "member_gender";
+    private static final String KEY_MARRIED_STATUS = "member_married_status";
     private static final String KEY_HEIGHT = "member_height";
     private static final String KEY_WEIGHT = "member_weight";
     private static final String KEY_PROFILE_IMAGE_URL = "member_progile_image_url";
-    private static final String KEY_HEALTH_CONDITION = "member_health_condition";
+    private static final String KEY_COMMENT = "member_health_condition";
     private static final String KEY_MEMBER_ADDRESS_ID = "member_address_id";
 
     private static final String KEY_ADDRESS_ID = "address_id";
@@ -53,15 +58,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ADDRESS_LINE_3 = "address_line_3";
     private static final String KEY_ADDRESS_LINE_CITY = "address_line_city";
 
+    private static final String KEY_DIABETES = "diabetes";
+    private static final String KEY_CHOLESTEROL = "cholesterol";
+    private static final String KEY_HIGH_BLOOD_PRESSURE = "high_blood_pressure";
+    private static final String KEY_LOW_BLOOD_PRESSURE = "low_blood_pressure";
+    private static final String KEY_HEART_PROBLEM = "heart_problem";
+    private static final String KEY_CHEST_PAIN = "chest_pain";
+    private static final String KEY_FAINTING = "fainting_spells";
+    private static final String KEY_BACK_PAIN = "back_pain";
+    private static final String KEY_MEDICATION = "medication";
+    private static final String KEY_OTHER_ILLNESS = "other_illness";
+    private static final String KEY_SWOLLEN = "swollen";
+    private static final String KEY_ARTHRITIS = "arthritis";
+    private static final String KEY_HERNIA = "hernia";
+
+
     public static final String CREATE_MEMBER_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEMBERS + "("
-            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_MEMBER_ADDRESS_ID + " INTEGER ," + KEY_NAME + " TEXT ," + KEY_MOBILE_1 + " INTEGER,"
+            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_MEMBER_ADDRESS_ID + " INTEGER ," + KEY_FIRST_NAME + " TEXT ," + KEY_SURNAME + " TEXT ," + KEY_LAST_NAME + " TEXT ," + KEY_MARRIED_STATUS + " TEXT ," + KEY_MOBILE_1 + " INTEGER,"
             + KEY_MOBILE_2 + " INTEGER," + KEY_NIC + " TEXT," + KEY_DOB + " BLOB," + KEY_AGE + " INTEGER," + KEY_GENDER + " TEXT," + KEY_HEIGHT
-            + " INTEGER," + KEY_WEIGHT + " INTEGER," + KEY_PROFILE_IMAGE_URL + " TEXT," + KEY_HEALTH_CONDITION + " TEXT" + ")";
+            + " INTEGER," + KEY_WEIGHT + " INTEGER," + KEY_PROFILE_IMAGE_URL + " TEXT," + KEY_COMMENT + " TEXT," + KEY_DIABETES + " BOOLEAN," +
+            KEY_CHOLESTEROL + " BOOLEAN," + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_LOW_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_HEART_PROBLEM + " INTEGER DEFAULT 0," + KEY_CHEST_PAIN + " INTEGER DEFAULT 0," + KEY_FAINTING + " INTEGER DEFAULT 0,"
+            + KEY_BACK_PAIN + " INTEGER DEFAULT 0," + KEY_MEDICATION + " INTEGER DEFAULT 0," + KEY_OTHER_ILLNESS + " INTEGER DEFAULT 0," + KEY_SWOLLEN + " INTEGER DEFAULT 0," + KEY_ARTHRITIS + " INTEGER DEFAULT 0," + KEY_HERNIA + " INTEGER DEFAULT 0" + ")";
 
     public static final String CREATE_TABLE_ADDRESSES = "CREATE TABLE IF NOT EXISTS " + TABLE_ADDRESSES + "("
             + KEY_ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_ADDRESS_LINE_1 + " TEXT ," + KEY_ADDRESS_LINE_2 + " TEXT,"
             + KEY_ADDRESS_LINE_3 + " TEXT," + KEY_ADDRESS_LINE_CITY + " TEXT" + ")";
-
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -90,22 +111,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Adding new Lawyer
-    public void addMember(Member newMember, Integer addressId) {
+    public void addMember(Member newMember) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_MEMBER_ADDRESS_ID, addressId);
-        values.put(KEY_NAME, newMember.getName());
+        values.put(KEY_MEMBER_ADDRESS_ID, newMember.getAddressId());
+        values.put(KEY_FIRST_NAME, newMember.getFirstName());
+        values.put(KEY_SURNAME, newMember.getSurName());
+        values.put(KEY_LAST_NAME, newMember.getLastName());
         values.put(KEY_MOBILE_1, newMember.getMobile1());
         values.put(KEY_MOBILE_2, newMember.getMobile2());
         values.put(KEY_NIC, newMember.getNIC());
         values.put(KEY_DOB, newMember.getDOB());
         values.put(KEY_AGE, newMember.getAge());
+        values.put(KEY_MARRIED_STATUS, newMember.getMarriedStatus());
         values.put(KEY_GENDER, newMember.getGender());
         values.put(KEY_HEIGHT, newMember.getHeight());
         values.put(KEY_WEIGHT, newMember.getWeight());
         values.put(KEY_PROFILE_IMAGE_URL, newMember.getProfileImage());
-        values.put(KEY_HEALTH_CONDITION, newMember.getHealthCondition());
+        values.put(KEY_DIABETES, newMember.getDiabetes());
+        values.put(KEY_CHOLESTEROL, newMember.getCholesterol());
+        values.put(KEY_HIGH_BLOOD_PRESSURE, newMember.getHighBloodPressure());
+        values.put(KEY_LOW_BLOOD_PRESSURE, newMember.getLowBloodPressure());
+        values.put(KEY_HEART_PROBLEM, newMember.getHeartProblem());
+        values.put(KEY_CHEST_PAIN, newMember.getPainInChestWhenExercising());
+        values.put(KEY_FAINTING, newMember.getFaintingSpells());
+        values.put(KEY_BACK_PAIN, newMember.getBackOrSpinePains());
+        values.put(KEY_MEDICATION, newMember.getAreYouOnAnySortOfMedications());
+        values.put(KEY_OTHER_ILLNESS, newMember.getOtherSignificantIllness());
+        values.put(KEY_SWOLLEN, newMember.getSwollen());
+        values.put(KEY_ARTHRITIS, newMember.getArthritis());
+        values.put(KEY_HERNIA, newMember.getHernia());
 
         db.insert(TABLE_MEMBERS, null, values);
 
@@ -139,16 +175,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Member member = new Member();
                 member.setId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ID)));
                 member.setAddressId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ADDRESS_ID)));
-                member.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+                member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
+                member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
+                member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
                 member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
                 member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
                 member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
                 member.setDOB(cursor.getString(cursor.getColumnIndex(KEY_DOB)));
                 member.setAge(cursor.getInt(cursor.getColumnIndex(KEY_AGE)));
                 member.setGender(cursor.getString(cursor.getColumnIndex(KEY_GENDER)));
+                member.setMarriedStatus(cursor.getString(cursor.getColumnIndex(KEY_MARRIED_STATUS)));
                 member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
                 member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
                 member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
+
+                member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
+                member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
+                member.setHighBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
+                member.setLowBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
+                member.setHeartProblem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
+                member.setPainInChestWhenExercising(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
+                member.setFaintingSpells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
+                member.setBackOrSpinePains(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
+                member.setAreYouOnAnySortOfMedications(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
+                member.setOtherSignificantIllness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
+                member.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
+                member.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
+                member.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
 
                 // Adding contact to list
                 members.add(member);

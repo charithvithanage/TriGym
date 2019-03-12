@@ -56,7 +56,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
     @Override
     public void onBindViewHolder(final MemberAdapter.SimpleViewHolder viewHolder, final int position) {
         Member memberObj = filteredMembers.get(position);
-        viewHolder.memberName.setText(memberObj.getName());
+        viewHolder.memberName.setText(memberObj.getFirstName() + " " + memberObj.getLastName());
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
@@ -96,7 +96,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 View viewDialog = dialogPlus.getHolderView();
 
                 TextView tvTitle = viewDialog.findViewById(R.id.tvTitle);
-                tvTitle.setText(selectedMember.getName());
+                tvTitle.setText(selectedMember.getFirstName());
 
                 TextView tvMessage = viewDialog.findViewById(R.id.tvMessage);
                 tvMessage.setText(context.getResources().getString(R.string.lawyer_delete_confirmation_message));
@@ -229,38 +229,38 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             filteredMembers.addAll(members);
         } else {
             for (Member wp : members) {
-                if (wp.getName() != null && wp.getMobile1() != null && wp.getMobile2() != null && wp.getNIC() != null) {
-                    if (Utils.removeSpacesAndToLowerCase(wp.getName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile1())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile2())).contains(charText) || Utils.removeSpacesAndToLowerCase(wp.getNIC()).contains(charText)) {
+                if (wp.getFirstName() != null && wp.getLastName() != null && wp.getSurName() != null && wp.getNIC() != null) {
+                    if (Utils.removeSpacesAndToLowerCase(wp.getFirstName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName())).contains(charText) || Utils.removeSpacesAndToLowerCase(wp.getNIC()).contains(charText)) {
                         filteredMembers.add(wp);
-                    } else if (wp.getMobile1() != null && wp.getMobile2() != null) {
-                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile1())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile2()));
+                    } else if (wp.getLastName() != null && wp.getSurName() != null) {
+                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName()));
                         if (str.toLowerCase(Locale.getDefault()).contains(charText)) {
                             filteredMembers.add(wp);
                         }
                     }
-                } else if (wp.getName() != null && wp.getMobile1() != null && wp.getMobile2() != null) {
-                    if (Utils.removeSpacesAndToLowerCase(wp.getName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile1())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile2())).contains(charText)) {
+                } else if (wp.getFirstName() != null && wp.getLastName() != null && wp.getSurName() != null) {
+                    if (Utils.removeSpacesAndToLowerCase(wp.getFirstName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName())).contains(charText)) {
                         filteredMembers.add(wp);
-                    } else if (wp.getMobile1() != null && wp.getMobile2() != null) {
-                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile1())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMobile2()));
+                    } else if (wp.getLastName() != null && wp.getSurName() != null) {
+                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName()));
                         if (str.toLowerCase(Locale.getDefault()).contains(charText)) {
                             filteredMembers.add(wp);
                         }
                     }
-                } else if (wp.getName() != null && wp.getMobile1() != null) {
-                    if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText) || String.valueOf(wp.getMobile1()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getFirstName() != null && wp.getLastName() != null) {
+                    if (wp.getFirstName().toLowerCase(Locale.getDefault()).contains(charText) || String.valueOf(wp.getLastName()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getName() != null) {
-                    if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getFirstName() != null) {
+                    if (wp.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getMobile1() != null) {
-                    if (String.valueOf(wp.getMobile1()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getLastName() != null) {
+                    if (String.valueOf(wp.getLastName()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getMobile2() != null) {
-                    if (String.valueOf(wp.getMobile2()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getSurName() != null) {
+                    if (String.valueOf(wp.getSurName()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
                 } else if (wp.getNIC() != null) {

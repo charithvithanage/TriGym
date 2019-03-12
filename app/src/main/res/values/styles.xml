@@ -54,4 +54,11 @@
 
     </style>
 
+    <style name="edittext_title_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:textStyle">normal</item>
+
+    </style>
+
 </resources>
