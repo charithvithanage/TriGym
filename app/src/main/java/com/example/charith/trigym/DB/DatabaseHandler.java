@@ -9,6 +9,10 @@ import android.util.Log;
 
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Entities.Payment;
+import com.example.charith.trigym.Utils;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_MEMBERS = "table_members";
     private static final String TABLE_ADDRESSES = "table_addresses";
-    private static final String TABLE_HEALTH_CONDITION = "table_health_condition";
-    private static final String TABLE_MEMBER_HEALTH = "table_member_health";
+    private static final String TABLE_PAYMENT = "table_payment";
     // Common column names
     // Common column names
     private static final String KEY_ID = "id";
@@ -37,6 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // NOTE_TAGS Table - column names
     private static final String KEY_MEMBER_ID = "member_id";
     private static final String KEY_FIRST_NAME = "member_first_name";
+    private static final String KEY_TYPE = "type";
     private static final String KEY_LAST_NAME = "member_last_name";
     private static final String KEY_SURNAME = "member_surname";
     private static final String KEY_MOBILE_1 = "member_mobile_1";
@@ -51,12 +55,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PROFILE_IMAGE_URL = "member_progile_image_url";
     private static final String KEY_COMMENT = "member_health_condition";
     private static final String KEY_MEMBER_ADDRESS_ID = "member_address_id";
+    private static final String KEY_MEMBERSHIP_TYPE = "membership_type";
+    private static final String KEY_LAST_PAYMENT_DATE = "last_payment_date";
+    private static final String KEY_MEMBERSHIP_EXPIRY_DATE = "membership_expiry_date";
+    private static final String KEY_MEMBER_VALID_STATUS = "member_valid_status";
 
     private static final String KEY_ADDRESS_ID = "address_id";
     private static final String KEY_ADDRESS_LINE_1 = "address_line_1";
     private static final String KEY_ADDRESS_LINE_2 = "address_line_2";
     private static final String KEY_ADDRESS_LINE_3 = "address_line_3";
     private static final String KEY_ADDRESS_LINE_CITY = "address_line_city";
+
+    private static final String KEY_PAYMENT_AMOUNT = "payment_amount";
 
     private static final String KEY_DIABETES = "diabetes";
     private static final String KEY_CHOLESTEROL = "cholesterol";
@@ -74,15 +84,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public static final String CREATE_MEMBER_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEMBERS + "("
-            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_MEMBER_ADDRESS_ID + " INTEGER ," + KEY_FIRST_NAME + " TEXT ," + KEY_SURNAME + " TEXT ," + KEY_LAST_NAME + " TEXT ," + KEY_MARRIED_STATUS + " TEXT ," + KEY_MOBILE_1 + " INTEGER,"
+            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_MEMBER_ADDRESS_ID + " INTEGER ," + KEY_FIRST_NAME + " TEXT ," + KEY_SURNAME + " TEXT ," + KEY_LAST_NAME + " TEXT ," + KEY_TYPE + " TEXT ," + KEY_MARRIED_STATUS + " TEXT ," + KEY_MOBILE_1 + " INTEGER,"
             + KEY_MOBILE_2 + " INTEGER," + KEY_NIC + " TEXT," + KEY_DOB + " BLOB," + KEY_AGE + " INTEGER," + KEY_GENDER + " TEXT," + KEY_HEIGHT
-            + " INTEGER," + KEY_WEIGHT + " INTEGER," + KEY_PROFILE_IMAGE_URL + " TEXT," + KEY_COMMENT + " TEXT," + KEY_DIABETES + " BOOLEAN," +
+            + " INTEGER," + KEY_WEIGHT + " INTEGER," + KEY_PROFILE_IMAGE_URL + " TEXT," + KEY_COMMENT + " TEXT," + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT," + KEY_MEMBER_VALID_STATUS + " BOOLEAN," + KEY_MEMBERSHIP_TYPE + " TEXT," + KEY_LAST_PAYMENT_DATE + " TEXT," + KEY_DIABETES + " BOOLEAN," +
             KEY_CHOLESTEROL + " BOOLEAN," + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_LOW_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_HEART_PROBLEM + " INTEGER DEFAULT 0," + KEY_CHEST_PAIN + " INTEGER DEFAULT 0," + KEY_FAINTING + " INTEGER DEFAULT 0,"
             + KEY_BACK_PAIN + " INTEGER DEFAULT 0," + KEY_MEDICATION + " INTEGER DEFAULT 0," + KEY_OTHER_ILLNESS + " INTEGER DEFAULT 0," + KEY_SWOLLEN + " INTEGER DEFAULT 0," + KEY_ARTHRITIS + " INTEGER DEFAULT 0," + KEY_HERNIA + " INTEGER DEFAULT 0" + ")";
 
     public static final String CREATE_TABLE_ADDRESSES = "CREATE TABLE IF NOT EXISTS " + TABLE_ADDRESSES + "("
             + KEY_ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_ADDRESS_LINE_1 + " TEXT ," + KEY_ADDRESS_LINE_2 + " TEXT,"
             + KEY_ADDRESS_LINE_3 + " TEXT," + KEY_ADDRESS_LINE_CITY + " TEXT" + ")";
+
+    public static final String CREATE_TABLE_PAYMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_PAYMENT + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PAYMENT_AMOUNT + " INTEGER ," + KEY_LAST_PAYMENT_DATE + " TEXT," + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
+            + KEY_MEMBER_ID + " INTEGER," + KEY_MEMBERSHIP_TYPE + " TEXT" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -100,18 +114,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_MEMBER_TABLE);
         db.execSQL(CREATE_TABLE_ADDRESSES);
+        db.execSQL(CREATE_TABLE_PAYMENT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDRESSES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAYMENT);
 
         onCreate(db);
     }
 
     // Adding new Lawyer
-    public void addMember(Member newMember) {
+    public Long addMember(Member newMember) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -119,6 +135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_FIRST_NAME, newMember.getFirstName());
         values.put(KEY_SURNAME, newMember.getSurName());
         values.put(KEY_LAST_NAME, newMember.getLastName());
+        values.put(KEY_TYPE, newMember.getType());
         values.put(KEY_MOBILE_1, newMember.getMobile1());
         values.put(KEY_MOBILE_2, newMember.getMobile2());
         values.put(KEY_NIC, newMember.getNIC());
@@ -129,6 +146,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_HEIGHT, newMember.getHeight());
         values.put(KEY_WEIGHT, newMember.getWeight());
         values.put(KEY_PROFILE_IMAGE_URL, newMember.getProfileImage());
+        values.put(KEY_MEMBERSHIP_TYPE, newMember.getMembershipType());
+        values.put(KEY_LAST_PAYMENT_DATE, newMember.getLastPaymentDate());
+        values.put(KEY_MEMBERSHIP_EXPIRY_DATE, getMembershipExpiryDate(newMember));
+        values.put(KEY_MEMBER_VALID_STATUS, Utils.getMemberValidStatus(getMembershipExpiryDate(newMember)));
         values.put(KEY_DIABETES, newMember.getDiabetes());
         values.put(KEY_CHOLESTEROL, newMember.getCholesterol());
         values.put(KEY_HIGH_BLOOD_PRESSURE, newMember.getHighBloodPressure());
@@ -143,9 +164,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ARTHRITIS, newMember.getArthritis());
         values.put(KEY_HERNIA, newMember.getHernia());
 
-        db.insert(TABLE_MEMBERS, null, values);
-
+        Long memberId = db.insert(TABLE_MEMBERS, null, values);
+        return memberId;
     }
+
+    private String getMembershipExpiryDate(Member member) {
+
+        String expiryDateString = null;
+        switch (member.getMembershipType()) {
+            case "daily":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(1));
+                break;
+
+            case "weekly":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(7));
+                break;
+
+            case "1month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(1));
+                break;
+
+            case "3month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(3));
+                break;
+
+            case "6month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(6));
+                break;
+
+            case "1year":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusYears(1));
+                break;
+        }
+
+        return expiryDateString;
+    }
+
 
     // Adding new Lawyer
     public Long addAddress(Address address) {
@@ -178,6 +232,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
                 member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
                 member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
+                member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
                 member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
                 member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
                 member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
@@ -188,6 +243,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
                 member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
                 member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
+
+                member.setLastPaymentDate(cursor.getString(cursor.getColumnIndex(KEY_LAST_PAYMENT_DATE)));
+                member.setValidStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_VALID_STATUS)) == 1);
+                member.setMembershipExpiredDate(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_EXPIRY_DATE)));
 
                 member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
                 member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
@@ -236,5 +295,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         c.close();
 
         return address;
+    }
+
+    public void addPayment(Payment payment) {
+
+        SQLiteDatabase databass=getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_PAYMENT_AMOUNT, payment.getAmount());
+        values.put(KEY_MEMBER_ID, payment.getMember_id());
+        values.put(KEY_MEMBERSHIP_TYPE, payment.getType());
+        values.put(KEY_LAST_PAYMENT_DATE, payment.getLastPaymentDate());
+        values.put(KEY_MEMBERSHIP_EXPIRY_DATE, payment.getPaymentExpiryDate());
+
+       databass.insert(TABLE_PAYMENT, null, values);
     }
 }

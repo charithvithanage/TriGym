@@ -32,6 +32,9 @@ public class Member {
     String comments;
     Integer addressId;
     String membershipType;
+    String lastPaymentDate;
+    String membershipExpiredDate;
+    Boolean validStatus;
 
     Boolean diabetes;
     Boolean cholesterol;
@@ -48,6 +51,31 @@ public class Member {
     Boolean swollen;
     Boolean arthritis;
     Boolean hernia;
+
+
+    public Boolean getValidStatus() {
+        return validStatus;
+    }
+
+    public void setValidStatus(Boolean validStatus) {
+        this.validStatus = validStatus;
+    }
+
+    public String getMembershipExpiredDate() {
+        return membershipExpiredDate;
+    }
+
+    public void setMembershipExpiredDate(String membershipExpiredDate) {
+        this.membershipExpiredDate = membershipExpiredDate;
+    }
+
+    public String getLastPaymentDate() {
+        return lastPaymentDate;
+    }
+
+    public void setLastPaymentDate(String lastPaymentDate) {
+        this.lastPaymentDate = lastPaymentDate;
+    }
 
     public Boolean getDiabetes() {
         return diabetes;

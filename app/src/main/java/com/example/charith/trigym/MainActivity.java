@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
                 dialog.cancel();
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Adult");
+                intent.putExtra("memberType","Student");
                 startActivity(intent);
             }
         });

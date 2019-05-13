@@ -3,8 +3,7 @@
     package="com.example.charith.trigym">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -23,13 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewMemberActivity" />
-        <activity android:name=".MemberBioActivity" />
         <activity
-            android:name=".MemberViewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:name=".NewMemberActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".MemberBioActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".MemberViewActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.codepath.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+
+        <activity
+            android:name=".PaymentListActivity"
+            android:label="@string/title_activity_payment_list"></activity>
     </application>
 
 </manifest>

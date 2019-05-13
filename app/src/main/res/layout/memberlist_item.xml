@@ -31,6 +31,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:contentDescription="@string/todoString"
                     android:paddingLeft="@dimen/bottomImagePadding"
                     android:paddingRight="@dimen/bottomImagePadding"
                     android:src="@mipmap/delete_icon" />
@@ -41,9 +42,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="top|center_horizontal"
-                    android:text="Delete"
+                    android:text="@string/deleteString"
                     android:textColor="@color/primaryWhite"
-                    android:textSize="8sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -70,6 +71,7 @@
                     android:paddingLeft="@dimen/bottomWrapperImagePadding"
                     android:paddingRight="@dimen/bottomWrapperImagePadding"
                     android:paddingTop="@dimen/bottomWrapperImagePadding"
+                    android:contentDescription="@string/todoString"
                     android:src="@mipmap/emailicon" />
 
                 <TextView
@@ -78,9 +80,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="top|center_horizontal"
-                    android:text="Email"
+                    android:text="@string/emailString"
                     android:textColor="@color/primaryWhite"
-                    android:textSize="8sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -97,6 +99,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:contentDescription="@string/todoString"
                     android:paddingLeft="@dimen/bottomWrapperImagePadding"
                     android:paddingRight="@dimen/bottomWrapperImagePadding"
                     android:paddingTop="@dimen/bottomWrapperImagePadding"
@@ -108,9 +111,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="top|center_horizontal"
-                    android:text="Message"
+                    android:text="@string/messageString"
                     android:textColor="@color/primaryWhite"
-                    android:textSize="8sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -127,6 +130,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:contentDescription="@string/todoString"
                     android:paddingLeft="@dimen/bottomWrapperImagePadding"
                     android:paddingRight="@dimen/bottomWrapperImagePadding"
                     android:paddingTop="@dimen/bottomWrapperImagePadding"
@@ -138,9 +142,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="top|center_horizontal"
-                    android:text="Call"
+                    android:text="@string/callString"
                     android:textColor="@color/primaryWhite"
-                    android:textSize="8sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -157,12 +161,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/contactImageLeftMargin"
                 android:layout_marginRight="@dimen/contactImageMargin"
-                android:padding="@dimen/contactImageMargin">
+                android:padding="@dimen/contactImageMargin"
+                android:layout_marginStart="@dimen/contactImageLeftMargin"
+                android:layout_marginEnd="@dimen/contactImageMargin">
 
                 <ImageView
                     android:id="@+id/imageProfile"
                     android:layout_width="@dimen/contactLawyerImageWidth"
                     android:layout_height="@dimen/contactLawyerImageWidth"
+                    android:contentDescription="@string/todoString"
                     android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
                     android:src="@mipmap/client_phone_icon"/>
@@ -171,7 +178,7 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
@@ -199,13 +206,12 @@
 
             </LinearLayout>
 
-            <!--<ImageView-->
-            <!--android:id="@+id/imgNext"-->
-            <!--android:layout_width="@dimen/contactlistNextButtonSize"-->
-            <!--android:layout_height="@dimen/nextButtonSize"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_marginRight="@dimen/nextbtn_margin_right"-->
-            <!--android:src="@drawable/nextarrow" />-->
+            <TextView
+            android:id="@+id/tvMemberStatus"
+            android:layout_width="@dimen/memberStatusButtonWidth"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/invalid_bg" />
 
             <!--<ImageView-->
             <!--android:id="@+id/imgBlueNext"-->
@@ -222,5 +228,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/contactListMargin"
-        android:background="@color/eventSeperatorColor" />
+        android:background="@color/eventSeperatorColor"
+        android:layout_marginStart="@dimen/contactListMargin" />
 </LinearLayout>

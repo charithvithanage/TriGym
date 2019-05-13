@@ -13,4 +13,12 @@
 
     <string name="lawyer_delete_confirmation_message">Do you wish to delete this member?</string>
     <string name="no_permission_to_call">You have no permission to call</string>
+    <string name="profileImageSelectWarningMessage">Please enter first name and NIC number</string>
+    <string name="date_pattern">YYYY/MM/dd</string>
+    <string name="todoString">TODO</string>
+    <string name="deleteString">Delete</string>
+    <string name="emailString">Email</string>
+    <string name="messageString">Message</string>
+    <string name="callString">Call</string>
+    <string name="title_activity_payment_list">PaymentListActivity</string>
 </resources>
