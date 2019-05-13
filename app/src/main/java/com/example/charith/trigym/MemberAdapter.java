@@ -23,6 +23,7 @@ import com.example.charith.trigym.Entities.Member;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.orhanobut.dialogplus.DialogPlus;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
@@ -58,6 +59,14 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
         Member memberObj = filteredMembers.get(position);
         viewHolder.memberName.setText(memberObj.getFirstName() + " " + memberObj.getLastName());
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
+
+        if(Utils.getMemberValidStatus(memberObj.getMembershipExpiredDate())){
+            viewHolder.memberStatus.setBackgroundResource(R.drawable.valid_bg);
+        }else {
+            viewHolder.memberStatus.setBackgroundResource(R.drawable.invalid_bg);
+        }
+
+        Picasso.get().load(Uri.parse(memberObj.getProfileImage())).transform(new CircleTransform()).into(viewHolder.imageProfile);
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper));
@@ -206,6 +215,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
 
         TextView memberName;
         TextView memberPhone;
+        TextView memberStatus;
         ImageView imageProfile, messageIcon, deleteIcon, callIcon, emailIcon;
         SwipeLayout swipeLayout;
 
@@ -219,6 +229,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             emailIcon = convertView.findViewById(R.id.email);
             callIcon = convertView.findViewById(R.id.call);
             swipeLayout = convertView.findViewById(R.id.swipe);
+            memberStatus = convertView.findViewById(R.id.tvMemberStatus);
         }
     }
 

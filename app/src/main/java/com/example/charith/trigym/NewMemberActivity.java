@@ -4,27 +4,34 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
@@ -43,6 +50,7 @@ import java.io.InputStream;
 
 public class NewMemberActivity extends AppCompatActivity {
 
+    private static final String TAG = "TryGym";
     TextView tvDOB, tvAge;
 
     DateTime today = new DateTime();
@@ -59,6 +67,15 @@ public class NewMemberActivity extends AppCompatActivity {
 
     TextInputEditText etGuardianName, etGuardianTelephone, etGuardianRelationship, etFirstName, etLastName, etSurName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight;
 
+    LinearLayout studentSection;
+
+    File photoFile;
+
+    public String photoFileName;
+
+    Uri fileProvider;
+
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +89,17 @@ public class NewMemberActivity extends AppCompatActivity {
     private void init() {
         member = new Member();
 
-        String memberType=getIntent().getStringExtra("memberType");
+        String memberType = getIntent().getStringExtra("memberType");
         member.setType(memberType);
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
         gson = builder.create();
+
+        studentSection = findViewById(R.id.studentSection);
+
+        if (!memberType.equals("Student")) {
+            studentSection.setVisibility(View.GONE);
+        }
 
         etGuardianName = findViewById(R.id.etGuardianName);
         etGuardianTelephone = findViewById(R.id.etGuardianTel);
@@ -102,6 +125,8 @@ public class NewMemberActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profileImage);
 
 
+        setTempValues();
+
         tvDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,23 +144,73 @@ public class NewMemberActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                MY_PERMISSIONS_REQUEST_CAMERA);
 
-                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                        // app-defined int constant
+                if(!TextUtils.isEmpty(etFirstName.getText().toString())&&!TextUtils.isEmpty(etNIC.getText().toString())){
+                    photoFileName = etFirstName.getText().toString() + etNIC.getText().toString() + ".jpg";
 
-                        return;
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                    MY_PERMISSIONS_REQUEST_CAMERA);
+
+                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                            // app-defined int constant
+
+                            return;
+                        } else {
+                            onLaunchCamera();
+                        }
                     } else {
-                        startActivityForResult(getPickImageChooserIntent(), 200);
+                        onLaunchCamera();
                     }
-                } else {
-                    startActivityForResult(getPickImageChooserIntent(), 200);
+                }else {
+                    Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.profileImageSelectWarningMessage));
                 }
+
+
             }
         });
+    }
+
+    private void setTempValues() {
+        etFirstName.setText("charith");
+        etLastName.setText("vinodya");
+        etSurName.setText("vithanage");
+
+        etGuardianName.setText("nihal");
+        etGuardianTelephone.setText("0323433445");
+        etGuardianRelationship.setText("father");
+
+        etHeight.setText("172");
+        etWeight.setText("82");
+        etNIC.setText("912349873v");
+        etMobile1.setText("0712848384");
+        etMobile2.setText("0712848384");
+
+
+    }
+
+    public void onLaunchCamera() {
+        // create Intent to take a picture and return control to the calling application
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Create a File reference to access to future access
+        photoFile = getPhotoFileUri(photoFileName);
+
+        // wrap File object into a content provider
+        // required for API >= 24
+        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
+
+
+        fileProvider = FileProvider.getUriForFile(NewMemberActivity.this, "com.codepath.fileprovider", photoFile);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+//
+//        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+//        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            // Start the image capture intent to take photo
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
     }
 
     private void saveMember() {
@@ -185,13 +260,13 @@ public class NewMemberActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
             member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
         }
+        member.setProfileImage(fileProvider.toString());
 
         member.setAddressId(addressId);
 
-        
 
-        Intent intent=new Intent(NewMemberActivity.this,MemberBioActivity.class);
-        intent.putExtra("memberString",gson.toJson(member));
+        Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+        intent.putExtra("memberString", gson.toJson(member));
         startActivity(intent);
 
 //        databaseHandler.addMember(member, addressId);
@@ -230,17 +305,17 @@ public class NewMemberActivity extends AppCompatActivity {
 
             final DateTime tempDate = new DateTime(year, monthOfYear + 1, dayOfMonth, today.getHourOfDay(), today.getMinuteOfHour());
 
-            tvDOB.setText(tempDate.toString("YYYY/MM/dd"));
+            tvDOB.setText(tempDate.toString(getString(R.string.date_pattern)));
             member.setAge(calculateAge(tempDate));
             tvAge.setText(calculateAge(tempDate).toString() + " Yrs");
-            member.setDOB(tempDate.toString("YYYY/MM/dd"));
+            member.setDOB(tempDate.toString(getString(R.string.date_pattern)));
 
 
         }
     };
 
 
-    public Intent getPickImageChooserIntent() {
+//    public Intent getPickImageChooserIntent() {
 
 //        // Determine Uri of camera image to save.
 //        Uri outputFileUri = getCaptureImageOutputUri();
@@ -251,75 +326,84 @@ public class NewMemberActivity extends AppCompatActivity {
 //            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT,outputFileUri);
 //        }
 
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        return cameraIntent;
-    }
+//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        return cameraIntent;
+//    }
 
     /**
      * Get URI to image received from capture by camera.
      */
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
-        File getImage = getExternalCacheDir();
-        if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
-        }
-        return outputFileUri;
-    }
+//    private Uri getCaptureImageOutputUri(String name) {
+//        Uri outputFileUri = null;
+//
+////        File getImage = new File(getFilesDir(), "GYMImage");
+//        File getImage = getPrivateAlbumStorageDir(getApplicationContext(),"GYMImage");
+//        if (getImage != null) {
+//            outputFileUri = Uri.fromFile(new File(getImage.getPath(), name + ".jpeg"));
+//        }
+//        return outputFileUri;
+//    }
+//
+//    /**
+//     * Get the URI of the selected image from {@link #getPickImageChooserIntent()}.<br/>
+//     * Will return the correct URI for camera and gallery image.
+//     *
+//     * @param data the returned data of the activity result
+//     */
+//    public Uri getPickImageResultUri(Intent data) {
+//        boolean isCamera = true;
+//        if (data != null && data.getData() != null) {
+//            String action = data.getAction();
+//            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+//        }
+//        return isCamera ? getCaptureImageOutputUri(etFirstName.getText().toString()+etLastName.getText().toString()) : data.getData();
+//    }
 
-    /**
-     * Get the URI of the selected image from {@link #getPickImageChooserIntent()}.<br/>
-     * Will return the correct URI for camera and gallery image.
-     *
-     * @param data the returned data of the activity result
-     */
-    public Uri getPickImageResultUri(Intent data) {
-        boolean isCamera = true;
-        if (data != null && data.getData() != null) {
-            String action = data.getAction();
-            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+    // Returns the File for a photo stored on disk given the fileName
+    public File getPhotoFileUri(String fileName) {
+        // Get safe storage directory for photos
+        // Use `getExternalFilesDir` on Context to access package-specific directories.
+        // This way, we don't need to request external read/write runtime permissions.
+        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
+            Log.d(TAG, "failed to create directory");
         }
-        return isCamera ? getCaptureImageOutputUri() : data.getData();
+
+        // Return the file target for the photo based on filename
+        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
+
+        return file;
     }
 
 
     /**
      * Test if we can open the given Android URI to test if permission required error is thrown.<br>
      */
-    public boolean isUriRequiresPermissions(Uri uri) {
-        ContentResolver resolver = getContentResolver();
-        InputStream stream = null;
-        try {
-            stream = resolver.openInputStream(uri);
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
+//    public boolean isUriRequiresPermissions(Uri uri) {
+//        ContentResolver resolver = getContentResolver();
+//        InputStream stream = null;
+//        try {
+//            stream = resolver.openInputStream(uri);
+//            stream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-//            Uri imageUri = getPickImageResultUri(data);
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            profileImage.setImageBitmap(photo);
-            // For API >= 23 we need to check specifically that we have permissions to read external storage,
-            // but we don't know if we need to for the URI so the simplest is to try open the stream and see if we get error.
-            boolean requirePermissions = false;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-//                    checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-//                    isUriRequiresPermissions(imageUri)) {
-//                // request permissions and handle the result in onRequestPermissionsResult()
-//                requirePermissions = true;
-//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-//            }
-
-            if (!requirePermissions) {
-//                profileImage.setImageURI(imageUri);
-            }
+        if (resultCode == RESULT_OK) {
+            // by this point we have the camera photo on disk
+            Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            // RESIZE BITMAP, see section below
+            // Load the taken image into a preview
+            profileImage.setImageBitmap(takenImage);
+        } else { // Result was a failure
+            Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
 
@@ -330,7 +414,7 @@ public class NewMemberActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_CAMERA: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! do the
-                    startActivityForResult(getPickImageChooserIntent(), 200);
+                    onLaunchCamera();
 
                 } else {
 

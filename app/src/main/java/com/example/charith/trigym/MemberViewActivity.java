@@ -1,7 +1,9 @@
 package com.example.charith.trigym;
 
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.charith.trigym.DB.DatabaseHandler;
@@ -22,6 +24,8 @@ public class MemberViewActivity extends AppCompatActivity {
     Gson gson;
     Address address = null;
 
+    ImageView profileImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,7 @@ public class MemberViewActivity extends AppCompatActivity {
     }
 
     private void init() {
+        profileImage = findViewById(R.id.profileImage);
         tvName = findViewById(R.id.tvName);
         tvmobile = findViewById(R.id.tvPhone);
         tvAddress = findViewById(R.id.tvAddress);
@@ -69,10 +74,9 @@ public class MemberViewActivity extends AppCompatActivity {
         tvHeight.setText(String.valueOf(member.getHeight() + " cm"));
         tvWeight.setText(String.valueOf(member.getWeight() + " kg"));
 
-
-
-
-
+        if(member.getProfileImage()!=null){
+            profileImage.setImageURI(Uri.parse(member.getProfileImage()));
+        }
     }
 
     private String getAddress(Address address) {

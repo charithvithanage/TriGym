@@ -44,4 +44,7 @@
     <dimen name="loginButtonBottomMargin">20dp</dimen>
     <dimen name="loginButtonRightMargin">40dp</dimen>
     <dimen name="loginButtonLeftMargin">40dp</dimen>
+    <dimen name="memberStatusButtonWidth">100dp</dimen>
+    <dimen name="button_border_width">1dp</dimen>
+    <dimen name="button_radius">5dp</dimen>
 </resources>
