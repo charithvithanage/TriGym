@@ -51,4 +51,8 @@
     <dimen name="actionButtonPadding">8dp</dimen>
     <dimen name="actionbarFontSize">24sp</dimen>
 
+    <dimen name="memberStatusButtonWidth">100dp</dimen>
+    <dimen name="button_border_width">1dp</dimen>
+    <dimen name="button_radius">5dp</dimen>
+
 </resources>

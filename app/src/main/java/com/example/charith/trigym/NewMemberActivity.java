@@ -65,6 +65,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
     Member member;
 
+    TextInputEditText etMembershipNo,etMembershipReciptNo;
+
     TextInputEditText etGuardianName, etGuardianTelephone, etGuardianRelationship, etFirstName, etLastName, etSurName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight;
 
     LinearLayout studentSection;
@@ -100,6 +102,9 @@ public class NewMemberActivity extends AppCompatActivity {
         if (!memberType.equals("Student")) {
             studentSection.setVisibility(View.GONE);
         }
+
+        etMembershipNo=findViewById(R.id.etMembershipNo);
+        etMembershipReciptNo=findViewById(R.id.etMembershipReciptNo);
 
         etGuardianName = findViewById(R.id.etGuardianName);
         etGuardianTelephone = findViewById(R.id.etGuardianTel);
@@ -173,6 +178,10 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void setTempValues() {
+
+        etMembershipNo.setText("m1");
+        etMembershipReciptNo.setText("r1");
+
         etFirstName.setText("charith");
         etLastName.setText("vinodya");
         etSurName.setText("vithanage");
@@ -187,6 +196,9 @@ public class NewMemberActivity extends AppCompatActivity {
         etMobile1.setText("0712848384");
         etMobile2.setText("0712848384");
 
+        etLine1.setText("Morawatta");
+        etLine2.setText("Ruwanwella");
+        etLine3.setText("Kegalle");
 
     }
 

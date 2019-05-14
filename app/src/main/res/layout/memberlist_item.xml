@@ -207,11 +207,14 @@
             </LinearLayout>
 
             <TextView
-            android:id="@+id/tvMemberStatus"
-            android:layout_width="@dimen/memberStatusButtonWidth"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/invalid_bg" />
+                android:id="@+id/tvMemberStatus"
+                android:layout_width="@dimen/memberStatusButtonWidth"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:src="@drawable/invalid_bg" />
 
             <!--<ImageView-->
             <!--android:id="@+id/imgBlueNext"-->

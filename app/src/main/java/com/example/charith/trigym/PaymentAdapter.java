@@ -1,17 +1,13 @@
 package com.example.charith.trigym;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.charith.trigym.Entities.Payment;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -65,10 +61,10 @@ public class PaymentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public MyViewHolder(View v) {
             super(v);
-            tvType = (TextView) v.findViewById(R.id.tvType);
-            tvAmount = (TextView) v.findViewById(R.id.tvAmount);
-            tvExpiryDate = (TextView) v.findViewById(R.id.tvExpiryDate);
-            tvPaymentDate = (TextView) v.findViewById(R.id.tvPaymentDate);
+            tvType = v.findViewById(R.id.tvType);
+            tvAmount = v.findViewById(R.id.tvType);
+            tvExpiryDate = v.findViewById(R.id.tvExpiryDate);
+            tvPaymentDate = v.findViewById(R.id.tvPaymentDate);
 
         }
     }

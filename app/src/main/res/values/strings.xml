@@ -21,4 +21,6 @@
     <string name="messageString">Message</string>
     <string name="callString">Call</string>
     <string name="title_activity_payment_list">PaymentListActivity</string>
+    <string name="active_user_string">Active User</string>
+    <string name="inactive_user_string">Inactive User</string>
 </resources>

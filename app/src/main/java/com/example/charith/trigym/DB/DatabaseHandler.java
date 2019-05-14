@@ -172,27 +172,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String expiryDateString = null;
         switch (member.getMembershipType()) {
-            case "daily":
+            case "Daily":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(1));
                 break;
 
-            case "weekly":
+            case "1 Week":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(7));
                 break;
 
-            case "1month":
+            case "1 Month":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(1));
                 break;
 
-            case "3month":
+            case "3 Month":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(3));
                 break;
 
-            case "6month":
+            case "6 Month":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(6));
                 break;
 
-            case "1year":
+            case "1 Year":
                 expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusYears(1));
                 break;
         }

@@ -61,8 +61,10 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
 
         if(Utils.getMemberValidStatus(memberObj.getMembershipExpiredDate())){
+            viewHolder.memberStatus.setText(context.getResources().getString(R.string.active_user_string));
             viewHolder.memberStatus.setBackgroundResource(R.drawable.valid_bg);
         }else {
+            viewHolder.memberStatus.setText(context.getResources().getString(R.string.inactive_user_string));
             viewHolder.memberStatus.setBackgroundResource(R.drawable.invalid_bg);
         }
 

@@ -38,6 +38,7 @@ public class MemberBioActivity extends AppCompatActivity {
     Member member = null;
     Gson gson;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -62,7 +62,7 @@ public class Utils {
 
         Boolean status = false;
 
-        if (Utils.stringToDateTime(membershipExpiryDate).isBefore(today.getMillis())) {
+        if (today.isBefore(Utils.stringToDateTime(membershipExpiryDate))) {
             status = true;
         }
 
