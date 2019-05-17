@@ -154,25 +154,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_horizontal_margin">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/contactImageLeftMargin"
-                android:layout_marginRight="@dimen/contactImageMargin"
-                android:padding="@dimen/contactImageMargin"
-                android:layout_marginStart="@dimen/contactImageLeftMargin"
-                android:layout_marginEnd="@dimen/contactImageMargin">
+
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@drawable/image_border">
 
                 <ImageView
                     android:id="@+id/imageProfile"
                     android:layout_width="@dimen/contactLawyerImageWidth"
                     android:layout_height="@dimen/contactLawyerImageWidth"
-                    android:contentDescription="@string/todoString"
                     android:layout_centerInParent="true"
+                    android:contentDescription="@string/todoString"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/client_phone_icon"/>
+                    android:src="@mipmap/client_phone_icon" />
 
             </RelativeLayout>
 

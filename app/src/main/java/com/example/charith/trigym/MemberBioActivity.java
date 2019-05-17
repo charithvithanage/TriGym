@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -23,11 +25,13 @@ import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 public class MemberBioActivity extends AppCompatActivity {
 
     Switch switchDiabetes, switchHighCholesterol, switchHighBloodPressure, switchLowBloodPressure, switchHeartProblem, switchChestPain, switchHeartAttack, switchBreathingProblem, switchFainting, switchBackPain;
     Switch switchMedication, switchIllness, switchPainfulJoints, switchArthritis, switchHernia, switchPayment;
-    TextView tvPaymentDate;
+    TextView tvPaymentDate, tvTitle;
 
     EditText etAmount;
     EditText etSpecialNotes;
@@ -38,13 +42,23 @@ public class MemberBioActivity extends AppCompatActivity {
     Member member = null;
     Gson gson;
 
+    String navigationType;
+
+    RadioButton radioButton1Day, radioButton1Week, radioButton1Month, radioButton3Month, radioButton6Month, radioButton12Month;
+
+    ImageButton backBtn;
+
+    LinearLayout paymentSection;
+
+    RadioGroup radioGroupType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_bio);
         memberString = getIntent().getStringExtra("memberString");
-        memberString = getIntent().getStringExtra("memberString");
+        navigationType = getIntent().getStringExtra("navigationType");
+
         init();
     }
 
@@ -54,6 +68,20 @@ public class MemberBioActivity extends AppCompatActivity {
         gson = builder.create();
 
         member = gson.fromJson(memberString, Member.class);
+        radioGroupType = findViewById(R.id.radioGroupType);
+
+        backBtn = findViewById(R.id.backBtn);
+        paymentSection = findViewById(R.id.paymentSection);
+        paymentSection.setVisibility(View.GONE);
+
+        tvTitle = findViewById(R.id.tvTitle);
+        radioButton1Day = findViewById(R.id.radioDaily);
+        radioButton1Week = findViewById(R.id.radio1Week);
+        radioButton1Month = findViewById(R.id.radio1Month);
+        radioButton3Month = findViewById(R.id.radio3Month);
+        radioButton6Month = findViewById(R.id.radio6Month);
+        radioButton12Month = findViewById(R.id.radio12Month);
+
         tvPaymentDate = findViewById(R.id.tvPaymentDate);
         etAmount = findViewById(R.id.etAmount);
 
@@ -76,15 +104,46 @@ public class MemberBioActivity extends AppCompatActivity {
         etSpecialNotes = findViewById(R.id.etSpecialNotes);
         btnSave = findViewById(R.id.btnSave);
 
+        member = gson.fromJson(memberString, Member.class);
+
+
+        if (navigationType.equals("edit")) {
+            tvTitle.setText(getResources().getString(R.string.edit_user_title));
+            setUserValues();
+        } else {
+            tvTitle.setText(getResources().getString(R.string.new_user_title));
+
+        }
+
+
+        radioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int selectedTypeRadioButton = group.getCheckedRadioButtonId();
+                RadioButton memberType = findViewById(selectedTypeRadioButton);
+
+                getMembershipAmountFromType(memberType.getText().toString());
+            }
+        });
+
         switchPayment.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 member.setValidStatus(b);
 
                 if (b) {
+
+                    paymentSection.setVisibility(View.VISIBLE);
+                    int selectedTypeRadioButton = radioGroupType.getCheckedRadioButtonId();
+                    RadioButton memberType = findViewById(selectedTypeRadioButton);
+
+                    getMembershipAmountFromType(memberType.getText().toString());
+
                     tvPaymentDate.setText(today.toString(getString(R.string.date_pattern)));
                     member.setLastPaymentDate(today.toString(getString(R.string.date_pattern)));
                 } else {
+                    paymentSection.setVisibility(View.GONE);
+                    etAmount.setText(null);
                     tvPaymentDate.setText(getString(R.string.date_pattern));
                     member.setLastPaymentDate(null);
                 }
@@ -228,7 +287,156 @@ public class MemberBioActivity extends AppCompatActivity {
             }
         });
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
+    }
+
+    private void getMembershipAmountFromType(String membershipType) {
+        switch (membershipType) {
+            case "Daily":
+                if (switchPayment.isChecked())
+                    etAmount.setText(getResources().getString(R.string.daily_fee));
+                break;
+
+            case "1 Week":
+                if (switchPayment.isChecked())
+
+                    etAmount.setText(getResources().getString(R.string.week_fee));
+                break;
+
+            case "1 Month":
+                if (switchPayment.isChecked())
+
+                    etAmount.setText(getResources().getString(R.string.one_month_fee));
+                break;
+
+            case "3 Month":
+                if (switchPayment.isChecked())
+
+                    etAmount.setText(getResources().getString(R.string.three_month_fee));
+                break;
+
+
+            case "6 Month":
+
+                if (switchPayment.isChecked())
+                    etAmount.setText(getResources().getString(R.string.six_month_fee));
+                break;
+
+            case "1 Year":
+                if (switchPayment.isChecked())
+                    etAmount.setText(getResources().getString(R.string.one_year_fee));
+                break;
+        }
+    }
+
+    private void setUserValues() {
+
+        checkMemberType();
+        checkHealthCondition();
+
+//        if (member.getValidStatus()) {
+//            switchPayment.setChecked(true);
+//        } else {
+//            switchPayment.setChecked(false);
+//        }
+
+//        etAmount.setText(getValidPaymentAmount());
+//        tvPaymentDate.setText(member.getLastPaymentDate());
+        etSpecialNotes.setText(member.getComments());
+
+
+    }
+
+
+    private void checkHealthCondition() {
+        if (member.getDiabetes()) {
+            switchDiabetes.setChecked(true);
+        }
+
+        if (member.getCholesterol()) {
+            switchHighCholesterol.setChecked(true);
+        }
+
+        if (member.getHighBloodPressure()) {
+            switchHighBloodPressure.setChecked(true);
+        }
+
+        if (member.getLowBloodPressure()) {
+            switchLowBloodPressure.setChecked(true);
+        }
+
+        if (member.getHeartProblem()) {
+            switchHeartProblem.setChecked(true);
+        }
+        if (member.getPainInChestWhenExercising()) {
+            switchChestPain.setChecked(true);
+        }
+        if (member.getHeartAttackCoronaryBypass()) {
+            switchHeartAttack.setChecked(true);
+        }
+        if (member.getAnyBreathingDifficultiesAndAsthma()) {
+            switchBreathingProblem.setChecked(true);
+        }
+        if (member.getFaintingSpells()) {
+            switchFainting.setChecked(true);
+        }
+        if (member.getBackOrSpinePains()) {
+            switchBackPain.setChecked(true);
+        }
+
+        if (member.getAreYouOnAnySortOfMedications()) {
+            switchMedication.setChecked(true);
+        }
+
+        if (member.getOtherSignificantIllness()) {
+            switchIllness.setChecked(true);
+        }
+
+        if (member.getSwollen()) {
+            switchPainfulJoints.setChecked(true);
+        }
+
+        if (member.getArthritis()) {
+            switchArthritis.setChecked(true);
+        }
+
+    }
+
+    private void checkMemberType() {
+        switch (member.getMembershipType()) {
+            case "Daily":
+                radioButton1Day.setChecked(true);
+                break;
+
+            case "1 Week":
+                radioButton1Week.setChecked(true);
+                break;
+
+            case "1 Month":
+                radioButton1Month.setChecked(true);
+
+                break;
+
+            case "3 Month":
+                radioButton3Month.setChecked(true);
+
+                break;
+
+            case "6 Month":
+                radioButton6Month.setChecked(true);
+
+                break;
+
+            case "1 Year":
+                radioButton12Month.setChecked(true);
+                break;
+        }
     }
 
     DateTime today = new DateTime();
@@ -268,28 +476,68 @@ public class MemberBioActivity extends AppCompatActivity {
 
     private void saveMember() {
         member.setComments(etSpecialNotes.getText().toString());
-        final RadioGroup radioGroupType = findViewById(R.id.radioGroupType);
 
         int selectedTypeRadioButton = radioGroupType.getCheckedRadioButtonId();
         RadioButton memberType = findViewById(selectedTypeRadioButton);
 
+
         member.setMembershipType(memberType.getText().toString());
 
         DatabaseHandler databaseHandler = new DatabaseHandler(MemberBioActivity.this);
-        Long memberId = databaseHandler.addMember(member);
+        Long memberId = null;
 
-        Payment payment = new Payment();
+        if (navigationType != null) {
+            if (navigationType.equals("edit")) {
+                memberId = new Long(member.getId());
 
-        payment.setMember_id((int) (long) memberId);
-        payment.setAmount(Float.valueOf(etAmount.getText().toString()));
-        payment.setType(member.getMembershipType());
-        payment.setLastPaymentDate(member.getLastPaymentDate());
-        payment.setPaymentExpiryDate(member.getMembershipExpiredDate());
+                if(Utils.checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))){
+                    member.setValidStatus(true);
+                }else {
+                    member.setValidStatus(false);
+                }
 
-        databaseHandler.addPayment(payment);
+                databaseHandler.updateMember(member);
 
-        Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+            } else {
+
+                member.setValidStatus(true);
+                memberId = databaseHandler.addMember(member);
+            }
+        } else {
+            member.setValidStatus(true);
+            memberId = databaseHandler.addMember(member);
+        }
+
+        if (switchPayment.isChecked()) {
+
+            Payment payment = new Payment();
+
+            payment.setMember_id((int) (long) memberId);
+            payment.setAmount(Float.valueOf(etAmount.getText().toString()));
+            payment.setType(member.getMembershipType());
+            payment.setLastPaymentDate(member.getLastPaymentDate());
+            payment.setPaymentExpiryDate(Utils.getMembershipExpiryDate(member));
+
+            databaseHandler.addPayment(payment);
+
+        }
+
+        if (navigationType != null) {
+            if (navigationType.equals("edit")) {
+                Intent intent = new Intent();
+                setResult(200, intent);
+                finish();//finishing activity
+            } else {
+                Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        } else {
+            Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+
+
     }
 }

@@ -1,10 +1,7 @@
 package com.example.charith.trigym;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -41,12 +39,11 @@ import com.google.gson.GsonBuilder;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class NewMemberActivity extends AppCompatActivity {
 
@@ -65,9 +62,9 @@ public class NewMemberActivity extends AppCompatActivity {
 
     Member member;
 
-    TextInputEditText etMembershipNo,etMembershipReciptNo;
+    TextInputEditText etMembershipNo, etMembershipReciptNo;
 
-    TextInputEditText etGuardianName, etGuardianTelephone, etGuardianRelationship, etFirstName, etLastName, etSurName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight;
+    TextInputEditText etEmail, etGuardianName, etGuardianTelephone, etGuardianRelationship, etFirstName, etLastName, etSurName, etLine1, etLine2, etLine3, etCity, etMobile1, etMobile2, etNIC, etHeight, etWeight;
 
     LinearLayout studentSection;
 
@@ -79,10 +76,27 @@ public class NewMemberActivity extends AppCompatActivity {
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 200;
 
+    String memberId;
+
+    String navigationType;
+
+    String memberType;
+
+    RadioButton radioBtnMarried, radioBtnSingle;
+    RadioButton radioBtnMale, radioBtnFemale;
+
+    TextView tvTitle;
+
+    ImageButton backBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_member);
+
+        navigationType = getIntent().getStringExtra("navigationType");
+        memberId = getIntent().getStringExtra("memberId");
+        memberType = getIntent().getStringExtra("memberType");
 
 
         init();
@@ -91,7 +105,6 @@ public class NewMemberActivity extends AppCompatActivity {
     private void init() {
         member = new Member();
 
-        String memberType = getIntent().getStringExtra("memberType");
         member.setType(memberType);
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
@@ -103,8 +116,15 @@ public class NewMemberActivity extends AppCompatActivity {
             studentSection.setVisibility(View.GONE);
         }
 
-        etMembershipNo=findViewById(R.id.etMembershipNo);
-        etMembershipReciptNo=findViewById(R.id.etMembershipReciptNo);
+        backBtn = findViewById(R.id.backBtn);
+        tvTitle = findViewById(R.id.tvTitle);
+        radioBtnMale = findViewById(R.id.radioMale);
+        radioBtnFemale = findViewById(R.id.radioFemale);
+        radioBtnMarried = findViewById(R.id.radioMarried);
+        radioBtnSingle = findViewById(R.id.radioSingle);
+
+        etMembershipNo = findViewById(R.id.etMembershipNo);
+        etMembershipReciptNo = findViewById(R.id.etMembershipReciptNo);
 
         etGuardianName = findViewById(R.id.etGuardianName);
         etGuardianTelephone = findViewById(R.id.etGuardianTel);
@@ -122,15 +142,25 @@ public class NewMemberActivity extends AppCompatActivity {
         etNIC = findViewById(R.id.etNIC);
         etHeight = findViewById(R.id.etHeight);
         etWeight = findViewById(R.id.etWeight);
+        etEmail = findViewById(R.id.etEmail);
 
-        btnNext = findViewById(R.id.btnNext);
+        btnNext = findViewById(R.id.btnHistory);
         tvDOB = findViewById(R.id.tvDOB);
         tvAge = findViewById(R.id.tvAge);
         btnEdit = findViewById(R.id.btnEdit);
         profileImage = findViewById(R.id.profileImage);
 
-
-        setTempValues();
+        if (navigationType != null) {
+            if (navigationType.equals("edit")) {
+                tvTitle.setText(getResources().getString(R.string.edit_user_title));
+                DatabaseHandler db = new DatabaseHandler(this);
+                member = db.getMemberById(memberId);
+                setUserValues();
+            }
+        } else {
+            tvTitle.setText(getResources().getString(R.string.new_user_title));
+            setTempValues();
+        }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +180,7 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!TextUtils.isEmpty(etFirstName.getText().toString())&&!TextUtils.isEmpty(etNIC.getText().toString())){
+                if (!TextUtils.isEmpty(etFirstName.getText().toString()) && !TextUtils.isEmpty(etNIC.getText().toString())) {
                     photoFileName = etFirstName.getText().toString() + etNIC.getText().toString() + ".jpg";
 
                     if (Build.VERSION.SDK_INT >= 23) {
@@ -168,13 +198,77 @@ public class NewMemberActivity extends AppCompatActivity {
                     } else {
                         onLaunchCamera();
                     }
-                }else {
-                    Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.profileImageSelectWarningMessage));
+                } else {
+                    Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.profileImageSelectWarningMessage));
                 }
 
 
             }
         });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void setUserValues() {
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(this);
+
+        if (member.getMarriedStatus().equals("Single")) {
+            radioBtnMarried.setChecked(false);
+            radioBtnSingle.setChecked(true);
+        } else {
+            radioBtnMarried.setChecked(true);
+            radioBtnSingle.setChecked(false);
+        }
+
+        if (member.getGender().equals("Male")) {
+            radioBtnMale.setChecked(true);
+            radioBtnFemale.setChecked(false);
+
+        } else {
+            radioBtnFemale.setChecked(true);
+            radioBtnMale.setChecked(false);
+
+        }
+
+        etMembershipNo.setText(member.getMembershipNo());
+        etMembershipReciptNo.setText(member.getMembershipRecieptNo());
+
+        etFirstName.setText(member.getFirstName());
+        etLastName.setText(member.getLastName());
+        etSurName.setText(member.getSurName());
+
+        tvAge.setText(String.valueOf(member.getAge()));
+        tvDOB.setText(member.getDOB());
+
+        if (!member.getType().equals("Student")) {
+            studentSection.setVisibility(View.GONE);
+        } else {
+            etGuardianName.setText(member.getGuardianName());
+            etGuardianTelephone.setText(member.getGuardianTel());
+            etGuardianRelationship.setText(member.getGuardianRelationship());
+        }
+
+        Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+
+
+        etHeight.setText(String.valueOf(member.getHeight()));
+        etWeight.setText(String.valueOf(member.getWeight()));
+        etNIC.setText(member.getNIC());
+        etMobile1.setText(String.valueOf(member.getMobile1()));
+        etMobile2.setText(String.valueOf(member.getMobile2()));
+
+        Address address = databaseHandler.getAddressById(String.valueOf(member.getAddressId()));
+
+        etLine1.setText(address.getLine1());
+        etLine2.setText(address.getLine2());
+        etLine3.setText(address.getLine3());
+
     }
 
     private void setTempValues() {
@@ -227,7 +321,6 @@ public class NewMemberActivity extends AppCompatActivity {
 
     private void saveMember() {
 
-
         final RadioGroup rbgGender = findViewById(R.id.radioGroupGender);
         final RadioGroup rbgMarriedStatus = findViewById(R.id.radioGroudMarriedStatus);
 
@@ -235,6 +328,9 @@ public class NewMemberActivity extends AppCompatActivity {
         int selectedMarriedStatusRadioButton = rbgMarriedStatus.getCheckedRadioButtonId();
         RadioButton gender = findViewById(selectedGenderRadioButton);
         RadioButton marriedStatus = findViewById(selectedMarriedStatusRadioButton);
+
+        member.setMembershipNo(etMembershipNo.getText().toString());
+        member.setMembershipRecieptNo(etMembershipReciptNo.getText().toString());
 
         member.setGender(gender.getText().toString());
         member.setMarriedStatus(marriedStatus.getText().toString());
@@ -254,9 +350,15 @@ public class NewMemberActivity extends AppCompatActivity {
         member.setLastName(etLastName.getText().toString());
         member.setSurName(etSurName.getText().toString());
 
-        member.setGuardianName(etGuardianName.getText().toString());
-        member.setGuardianTel(Integer.valueOf(etGuardianTelephone.getText().toString()));
-        member.setGuardianRelationship(etGuardianRelationship.getText().toString());
+        member.setEmail(etEmail.getText().toString());
+
+        if (member.getType().equals("Student")) {
+
+            member.setGuardianName(etGuardianName.getText().toString());
+            member.setGuardianTel(Integer.valueOf(etGuardianTelephone.getText().toString()));
+            member.setGuardianRelationship(etGuardianRelationship.getText().toString());
+
+        }
 
         member.setAddress(address);
         member.setAddressId(address.getId());
@@ -272,14 +374,38 @@ public class NewMemberActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
             member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
         }
-        member.setProfileImage(fileProvider.toString());
+
+
+        if (fileProvider != null) {
+            member.setProfileImage(fileProvider.toString());
+        }
 
         member.setAddressId(addressId);
 
 
-        Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-        intent.putExtra("memberString", gson.toJson(member));
-        startActivity(intent);
+        if (navigationType != null) {
+            if (navigationType.equals("edit")) {
+                Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+                intent.putExtra("memberString", gson.toJson(member));
+                intent.putExtra("navigationType", "edit");
+                startActivity(intent);
+                finish();
+            } else {
+                Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+                intent.putExtra("memberString", gson.toJson(member));
+                intent.putExtra("navigationType", "new");
+
+                startActivity(intent);
+            }
+        } else {
+
+            Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+            intent.putExtra("memberString", gson.toJson(member));
+            intent.putExtra("navigationType", "new");
+
+            startActivity(intent);
+        }
+
 
 //        databaseHandler.addMember(member, addressId);
     }
@@ -411,7 +537,9 @@ public class NewMemberActivity extends AppCompatActivity {
             Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             // RESIZE BITMAP, see section below
             // Load the taken image into a preview
-            profileImage.setImageBitmap(takenImage);
+            Picasso.get().load(fileProvider).transform(new CircleTransform()).into(profileImage);
+
+//            profileImage.setImageBitmap(takenImage);
         } else { // Result was a failure
             Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
         }

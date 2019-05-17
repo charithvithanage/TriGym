@@ -6,12 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.charith.trigym.DB.DatabaseHandler;
+import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Entities.Payment;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.ViewHolder;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.List;
 
 public class Utils {
     public static DialogPlus showConfirmMesssageWithTitle(Context context) {
@@ -55,18 +60,70 @@ public class Utils {
         return dateTime.toString("YYYY/MM/dd");
     }
 
-    public static Boolean getMemberValidStatus(String membershipExpiryDate) {
+    public static Boolean checkMemberValidStatus(Context context,String memberId) {
 
         DateTime today = new DateTime();
 
+        DatabaseHandler databaseHandler = new DatabaseHandler(context);
+        List<Payment> paymentList = databaseHandler.getPaymentsByMemberId(memberId);
 
-        Boolean status = false;
-
-        if (today.isBefore(Utils.stringToDateTime(membershipExpiryDate))) {
-            status = true;
+        for (Payment payment : paymentList) {
+            if (Utils.stringToDateTime(payment.getPaymentExpiryDate()).isAfter(today)) {
+                return true;
+            }
         }
 
-        return status;
+        return false;
+    }
+
+    public static String getMembershipExpiryDate(Member member) {
+
+        String expiryDateString = null;
+        switch (member.getMembershipType()) {
+            case "Daily":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(1));
+                break;
+
+            case "1 Week":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(7));
+                break;
+
+            case "1 Month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(1));
+                break;
+
+            case "3 Month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(3));
+                break;
+
+            case "6 Month":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(6));
+                break;
+
+            case "1 Year":
+                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusYears(1));
+                break;
+        }
+
+        return expiryDateString;
+    }
+
+    public static Payment getValidPayment(Context context,String memberId) {
+
+        DateTime today=new DateTime();
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(context);
+        List<Payment> paymentList = databaseHandler.getPaymentsByMemberId(memberId);
+
+        Payment validPayment=new Payment();
+
+        for (Payment payment : paymentList) {
+            if (Utils.stringToDateTime(payment.getPaymentExpiryDate()).isAfter(today)) {
+                validPayment=payment;
+            }
+        }
+
+        return validPayment;
     }
 
 }

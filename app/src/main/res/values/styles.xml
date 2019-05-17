@@ -72,10 +72,14 @@
 
 
     <style name="action_title_style" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textColor">@color/primaryWhite</item>
         <item name="android:textSize">@dimen/actionbarFontSize</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="buttonStyle">
+        <item name="android:textSize">@dimen/btnFontSize</item>
+        <item name="android:textColor">@color/primaryWhite</item>
+    </style>
 
 </resources>

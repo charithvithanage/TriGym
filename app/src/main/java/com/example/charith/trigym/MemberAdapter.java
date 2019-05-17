@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,7 +61,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
         viewHolder.memberName.setText(memberObj.getFirstName() + " " + memberObj.getLastName());
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
 
-        if(Utils.getMemberValidStatus(memberObj.getMembershipExpiredDate())){
+        if(Utils.checkMemberValidStatus(context, String.valueOf(memberObj.getId()))){
             viewHolder.memberStatus.setText(context.getResources().getString(R.string.active_user_string));
             viewHolder.memberStatus.setBackgroundResource(R.drawable.valid_bg);
         }else {
@@ -85,8 +86,8 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                     @Override
                     public void run() {
                         Intent i = new Intent(context, MemberViewActivity.class);
-                        Member lawyer = filteredMembers.get(position);
-                        i.putExtra("selectedMember", gson.toJson(lawyer));
+                        Member member = filteredMembers.get(position);
+                        i.putExtra("memberId", String.valueOf(member.getId()));
                         context.startActivity(i);
                         viewHolder.swipeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
                     }
@@ -117,6 +118,8 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 dialogButtonOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        DatabaseHandler databaseHandler=new DatabaseHandler(context);
+                        databaseHandler.deleteMember(String.valueOf(selectedMember.getId()));
                         dialogPlus.dismiss();
 
                     }

@@ -6,10 +6,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,6 +24,7 @@ import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
@@ -38,6 +43,14 @@ public class MemberViewActivity extends AppCompatActivity {
 
     View imgCall1, imgCall2, imgMessage1, imgMessage2, imgEmail;
 
+    ImageButton editButton;
+
+    Button btnPaymentHistory;
+
+    ImageView profileImage;
+
+    ImageButton backBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +60,10 @@ public class MemberViewActivity extends AppCompatActivity {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(DateTime.class, new DateTimeSerializer());
         gson = builder.create();
 
-        String memberString = getIntent().getStringExtra("selectedMember");
-        member = gson.fromJson(memberString, Member.class);
+        String memberId=getIntent().getStringExtra("memberId");
+        DatabaseHandler databaseHandler=new DatabaseHandler(this);
 
+        member = databaseHandler.getMemberById(memberId);
 
         init();
     }
@@ -88,7 +102,15 @@ public class MemberViewActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void init() {
+        backBtn = findViewById(R.id.backBtn);
+
+        profileImage = findViewById(R.id.profileImage);
+        editButton = findViewById(R.id.editBtn);
+        btnPaymentHistory = findViewById(R.id.btnHistory);
+
         mobile1Layout = findViewById(R.id.mobile1Layout);
         mobile2Layout = findViewById(R.id.mobile2Layout);
         emailLayout = findViewById(R.id.emailLayout);
@@ -174,6 +196,51 @@ public class MemberViewActivity extends AppCompatActivity {
             }
         });
 
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editProfile();
+            }
+        });
+
+        btnPaymentHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MemberViewActivity.this,PaymentListActivity.class);
+                intent.putExtra("memberIdString",String.valueOf(member.getId()));
+                startActivity(intent);
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MemberViewActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void editProfile() {
+        Intent intent = new Intent(MemberViewActivity.this, NewMemberActivity.class);
+        intent.putExtra("navigationType","edit");
+        intent.putExtra("memberId",String.valueOf(member.getId()));
+        intent.putExtra("memberType",member.getType());
+        startActivityForResult(intent, 200);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==200){
+
+            member=databaseHandler.getMemberById(String.valueOf(member.getId()));
+            setValues();
+        }
+
     }
 
     private void email(String email) {
@@ -233,6 +300,11 @@ public class MemberViewActivity extends AppCompatActivity {
             tvEmail.setText(member.getEmail());
         } else {
             emailLayout.setVisibility(View.GONE);
+        }
+
+        if(member.getProfileImage()!=null){
+            Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+
         }
 
         tvNIC.setText(member.getNIC());

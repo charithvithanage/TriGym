@@ -17,7 +17,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public PaymentAdapter(List<Payment> payments, Context context) {
-        list = payments;
+        this.list = payments;
         this.context = context;
     }
 
@@ -62,7 +62,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public MyViewHolder(View v) {
             super(v);
             tvType = v.findViewById(R.id.tvType);
-            tvAmount = v.findViewById(R.id.tvType);
+            tvAmount = v.findViewById(R.id.tvAmount);
             tvExpiryDate = v.findViewById(R.id.tvExpiryDate);
             tvPaymentDate = v.findViewById(R.id.tvPaymentDate);
 

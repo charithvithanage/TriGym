@@ -23,4 +23,15 @@
     <string name="title_activity_payment_list">PaymentListActivity</string>
     <string name="active_user_string">Active User</string>
     <string name="inactive_user_string">Inactive User</string>
+    <string name="payment_history_btn_text">Payment History</string>
+    <string name="payment_history_page_title">Payment History</string>
+    <string name="edit_user_title">Edit User Profile</string>
+    <string name="new_user_title">New User</string>
+    <string name="main_page_search_query_hint">Search .....</string>
+    <string name="daily_fee">200</string>
+    <string name="one_month_fee">2500</string>
+    <string name="week_fee">1000</string>
+    <string name="three_month_fee">4500</string>
+    <string name="six_month_fee">6000</string>
+    <string name="one_year_fee">12000</string>
 </resources>

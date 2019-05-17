@@ -80,7 +80,7 @@
 
     <Button
         android:id="@+id/btnCancel"
-        style="@style/login_btn_style"
+        style="@style/buttonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
@@ -90,5 +90,6 @@
         android:paddingLeft="@dimen/loginButtonLeftMargin"
         android:paddingRight="@dimen/loginButtonRightMargin"
         android:text="Cancel"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:background="@drawable/button_bg"/>
 </LinearLayout>

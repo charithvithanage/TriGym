@@ -4,14 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewMemberActivity">
+    tools:context=".NewMemberActivity"
+   >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/actionBarSize"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetEnd="0dp"
+            android:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/backBtn"
+                    android:layout_width="@dimen/actionButtonSize"
+                    android:layout_height="@dimen/actionButtonSize"
+                    android:layout_alignParentLeft="true"
+                    android:background="@null"
+                    android:paddingTop="@dimen/actionButtonPadding"
+                    android:paddingBottom="@dimen/actionButtonPadding"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/arrow_left" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/action_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/actionBar"
         android:fillViewport="true"
-        android:paddingBottom="@dimen/buttonHeight">
+        android:paddingBottom="62dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,9 +91,14 @@
 
                     <Button
                         android:id="@+id/btnEdit"
+                        style="@style/buttonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@id/profileImage"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/button_bg"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
                         android:text="Edit Image"
                         android:textAllCaps="false" />
 
@@ -259,8 +313,8 @@
                     android:layout_below="@+id/radioGroudMarriedStatus"
                     android:layout_alignLeft="@+id/radioGroudMarriedStatus"
                     android:layout_marginLeft="5dp"
-                    android:text="Single"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="Single" />
 
 
             </RadioGroup>
@@ -362,8 +416,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
-                    android:text="Male"
-                    />
+                    android:text="Male" />
 
 
                 <RadioButton
@@ -529,18 +582,20 @@
             </LinearLayout>
 
 
-
         </LinearLayout>
 
     </ScrollView>
 
     <Button
-        android:id="@+id/btnNext"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnHistory"
+        style="@style/buttonStyle"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/buttonHeight"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:background="@drawable/button_bg"
         android:text="Next" />
 
 
