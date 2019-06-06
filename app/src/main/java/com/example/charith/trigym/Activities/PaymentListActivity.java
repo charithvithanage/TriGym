@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,9 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.example.charith.trigym.Adapters.PaymentAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
-import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
+import com.example.charith.trigym.R;
 import com.google.gson.Gson;
 
 import java.util.List;

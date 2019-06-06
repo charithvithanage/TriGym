@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,13 +15,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.charith.trigym.Convertors.CircleTransform;
+import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -206,7 +208,7 @@ public class MemberViewActivity extends AppCompatActivity {
         btnPaymentHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MemberViewActivity.this,PaymentListActivity.class);
+                Intent intent=new Intent(MemberViewActivity.this, PaymentListActivity.class);
                 intent.putExtra("memberIdString",String.valueOf(member.getId()));
                 startActivity(intent);
             }

@@ -92,19 +92,59 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public static final String CREATE_MEMBER_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEMBERS + "("
-            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_MEMBERSHIP_NO + " INTEGER ," + KEY_MEMBER_RECEIPT_NO + " INTEGER ," + KEY_MEMBER_ADDRESS_ID + " INTEGER ," + KEY_FIRST_NAME + " TEXT ," + KEY_SURNAME + " TEXT ," + KEY_LAST_NAME + " TEXT ," + KEY_TYPE + " TEXT ," + KEY_MARRIED_STATUS + " TEXT ," + KEY_MOBILE_1 + " INTEGER,"
-            + KEY_MOBILE_2 + " INTEGER," + KEY_NIC + " TEXT," + KEY_DOB + " BLOB," + KEY_AGE + " INTEGER," + KEY_GENDER + " TEXT," + KEY_HEIGHT
-            + " INTEGER," + KEY_WEIGHT + " INTEGER," + KEY_PROFILE_IMAGE_URL + " TEXT," + KEY_COMMENT + " TEXT," + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT," + KEY_MEMBER_VALID_STATUS + " BOOLEAN," + KEY_MEMBERSHIP_TYPE + " TEXT," + KEY_LAST_PAYMENT_DATE + " TEXT," + KEY_DIABETES + " BOOLEAN," +
-            KEY_CHOLESTEROL + " BOOLEAN," + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_LOW_BLOOD_PRESSURE + " INTEGER DEFAULT 0," + KEY_HEART_PROBLEM + " INTEGER DEFAULT 0," + KEY_CHEST_PAIN + " INTEGER DEFAULT 0," + KEY_HEART_ATTACK + " INTEGER DEFAULT 0," + KEY_ASTHMA + " INTEGER DEFAULT 0," + KEY_FAINTING + " INTEGER DEFAULT 0,"
-            + KEY_BACK_PAIN + " INTEGER DEFAULT 0," + KEY_MEDICATION + " INTEGER DEFAULT 0," + KEY_OTHER_ILLNESS + " INTEGER DEFAULT 0," + KEY_SWOLLEN + " INTEGER DEFAULT 0," + KEY_ARTHRITIS + " INTEGER DEFAULT 0," + KEY_HERNIA + " INTEGER DEFAULT 0" + ")";
+            + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_MEMBERSHIP_NO + " INTEGER ,"
+            + KEY_MEMBER_RECEIPT_NO + " INTEGER ,"
+            + KEY_MEMBER_ADDRESS_ID + " INTEGER ,"
+            + KEY_FIRST_NAME + " TEXT ,"
+            + KEY_SURNAME + " TEXT ,"
+            + KEY_LAST_NAME + " TEXT ,"
+            + KEY_TYPE + " TEXT ,"
+            + KEY_MARRIED_STATUS + " TEXT ,"
+            + KEY_MOBILE_1 + " INTEGER,"
+            + KEY_MOBILE_2 + " INTEGER,"
+            + KEY_NIC + " TEXT,"
+            + KEY_DOB + " BLOB,"
+            + KEY_AGE + " INTEGER,"
+            + KEY_GENDER + " TEXT,"
+            + KEY_HEIGHT + " INTEGER,"
+            + KEY_WEIGHT + " INTEGER,"
+            + KEY_PROFILE_IMAGE_URL + " TEXT,"
+            + KEY_COMMENT + " TEXT,"
+            + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
+            + KEY_MEMBER_VALID_STATUS + " BOOLEAN,"
+            + KEY_MEMBERSHIP_TYPE + " TEXT,"
+            + KEY_LAST_PAYMENT_DATE + " TEXT,"
+            + KEY_DIABETES + " BOOLEAN,"
+            + KEY_CHOLESTEROL + " BOOLEAN,"
+            + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0,"
+            + KEY_LOW_BLOOD_PRESSURE + " INTEGER DEFAULT 0,"
+            + KEY_HEART_PROBLEM + " INTEGER DEFAULT 0,"
+            + KEY_CHEST_PAIN + " INTEGER DEFAULT 0,"
+            + KEY_HEART_ATTACK + " INTEGER DEFAULT 0,"
+            + KEY_ASTHMA + " INTEGER DEFAULT 0,"
+            + KEY_FAINTING + " INTEGER DEFAULT 0,"
+            + KEY_BACK_PAIN + " INTEGER DEFAULT 0,"
+            + KEY_MEDICATION + " INTEGER DEFAULT 0,"
+            + KEY_OTHER_ILLNESS + " INTEGER DEFAULT 0,"
+            + KEY_SWOLLEN + " INTEGER DEFAULT 0,"
+            + KEY_ARTHRITIS + " INTEGER DEFAULT 0,"
+            + KEY_HERNIA + " INTEGER DEFAULT 0" + ")";
 
     public static final String CREATE_TABLE_ADDRESSES = "CREATE TABLE IF NOT EXISTS " + TABLE_ADDRESSES + "("
-            + KEY_ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_ADDRESS_LINE_1 + " TEXT ," + KEY_ADDRESS_LINE_2 + " TEXT,"
-            + KEY_ADDRESS_LINE_3 + " TEXT," + KEY_ADDRESS_LINE_CITY + " TEXT" + ")";
+            + KEY_ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_ADDRESS_LINE_1 + " TEXT ,"
+            + KEY_ADDRESS_LINE_2 + " TEXT,"
+            + KEY_ADDRESS_LINE_3 + " TEXT,"
+            + KEY_ADDRESS_LINE_CITY + " TEXT" + ")";
 
     public static final String CREATE_TABLE_PAYMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_PAYMENT + "("
-            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PAYMENT_AMOUNT + " INTEGER ," + KEY_LAST_PAYMENT_DATE + " TEXT," + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
-            + KEY_MEMBER_ID + " INTEGER," + KEY_MEMBERSHIP_TYPE + " TEXT" + ")";
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_PAYMENT_AMOUNT + " INTEGER ,"
+            + KEY_LAST_PAYMENT_DATE + " TEXT,"
+            + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
+            + KEY_MEMBER_ID + " INTEGER,"
+            + KEY_MEMBERSHIP_TYPE + " TEXT" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -160,7 +200,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_MEMBERSHIP_TYPE, newMember.getMembershipType());
         values.put(KEY_LAST_PAYMENT_DATE, newMember.getLastPaymentDate());
         values.put(KEY_MEMBERSHIP_EXPIRY_DATE, getMembershipExpiryDate(newMember));
-        values.put(KEY_MEMBER_VALID_STATUS,newMember.getValidStatus());
+        values.put(KEY_MEMBER_VALID_STATUS, newMember.getValidStatus());
         values.put(KEY_DIABETES, newMember.getDiabetes());
         values.put(KEY_CHOLESTEROL, newMember.getCholesterol());
         values.put(KEY_HIGH_BLOOD_PRESSURE, newMember.getHighBloodPressure());
@@ -234,11 +274,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Member getMemberById(String memberId) {
-     Member member=new Member();
+        Member member = new Member();
         // Select All Query
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor= db.query(TABLE_MEMBERS, null, KEY_MEMBER_ID + "=?", new String[]{memberId}, null, null, null);
+        Cursor cursor = db.query(TABLE_MEMBERS, null, KEY_MEMBER_ID + "=?", new String[]{memberId}, null, null, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {

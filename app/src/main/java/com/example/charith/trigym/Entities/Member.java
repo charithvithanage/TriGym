@@ -52,6 +52,15 @@ public class Member {
     Boolean arthritis;
     Boolean hernia;
 
+    boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public Boolean getValidStatus() {
         return validStatus;

@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.charith.trigym.Entities.Payment;
+import com.example.charith.trigym.R;
 
 import java.util.List;
 

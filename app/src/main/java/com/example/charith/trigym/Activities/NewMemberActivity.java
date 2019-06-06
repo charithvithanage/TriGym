@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Activities;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,9 +32,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.charith.trigym.Config;
+import com.example.charith.trigym.Convertors.CircleTransform;
+import com.example.charith.trigym.Convertors.DateTimeSerializer;
+import com.example.charith.trigym.Convertors.JSONParser;
 import com.example.charith.trigym.DB.DatabaseHandler;
+import com.example.charith.trigym.DatePickerFragment;
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -41,9 +49,13 @@ import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class NewMemberActivity extends AppCompatActivity {
 
@@ -89,10 +101,15 @@ public class NewMemberActivity extends AppCompatActivity {
 
     ImageButton backBtn;
 
+    JSONParser jsonParser = new JSONParser();
+
+    Address address;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_member);
+
 
         navigationType = getIntent().getStringExtra("navigationType");
         memberId = getIntent().getStringExtra("memberId");
@@ -101,6 +118,7 @@ public class NewMemberActivity extends AppCompatActivity {
 
         init();
     }
+
 
     private void init() {
         member = new Member();
@@ -159,7 +177,7 @@ public class NewMemberActivity extends AppCompatActivity {
             }
         } else {
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-            setTempValues();
+//            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +272,9 @@ public class NewMemberActivity extends AppCompatActivity {
             etGuardianRelationship.setText(member.getGuardianRelationship());
         }
 
-        Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+        if (member.getProfileImage() != null) {
+            Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+        }
 
 
         etHeight.setText(String.valueOf(member.getHeight()));
@@ -329,28 +349,33 @@ public class NewMemberActivity extends AppCompatActivity {
         RadioButton gender = findViewById(selectedGenderRadioButton);
         RadioButton marriedStatus = findViewById(selectedMarriedStatusRadioButton);
 
-        member.setMembershipNo(etMembershipNo.getText().toString());
-        member.setMembershipRecieptNo(etMembershipReciptNo.getText().toString());
+        if (gender.getText() != null) {
+            member.setGender(gender.getText().toString());
+        }
 
-        member.setGender(gender.getText().toString());
         member.setMarriedStatus(marriedStatus.getText().toString());
-
-        DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
-        Integer addressId;
-
-        Address address = new Address();
-        address.setLine1(etLine1.getText().toString());
-        address.setLine2(etLine2.getText().toString());
-        address.setLine3(etLine3.getText().toString());
-        address.setCity(etCity.getText().toString());
-
-        addressId = databaseHandler.addAddress(address).intValue();
-
-        member.setFirstName(etFirstName.getText().toString());
-        member.setLastName(etLastName.getText().toString());
+        member.setEmail(etEmail.getText().toString());
         member.setSurName(etSurName.getText().toString());
 
-        member.setEmail(etEmail.getText().toString());
+
+
+
+        if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
+            member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
+        }
+
+
+        address = new Address();
+
+        if (fileProvider != null) {
+            member.setProfileImage(fileProvider.toString());
+        }
+
+        member.setMembershipNo(etMembershipNo.getText().toString());
+        member.setMembershipRecieptNo(etMembershipReciptNo.getText().toString());
+        member.setFirstName(etFirstName.getText().toString());
+        member.setLastName(etLastName.getText().toString());
+
 
         if (member.getType().equals("Student")) {
 
@@ -360,27 +385,23 @@ public class NewMemberActivity extends AppCompatActivity {
 
         }
 
-        member.setAddress(address);
-        member.setAddressId(address.getId());
+        address.setLine1(etLine1.getText().toString());
 
-        member.setHeight(Float.valueOf(etHeight.getText().toString()));
-        member.setWeight(Float.valueOf(etWeight.getText().toString()));
+        if (!TextUtils.isEmpty(etHeight.getText().toString())) {
+            member.setHeight(Float.valueOf(etHeight.getText().toString()));
+
+        }
+
+        if (!TextUtils.isEmpty(etWeight.getText().toString())) {
+            member.setWeight(Float.valueOf(etWeight.getText().toString()));
+
+        }
         member.setNIC(etNIC.getText().toString());
 
         if (!TextUtils.isEmpty(etMobile1.getText().toString())) {
             member.setMobile1(Integer.valueOf(etMobile1.getText().toString()));
         }
 
-        if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
-            member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
-        }
-
-
-        if (fileProvider != null) {
-            member.setProfileImage(fileProvider.toString());
-        }
-
-        member.setAddressId(addressId);
 
 
         if (navigationType != null) {
@@ -391,23 +412,101 @@ public class NewMemberActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-                intent.putExtra("memberString", gson.toJson(member));
-                intent.putExtra("navigationType", "new");
 
-                startActivity(intent);
+                navigateToMemberBioActivity();
+
             }
         } else {
+            navigateToMemberBioActivity();
+        }
+
+
+//        databaseHandler.addMember(member, addressId);
+    }
+
+    private void navigateToMemberBioActivity() {
+
+        if (member.getMembershipNo() != null && member.getMembershipRecieptNo() != null && member.getProfileImage() != null && member.getMobile1() != null &&
+                member.getFirstName() != null && member.getSurName() != null && member.getNIC() != null && member.getDOB() != null && member.getHeight() != null && member.getWeight() != null&&address.getLine1()!=null) {
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
+            Integer addressId;
+
+            address.setLine2(etLine2.getText().toString());
+            address.setLine3(etLine3.getText().toString());
+            address.setCity(etCity.getText().toString());
+
+            addressId = databaseHandler.addAddress(address).intValue();
+
+            member.setAddress(address);
+            member.setAddressId(addressId);
+            address.setId(addressId);
+
+            saveAddressToServer(address);
+
+
+
+
 
             Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
             intent.putExtra("memberString", gson.toJson(member));
             intent.putExtra("navigationType", "new");
 
             startActivity(intent);
+
+
+        } else {
+            if(member.getMembershipNo() == null){
+                etMembershipNo.setError(getString(R.string.empty_field_alert));
+            }
+
+            if(member.getMembershipRecieptNo() == null){
+                etMembershipReciptNo.setError(getString(R.string.empty_field_alert));
+            }
+
+            if(member.getProfileImage() == null){
+                Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.capture_image_alert));
+            }else {
+                if(member.getDOB() == null){
+                    Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.not_dob_selected_alert));
+
+                }
+            }
+
+            if(member.getMobile1() == null){
+                etMobile1.setError(getString(R.string.empty_field_alert));
+            }
+
+            if(member.getFirstName() == null){
+                etFirstName.setError(getString(R.string.empty_field_alert));
+            }
+            if(member.getSurName() == null){
+                etSurName.setError(getString(R.string.empty_field_alert));
+            }
+            if(member.getNIC() == null){
+                etNIC.setError(getString(R.string.empty_field_alert));
+            }
+
+            if(member.getHeight() == null){
+                etHeight.setError(getString(R.string.empty_field_alert));
+            }
+            if(member.getWeight() == null){
+                etWeight.setError(getString(R.string.empty_field_alert));
+            }
+
+            if(address.getLine1() == null){
+                etLine1.setError(getString(R.string.empty_field_alert));
+            }
+
         }
 
 
-//        databaseHandler.addMember(member, addressId);
+    }
+
+    private void saveAddressToServer(Address address) {
+
+        new SaveAddressToServerAsync(address).execute();
+
     }
 
     private Integer calculateAge(DateTime dob) {
@@ -587,4 +686,44 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
 
+    private class SaveAddressToServerAsync extends AsyncTask<Void, Void, JSONObject> {
+
+        Address address;
+
+        public SaveAddressToServerAsync(Address address) {
+            this.address = address;
+        }
+
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+
+            String URL = Config.ServerUrl + Config.save_address_url;
+
+            ArrayList params = new ArrayList();
+            params.add(new BasicNameValuePair("id", String.valueOf(address.getId())));
+            params.add(new BasicNameValuePair("line1", address.getLine1()));
+            params.add(new BasicNameValuePair("line2", address.getLine2()));
+            params.add(new BasicNameValuePair("line3", address.getLine3()));
+            params.add(new BasicNameValuePair("city", address.getCity()));
+
+            JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
+
+
+            return json;
+        }
+
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            try {
+                if (jsonObject != null) {
+                    Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unable to retrieve any data from server", Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

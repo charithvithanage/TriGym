@@ -34,4 +34,8 @@
     <string name="three_month_fee">4500</string>
     <string name="six_month_fee">6000</string>
     <string name="one_year_fee">12000</string>
+    <string name="membership_expire_alert">Your membership is expired. Please renew the membership</string>
+    <string name="empty_field_alert">Enter value</string>
+    <string name="capture_image_alert">Please get a photo</string>
+    <string name="not_dob_selected_alert">Select DOB</string>
 </resources>

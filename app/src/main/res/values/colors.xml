@@ -34,5 +34,6 @@
     <color name="eventSeperatorColor">#FFF6F6F6</color>
 
     <color name="darkyellow">#ff9500</color>
+    <color name="select_bg">#0a007aff</color>
 
 </resources>

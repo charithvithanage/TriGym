@@ -1,8 +1,7 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,15 +16,17 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
+import com.example.charith.trigym.DatePickerFragment;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
+import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
-
-import java.util.List;
 
 public class MemberBioActivity extends AppCompatActivity {
 

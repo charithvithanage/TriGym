@@ -1,11 +1,10 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Activities;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +21,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 
+import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Interfaces.DialogListner;
+import com.example.charith.trigym.Adapters.MemberAdapter;
+import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,6 +46,11 @@ public class MainActivity extends AppCompatActivity
     Member member;
     MemberAdapter memberAdapter;
     SearchView searchView;
+
+    private static final int SMS_SEND_REQUEST_CODE = 200;
+    List<Member> allMembers = null;
+    List<Member> inActiveMembers = null;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -120,7 +129,7 @@ public class MainActivity extends AppCompatActivity
                 dialog.cancel();
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Adult");
+                intent.putExtra("memberType", "Adult");
                 startActivity(intent);
 
 
@@ -133,7 +142,7 @@ public class MainActivity extends AppCompatActivity
                 dialog.cancel();
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Student");
+                intent.putExtra("memberType", "Student");
                 startActivity(intent);
             }
         });
@@ -145,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Arobicks");
+                intent.putExtra("memberType", "Arobicks");
                 startActivity(intent);
             }
         });
@@ -156,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                 dialog.cancel();
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Yoga");
+                intent.putExtra("memberType", "Yoga");
                 startActivity(intent);
 
             }
@@ -169,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
 
                 Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-                intent.putExtra("memberType","Zumba");
+                intent.putExtra("memberType", "Zumba");
                 startActivity(intent);
             }
         });
@@ -200,9 +209,9 @@ public class MainActivity extends AppCompatActivity
 
     private void loadMemberList() {
 
-        DatabaseHandler databaseHandler=new DatabaseHandler(MainActivity.this);
-        memberList=databaseHandler.getAllMembers();
-        memberAdapter=new MemberAdapter(MainActivity.this,memberList);
+        DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
+        memberList = databaseHandler.getAllMembers();
+        memberAdapter = new MemberAdapter(MainActivity.this, memberList);
         memberListRecycleView.setAdapter(memberAdapter);
 
 
@@ -248,6 +257,36 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+            allMembers = databaseHandler.getAllMembers();
+
+            if (allMembers != null || allMembers.size() != 0) {
+                inActiveMembers = Utils.getInavtiveUsers(getApplicationContext(), allMembers);
+            }
+
+            Utils.displayInactiveUserList(MainActivity.this, inActiveMembers, new DialogListner() {
+                @Override
+                public void onSucces(Dialog dialog, String numberList) {
+                    dialog.dismiss();
+
+                    navigationView.getMenu().findItem(R.id.nav_camera).setCheckable(false);
+
+
+                    Intent intentMessage = new Intent(android.content.Intent.ACTION_VIEW);
+                    intentMessage.putExtra("address", numberList.toString());
+                    intentMessage.putExtra("sms_body", getString(R.string.membership_expire_alert));
+                    intentMessage.setType("vnd.android-dir/mms-sms");
+                    startActivityForResult(intentMessage, SMS_SEND_REQUEST_CODE);
+
+                }
+
+                @Override
+                public void onCancel(Dialog dialog) {
+                    dialog.dismiss();
+                }
+            });
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -263,5 +302,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SMS_SEND_REQUEST_CODE) {
+
+            navigationView.getMenu().findItem(R.id.nav_camera).setCheckable(false);
+
+                    }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Adapters;
 
 import android.Manifest;
 import android.content.Context;
@@ -19,8 +19,13 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.example.charith.trigym.Convertors.CircleTransform;
+import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Activities.MemberViewActivity;
+import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -69,7 +74,10 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             viewHolder.memberStatus.setBackgroundResource(R.drawable.invalid_bg);
         }
 
-        Picasso.get().load(Uri.parse(memberObj.getProfileImage())).transform(new CircleTransform()).into(viewHolder.imageProfile);
+        if(memberObj.getProfileImage()!=null){
+            Picasso.get().load(Uri.parse(memberObj.getProfileImage())).transform(new CircleTransform()).into(viewHolder.imageProfile);
+        }
+
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper));

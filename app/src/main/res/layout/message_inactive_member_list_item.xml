@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/message_participant_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <RelativeLayout
+
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/image_border">
+
+            <ImageView
+                android:id="@+id/imageProfile"
+                android:layout_width="@dimen/contactLawyerImageWidth"
+                android:layout_height="@dimen/contactLawyerImageWidth"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/todoString"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/client_phone_icon" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/charcoal"
+                android:textSize="@dimen/listViewTitleFontSize" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/platinum"
+                android:textSize="@dimen/listViewContentFontSize" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/checkbox"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="false"
+            android:layout_centerVertical="false"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/uncheck_bg"></ImageView>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/eventSeperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/contactListMargin"
+        android:background="@color/eventSeperatorColor" />
+</LinearLayout>
