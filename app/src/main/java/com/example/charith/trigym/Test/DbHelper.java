@@ -48,16 +48,17 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public  void updateLocalDatabase(DbHelper dbHelper, String name, int sync_status){
+    public  void updateLocalDatabase(String name,int sync_status,SQLiteDatabase database){
 
-        SQLiteDatabase database=dbHelper.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase=this.getWritableDatabase();
+
         ContentValues contentValues=new ContentValues();
         contentValues.put(DbContact.SYNC_STATUS,sync_status);
 
-        String selection=DbContact.TABLE_NAME+" LIKE ?= ";
+        String selection=DbContact.NAME+" LIKE ?";
         String[] selection_args={name};
 
-        database.update(DbContact.TABLE_NAME,contentValues,selection,selection_args);
+        sqLiteDatabase.update(DbContact.TABLE_NAME,contentValues,selection,selection_args);
     }
 
 

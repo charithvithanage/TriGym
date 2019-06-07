@@ -84,7 +84,11 @@ public class TestActivity extends AppCompatActivity {
                                         String responseString = jsonObject.getString("response");
 
                                         if (responseString.equals("OK")) {
-                                            dbHelper.updateLocalDatabase(dbHelper,name, DbContact.SYNC_STATUS_OK);
+                                            dbHelper.updateLocalDatabase(name, DbContact.SYNC_STATUS_OK, database);
+
+                                            
+
+                                            readFromLocalStorage();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
