@@ -177,7 +177,7 @@ public class NewMemberActivity extends AppCompatActivity {
             }
         } else {
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-//            setTempValues();
+            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -448,11 +448,6 @@ public class NewMemberActivity extends AppCompatActivity {
 
 
 
-            Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-            intent.putExtra("memberString", gson.toJson(member));
-            intent.putExtra("navigationType", "new");
-
-            startActivity(intent);
 
 
         } else {
@@ -717,6 +712,12 @@ public class NewMemberActivity extends AppCompatActivity {
         protected void onPostExecute(JSONObject jsonObject) {
             try {
                 if (jsonObject != null) {
+
+                    Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+                    intent.putExtra("memberString", gson.toJson(member));
+                    intent.putExtra("navigationType", "new");
+
+                    startActivity(intent);
                     Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Unable to retrieve any data from server", Toast.LENGTH_LONG).show();
