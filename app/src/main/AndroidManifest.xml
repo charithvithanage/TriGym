@@ -20,7 +20,7 @@
         android:name=".MyApplication"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Test.TestActivity"
+            android:name=".Splash"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

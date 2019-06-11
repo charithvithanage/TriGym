@@ -168,6 +168,7 @@ public class NewMemberActivity extends AppCompatActivity {
         btnEdit = findViewById(R.id.btnEdit);
         profileImage = findViewById(R.id.profileImage);
 
+
         if (navigationType != null) {
             if (navigationType.equals("edit")) {
                 tvTitle.setText(getResources().getString(R.string.edit_user_title));
@@ -176,8 +177,11 @@ public class NewMemberActivity extends AppCompatActivity {
                 setUserValues();
             }
         } else {
+            DatabaseHandler db = new DatabaseHandler(this);
+            etMembershipNo.setText(getMembershipNo(memberType));
+            etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-            setTempValues();
+//            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +235,20 @@ public class NewMemberActivity extends AppCompatActivity {
             }
         });
     }
+
+    private String getMembershipNo(String memberType) {
+        DatabaseHandler db = new DatabaseHandler(this);
+        String membershipNo = memberType.substring(0, 1) + String.valueOf(1 + db.getMembersCount(NewMemberActivity.this));
+
+        return membershipNo;
+    }
+
+    private String getReciptNo() {
+        DatabaseHandler db = new DatabaseHandler(this);
+
+        return "R" + String.valueOf(1+,db.getMembersCount(this));
+    }
+
 
     private void setUserValues() {
 
@@ -358,8 +376,6 @@ public class NewMemberActivity extends AppCompatActivity {
         member.setSurName(etSurName.getText().toString());
 
 
-
-
         if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
             member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
         }
@@ -403,7 +419,6 @@ public class NewMemberActivity extends AppCompatActivity {
         }
 
 
-
         if (navigationType != null) {
             if (navigationType.equals("edit")) {
                 Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
@@ -427,7 +442,7 @@ public class NewMemberActivity extends AppCompatActivity {
     private void navigateToMemberBioActivity() {
 
         if (member.getMembershipNo() != null && member.getMembershipRecieptNo() != null && member.getProfileImage() != null && member.getMobile1() != null &&
-                member.getFirstName() != null && member.getSurName() != null && member.getNIC() != null && member.getDOB() != null && member.getHeight() != null && member.getWeight() != null&&address.getLine1()!=null) {
+                member.getFirstName() != null && member.getSurName() != null && member.getNIC() != null && member.getDOB() != null && member.getHeight() != null && member.getWeight() != null && address.getLine1() != null) {
 
             DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
             Integer addressId;
@@ -445,51 +460,46 @@ public class NewMemberActivity extends AppCompatActivity {
             saveAddressToServer(address);
 
 
-
-
-
-
-
         } else {
-            if(member.getMembershipNo() == null){
+            if (member.getMembershipNo() == null) {
                 etMembershipNo.setError(getString(R.string.empty_field_alert));
             }
 
-            if(member.getMembershipRecieptNo() == null){
+            if (member.getMembershipRecieptNo() == null) {
                 etMembershipReciptNo.setError(getString(R.string.empty_field_alert));
             }
 
-            if(member.getProfileImage() == null){
-                Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.capture_image_alert));
-            }else {
-                if(member.getDOB() == null){
-                    Utils.showWarningMessage(NewMemberActivity.this,getString(R.string.not_dob_selected_alert));
+            if (member.getProfileImage() == null) {
+                Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.capture_image_alert));
+            } else {
+                if (member.getDOB() == null) {
+                    Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.not_dob_selected_alert));
 
                 }
             }
 
-            if(member.getMobile1() == null){
+            if (member.getMobile1() == null) {
                 etMobile1.setError(getString(R.string.empty_field_alert));
             }
 
-            if(member.getFirstName() == null){
+            if (member.getFirstName() == null) {
                 etFirstName.setError(getString(R.string.empty_field_alert));
             }
-            if(member.getSurName() == null){
+            if (member.getSurName() == null) {
                 etSurName.setError(getString(R.string.empty_field_alert));
             }
-            if(member.getNIC() == null){
+            if (member.getNIC() == null) {
                 etNIC.setError(getString(R.string.empty_field_alert));
             }
 
-            if(member.getHeight() == null){
+            if (member.getHeight() == null) {
                 etHeight.setError(getString(R.string.empty_field_alert));
             }
-            if(member.getWeight() == null){
+            if (member.getWeight() == null) {
                 etWeight.setError(getString(R.string.empty_field_alert));
             }
 
-            if(address.getLine1() == null){
+            if (address.getLine1() == null) {
                 etLine1.setError(getString(R.string.empty_field_alert));
             }
 
@@ -499,8 +509,12 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void saveAddressToServer(Address address) {
+        Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+        intent.putExtra("memberString", gson.toJson(member));
+        intent.putExtra("navigationType", "new");
 
-        new SaveAddressToServerAsync(address).execute();
+        startActivity(intent);
+//        new SaveAddressToServerAsync(address).execute();
 
     }
 

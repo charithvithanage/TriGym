@@ -16,45 +16,49 @@ import java.util.List;
 
 public class Splash extends AppCompatActivity {
 
-    private static final int SMS_SEND_REQUEST_CODE =200 ;
-    List<Member> allMembers=null;
-    List<Member> inActiveMembers=null;
+    private static final int SMS_SEND_REQUEST_CODE = 200;
+    List<Member> allMembers = null;
+    List<Member> inActiveMembers = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         allMembers = databaseHandler.getAllMembers();
 
-        if(allMembers!=null||allMembers.size()!=0){
-            inActiveMembers= Utils.getInavtiveUsers(getApplicationContext(),allMembers);
+        if (allMembers != null || allMembers.size() != 0) {
+            inActiveMembers = Utils.getInavtiveUsers(getApplicationContext(), allMembers);
         }
 
-        Utils.displayInactiveUserList(Splash.this, inActiveMembers, new DialogListner() {
-            @Override
-            public void onSucces(Dialog dialog,String numberList) {
-                dialog.dismiss();
+        if (allMembers.size() == 0) {
+            Intent i = new Intent(Splash.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            Utils.displayInactiveUserList(Splash.this, inActiveMembers, new DialogListner() {
+                @Override
+                public void onSucces(Dialog dialog, String numberList) {
+                    dialog.dismiss();
 
-                Intent intentMessage = new Intent(android.content.Intent.ACTION_VIEW);
-                intentMessage.putExtra("address", numberList.toString());
-                intentMessage.putExtra("sms_body", getString(R.string.membership_expire_alert));
-                intentMessage.setType("vnd.android-dir/mms-sms");
-                startActivityForResult(intentMessage,SMS_SEND_REQUEST_CODE);
+                    Intent intentMessage = new Intent(android.content.Intent.ACTION_VIEW);
+                    intentMessage.putExtra("address", numberList.toString());
+                    intentMessage.putExtra("sms_body", getString(R.string.membership_expire_alert));
+                    intentMessage.setType("vnd.android-dir/mms-sms");
+                    startActivityForResult(intentMessage, SMS_SEND_REQUEST_CODE);
 
-            }
+                }
 
-            @Override
-            public void onCancel(Dialog dialog) {
-                dialog.dismiss();
-                Intent i = new Intent(Splash.this, MainActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
+                @Override
+                public void onCancel(Dialog dialog) {
+                    dialog.dismiss();
+                    Intent i = new Intent(Splash.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            });
+        }
 
 
         Toast.makeText(getApplicationContext(), "Start", Toast.LENGTH_SHORT).show();
@@ -65,7 +69,7 @@ public class Splash extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==SMS_SEND_REQUEST_CODE){
+        if (requestCode == SMS_SEND_REQUEST_CODE) {
             Intent i = new Intent(Splash.this, MainActivity.class);
             startActivity(i);
             finish();

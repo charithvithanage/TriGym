@@ -3,6 +3,7 @@ package com.example.charith.trigym.DB;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -17,6 +18,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.charith.trigym.Test.DbContact.TABLE_NAME;
 import static com.example.charith.trigym.Utils.getMembershipExpiryDate;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -529,6 +531,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_MEMBERSHIP_EXPIRY_DATE, payment.getPaymentExpiryDate());
 
         databass.insert(TABLE_PAYMENT, null, values);
+    }
+
+
+    public long getMembersCount(Context context) {
+        SQLiteDatabase db = getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(db, TABLE_MEMBERS);
+        db.close();
+        return count;
     }
 
 
