@@ -38,4 +38,11 @@
     <string name="empty_field_alert">Enter value</string>
     <string name="capture_image_alert">Please get a photo</string>
     <string name="not_dob_selected_alert">Select DOB</string>
+    <string name="deactivate_user_string">Deactivate</string>
+    <string name="no_inactive_users_alert">No Inactive Users</string>
+    <string name="payment_date_not_select_warning">Select payment date</string>
+    <string name="navigation_error_warning">Navigation error please navigate to main screen</string>
+    <string name="no_email_warning">No email for selected member</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="no_permission_granted">No permission granted. You can\'t send sms and get call</string>
 </resources>

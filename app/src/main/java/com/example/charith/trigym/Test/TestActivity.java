@@ -86,7 +86,7 @@ public class TestActivity extends AppCompatActivity {
                                         if (responseString.equals("OK")) {
                                             dbHelper.updateLocalDatabase(name, DbContact.SYNC_STATUS_OK, database);
 
-                                            
+
 
                                             readFromLocalStorage();
                                         }

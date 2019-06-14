@@ -203,14 +203,19 @@
                     android:textColor="@color/platinum"
                     android:textSize="@dimen/listViewContentFontSize" />
 
-           </LinearLayout>
-            <!--<ImageView-->
-            <!--android:id="@+id/imgBlueNext"-->
-            <!--android:layout_width="@dimen/contactlistNextButtonSize"-->
-            <!--android:layout_height="@dimen/nextButtonSize"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_marginRight="@dimen/nextbtn_margin_right"-->
-            <!--android:src="@drawable/blue_next_arrow" />-->
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMemberStatus"
+                android:layout_width="@dimen/memberStatusButtonWidth"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/invalid_bg"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:src="@drawable/invalid_bg"
+                android:text="Activate" />
         </LinearLayout>
     </com.daimajia.swipe.SwipeLayout>
 

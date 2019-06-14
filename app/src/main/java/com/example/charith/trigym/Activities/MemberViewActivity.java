@@ -12,9 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +34,7 @@ import org.joda.time.DateTime;
 
 public class MemberViewActivity extends AppCompatActivity {
 
-    TextView tvName, tvMobile1, tvMobile2, tvEmail, tvMarriedStatus, tvAddress, tvNIC, tvDOB, tvAge, tvGender, tvHeight, tvWeight, tvComments;
+    TextView tvName, tvMobile1, tvMobile2, tvEmail, tvMarriedStatus, tvAddress, tvNIC, tvDOB, tvAge, tvGender, tvHeight, tvWeight, tvComments,tvType,tvCategory;
     TextView tvDiabetes, tvHighCholesterol, tvHighBloodPressure, tvLowBloodPressure, tvHeartProblem, tvChestPain, tvHeartAttack, tvBreathingProblem, tvFainting, tvBackPain;
     TextView tvMedication, tvIllness, tvPainfulJoints, tvArthritis, tvHernia;
     DatabaseHandler databaseHandler;
@@ -52,6 +54,7 @@ public class MemberViewActivity extends AppCompatActivity {
     ImageView profileImage;
 
     ImageButton backBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,7 @@ public class MemberViewActivity extends AppCompatActivity {
 
 
     private void init() {
+
         backBtn = findViewById(R.id.backBtn);
 
         profileImage = findViewById(R.id.profileImage);
@@ -137,6 +141,8 @@ public class MemberViewActivity extends AppCompatActivity {
         tvHeight = findViewById(R.id.tvHeight);
         tvWeight = findViewById(R.id.tvWeight);
         tvComments = findViewById(R.id.tvComments);
+        tvType = findViewById(R.id.tvType);
+        tvCategory = findViewById(R.id.tvCategory);
 
         tvDiabetes = findViewById(R.id.tvDiabetes);
         tvHighCholesterol = findViewById(R.id.tvHighCholesterol);
@@ -282,8 +288,14 @@ public class MemberViewActivity extends AppCompatActivity {
     }
 
     private void setValues() {
+
+
+
         tvName.setText(member.getFirstName() + " " + member.getLastName() + " " + member.getSurName());
         tvAddress.setText(getAddress(address));
+
+        tvCategory.setText(member.getCategory());
+        tvType.setText(member.getType());
 
         if (member.getMobile1() != null || member.getMobile1() != 0) {
             tvMobile1.setText(String.valueOf(member.getMobile1()));
@@ -291,9 +303,12 @@ public class MemberViewActivity extends AppCompatActivity {
             mobile1Layout.setVisibility(View.GONE);
         }
 
-        if (member.getMobile2() != null || member.getMobile2() != 0) {
-            tvMobile2.setText(String.valueOf(member.getMobile2()));
-
+        if (member.getMobile2() != null) {
+            if( member.getMobile2() != 0){
+                tvMobile2.setText(String.valueOf(member.getMobile2()));
+            }else {
+                mobile2Layout.setVisibility(View.GONE);
+            }
         } else {
             mobile2Layout.setVisibility(View.GONE);
         }
@@ -314,8 +329,8 @@ public class MemberViewActivity extends AppCompatActivity {
         tvAge.setText(String.valueOf(member.getAge()));
         tvGender.setText(member.getGender());
         tvMarriedStatus.setText(member.getMarriedStatus());
-        tvHeight.setText(String.valueOf(member.getHeight() + " cm"));
-        tvWeight.setText(String.valueOf(member.getWeight() + " kg"));
+        tvHeight.setText(member.getHeight() + " cm");
+        tvWeight.setText(member.getWeight() + " kg");
 
         tvDiabetes.setText(checkCondition(member.getDiabetes()));
         tvHighCholesterol.setText(checkCondition(member.getCholesterol()));

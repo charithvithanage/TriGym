@@ -6,19 +6,14 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
-import com.example.charith.trigym.Utils;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.charith.trigym.Test.DbContact.TABLE_NAME;
 import static com.example.charith.trigym.Utils.getMembershipExpiryDate;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -48,6 +43,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_MEMBER_ID = "member_id";
     private static final String KEY_FIRST_NAME = "member_first_name";
     private static final String KEY_TYPE = "type";
+    private static final String KEY_CATEGORY = "category";
     private static final String KEY_LAST_NAME = "member_last_name";
     private static final String KEY_SURNAME = "member_surname";
     private static final String KEY_MOBILE_1 = "member_mobile_1";
@@ -66,6 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LAST_PAYMENT_DATE = "last_payment_date";
     private static final String KEY_MEMBERSHIP_EXPIRY_DATE = "membership_expiry_date";
     private static final String KEY_MEMBER_VALID_STATUS = "member_valid_status";
+    private static final String KEY_MEMBER_IS_ACTIVE = "member_active_status";
 
     private static final String KEY_ADDRESS_ID = "address_id";
     private static final String KEY_ADDRESS_LINE_1 = "address_line_1";
@@ -102,6 +99,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_SURNAME + " TEXT ,"
             + KEY_LAST_NAME + " TEXT ,"
             + KEY_TYPE + " TEXT ,"
+            + KEY_CATEGORY + " TEXT ,"
             + KEY_MARRIED_STATUS + " TEXT ,"
             + KEY_MOBILE_1 + " INTEGER,"
             + KEY_MOBILE_2 + " INTEGER,"
@@ -117,6 +115,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_MEMBER_VALID_STATUS + " BOOLEAN,"
             + KEY_MEMBERSHIP_TYPE + " TEXT,"
             + KEY_LAST_PAYMENT_DATE + " TEXT,"
+            + KEY_MEMBER_IS_ACTIVE + " BOOLEAN,"
             + KEY_DIABETES + " BOOLEAN,"
             + KEY_CHOLESTEROL + " BOOLEAN,"
             + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0,"
@@ -181,150 +180,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_MEMBER_ID, newMember.getId());
-        values.put(KEY_MEMBERSHIP_NO, newMember.getMembershipNo());
-        values.put(KEY_MEMBER_RECEIPT_NO, newMember.getMembershipRecieptNo());
-        values.put(KEY_MEMBER_ADDRESS_ID, newMember.getAddressId());
-        values.put(KEY_FIRST_NAME, newMember.getFirstName());
-        values.put(KEY_SURNAME, newMember.getSurName());
-        values.put(KEY_LAST_NAME, newMember.getLastName());
-        values.put(KEY_TYPE, newMember.getType());
-        values.put(KEY_MOBILE_1, newMember.getMobile1());
-        values.put(KEY_MOBILE_2, newMember.getMobile2());
-        values.put(KEY_NIC, newMember.getNIC());
-        values.put(KEY_DOB, newMember.getDOB());
-        values.put(KEY_AGE, newMember.getAge());
-        values.put(KEY_MARRIED_STATUS, newMember.getMarriedStatus());
-        values.put(KEY_GENDER, newMember.getGender());
-        values.put(KEY_HEIGHT, newMember.getHeight());
-        values.put(KEY_WEIGHT, newMember.getWeight());
-        values.put(KEY_PROFILE_IMAGE_URL, newMember.getProfileImage());
-        values.put(KEY_MEMBERSHIP_TYPE, newMember.getMembershipType());
-        values.put(KEY_LAST_PAYMENT_DATE, newMember.getLastPaymentDate());
-        values.put(KEY_MEMBERSHIP_EXPIRY_DATE, getMembershipExpiryDate(newMember));
-        values.put(KEY_MEMBER_VALID_STATUS, newMember.getValidStatus());
-        values.put(KEY_DIABETES, newMember.getDiabetes());
-        values.put(KEY_CHOLESTEROL, newMember.getCholesterol());
-        values.put(KEY_HIGH_BLOOD_PRESSURE, newMember.getHighBloodPressure());
-        values.put(KEY_LOW_BLOOD_PRESSURE, newMember.getLowBloodPressure());
-        values.put(KEY_HEART_PROBLEM, newMember.getHeartProblem());
-        values.put(KEY_CHEST_PAIN, newMember.getPainInChestWhenExercising());
-        values.put(KEY_HEART_ATTACK, newMember.getHeartAttackCoronaryBypass());
-        values.put(KEY_ASTHMA, newMember.getAnyBreathingDifficultiesAndAsthma());
-        values.put(KEY_FAINTING, newMember.getFaintingSpells());
-        values.put(KEY_BACK_PAIN, newMember.getBackOrSpinePains());
-        values.put(KEY_MEDICATION, newMember.getAreYouOnAnySortOfMedications());
-        values.put(KEY_OTHER_ILLNESS, newMember.getOtherSignificantIllness());
-        values.put(KEY_SWOLLEN, newMember.getSwollen());
-        values.put(KEY_ARTHRITIS, newMember.getArthritis());
-        values.put(KEY_HERNIA, newMember.getHernia());
-        values.put(KEY_COMMENT, newMember.getComments());
+
+        setContentValues(newMember, values);
 
         Long memberId = db.insert(TABLE_MEMBERS, null, values);
         return memberId;
     }
 
+
     public void updateMember(Member member) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_MEMBER_ID, member.getId());
-        values.put(KEY_MEMBERSHIP_NO, member.getMembershipNo());
-        values.put(KEY_MEMBER_RECEIPT_NO, member.getMembershipRecieptNo());
-        values.put(KEY_MEMBER_ADDRESS_ID, member.getAddressId());
-        values.put(KEY_FIRST_NAME, member.getFirstName());
-        values.put(KEY_SURNAME, member.getSurName());
-        values.put(KEY_LAST_NAME, member.getLastName());
-        values.put(KEY_TYPE, member.getType());
-        values.put(KEY_MOBILE_1, member.getMobile1());
-        values.put(KEY_MOBILE_2, member.getMobile2());
-        values.put(KEY_NIC, member.getNIC());
-        values.put(KEY_DOB, member.getDOB());
-        values.put(KEY_AGE, member.getAge());
-        values.put(KEY_MARRIED_STATUS, member.getMarriedStatus());
-        values.put(KEY_GENDER, member.getGender());
-        values.put(KEY_HEIGHT, member.getHeight());
-        values.put(KEY_WEIGHT, member.getWeight());
-        values.put(KEY_PROFILE_IMAGE_URL, member.getProfileImage());
-        values.put(KEY_MEMBERSHIP_TYPE, member.getMembershipType());
-        values.put(KEY_LAST_PAYMENT_DATE, member.getLastPaymentDate());
-        values.put(KEY_MEMBERSHIP_EXPIRY_DATE, getMembershipExpiryDate(member));
-        values.put(KEY_MEMBER_VALID_STATUS, member.getValidStatus());
-        values.put(KEY_DIABETES, member.getDiabetes());
-        values.put(KEY_CHOLESTEROL, member.getCholesterol());
-        values.put(KEY_HIGH_BLOOD_PRESSURE, member.getHighBloodPressure());
-        values.put(KEY_LOW_BLOOD_PRESSURE, member.getLowBloodPressure());
-        values.put(KEY_HEART_PROBLEM, member.getHeartProblem());
-        values.put(KEY_CHEST_PAIN, member.getPainInChestWhenExercising());
-        values.put(KEY_HEART_ATTACK, member.getHeartAttackCoronaryBypass());
-        values.put(KEY_ASTHMA, member.getAnyBreathingDifficultiesAndAsthma());
-        values.put(KEY_FAINTING, member.getFaintingSpells());
-        values.put(KEY_BACK_PAIN, member.getBackOrSpinePains());
-        values.put(KEY_MEDICATION, member.getAreYouOnAnySortOfMedications());
-        values.put(KEY_OTHER_ILLNESS, member.getOtherSignificantIllness());
-        values.put(KEY_SWOLLEN, member.getSwollen());
-        values.put(KEY_ARTHRITIS, member.getArthritis());
-        values.put(KEY_HERNIA, member.getHernia());
-        values.put(KEY_COMMENT, member.getComments());
+
+        setContentValues(member, values);
+
 
         db.update(TABLE_MEMBERS, values, KEY_MEMBER_ID + "=?", new String[]{String.valueOf(member.getId())});
     }
 
-    public void deleteMember(String memberId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MEMBERS, KEY_MEMBER_ID + "=?", new String[]{memberId});
-    }
-
     public Member getMemberById(String memberId) {
         Member member = new Member();
-        // Select All Query
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_MEMBERS, null, KEY_MEMBER_ID + "=?", new String[]{memberId}, null, null, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                member.setMembershipNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_NO)));
-                member.setMembershipRecieptNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBER_RECEIPT_NO)));
-                member.setId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ID)));
-                member.setAddressId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ADDRESS_ID)));
-                member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
-                member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
-                member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
-                member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
-                member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
-                member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
-                member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
-                member.setDOB(cursor.getString(cursor.getColumnIndex(KEY_DOB)));
-                member.setAge(cursor.getInt(cursor.getColumnIndex(KEY_AGE)));
-                member.setGender(cursor.getString(cursor.getColumnIndex(KEY_GENDER)));
-                member.setMarriedStatus(cursor.getString(cursor.getColumnIndex(KEY_MARRIED_STATUS)));
-                member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
-                member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
-                member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
-
-                member.setLastPaymentDate(cursor.getString(cursor.getColumnIndex(KEY_LAST_PAYMENT_DATE)));
-                member.setValidStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_VALID_STATUS)) == 1);
-                member.setMembershipExpiredDate(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_EXPIRY_DATE)));
-
-                member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
-                member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
-                member.setHighBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
-                member.setLowBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
-                member.setHeartProblem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
-                member.setPainInChestWhenExercising(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
-                member.setHeartAttackCoronaryBypass(cursor.getInt(cursor.getColumnIndex(KEY_HEART_ATTACK)) == 1);
-                member.setAnyBreathingDifficultiesAndAsthma(cursor.getInt(cursor.getColumnIndex(KEY_ASTHMA)) == 1);
-                member.setFaintingSpells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
-                member.setBackOrSpinePains(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
-                member.setAreYouOnAnySortOfMedications(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
-                member.setOtherSignificantIllness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
-                member.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
-                member.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
-                member.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
-                member.setMembershipType(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_TYPE)));
-                member.setComments(cursor.getString(cursor.getColumnIndex(KEY_COMMENT)));
+                member=getMemberWithValues(cursor);
 
             } while (cursor.moveToNext());
         }
@@ -334,6 +217,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return contact list
         return member;
     }
+
 
     public List<Member> getAllMembers() {
         List<Member> members = new ArrayList<>();
@@ -345,47 +229,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Member member = new Member();
-                member.setMembershipNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_NO)));
-                member.setMembershipRecieptNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBER_RECEIPT_NO)));
-                member.setId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ID)));
-                member.setAddressId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ADDRESS_ID)));
-                member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
-                member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
-                member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
-                member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
-                member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
-                member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
-                member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
-                member.setDOB(cursor.getString(cursor.getColumnIndex(KEY_DOB)));
-                member.setAge(cursor.getInt(cursor.getColumnIndex(KEY_AGE)));
-                member.setGender(cursor.getString(cursor.getColumnIndex(KEY_GENDER)));
-                member.setMarriedStatus(cursor.getString(cursor.getColumnIndex(KEY_MARRIED_STATUS)));
-                member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
-                member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
-                member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
-
-                member.setLastPaymentDate(cursor.getString(cursor.getColumnIndex(KEY_LAST_PAYMENT_DATE)));
-                member.setValidStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_VALID_STATUS)) == 1);
-                member.setMembershipExpiredDate(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_EXPIRY_DATE)));
-
-                member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
-                member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
-                member.setHighBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
-                member.setLowBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
-                member.setHeartProblem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
-                member.setPainInChestWhenExercising(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
-                member.setHeartAttackCoronaryBypass(cursor.getInt(cursor.getColumnIndex(KEY_HEART_ATTACK)) == 1);
-                member.setAnyBreathingDifficultiesAndAsthma(cursor.getInt(cursor.getColumnIndex(KEY_ASTHMA)) == 1);
-                member.setFaintingSpells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
-                member.setBackOrSpinePains(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
-                member.setAreYouOnAnySortOfMedications(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
-                member.setOtherSignificantIllness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
-                member.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
-                member.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
-                member.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
-                member.setMembershipType(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_TYPE)));
-                member.setComments(cursor.getString(cursor.getColumnIndex(KEY_COMMENT)));
+                Member member = getMemberWithValues(cursor);
 
                 // Adding contact to list
                 members.add(member);
@@ -397,6 +241,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return contact list
         return members;
     }
+
+    public void deleteMember(String memberId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_MEMBERS, KEY_MEMBER_ID + "=?", new String[]{memberId});
+    }
+
 
 
     // Adding new Lawyer
@@ -475,42 +325,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                member.setId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ID)));
-                member.setAddressId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ADDRESS_ID)));
-                member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
-                member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
-                member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
-                member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
-                member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
-                member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
-                member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
-                member.setDOB(cursor.getString(cursor.getColumnIndex(KEY_DOB)));
-                member.setAge(cursor.getInt(cursor.getColumnIndex(KEY_AGE)));
-                member.setGender(cursor.getString(cursor.getColumnIndex(KEY_GENDER)));
-                member.setMarriedStatus(cursor.getString(cursor.getColumnIndex(KEY_MARRIED_STATUS)));
-                member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
-                member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
-                member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
-
-                member.setLastPaymentDate(cursor.getString(cursor.getColumnIndex(KEY_LAST_PAYMENT_DATE)));
-                member.setValidStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_VALID_STATUS)) == 1);
-                member.setMembershipExpiredDate(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_EXPIRY_DATE)));
-
-                member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
-                member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
-                member.setHighBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
-                member.setLowBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
-                member.setHeartProblem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
-                member.setPainInChestWhenExercising(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
-                member.setFaintingSpells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
-                member.setHeartAttackCoronaryBypass(cursor.getInt(cursor.getColumnIndex(KEY_HEART_ATTACK)) == 1);
-                member.setAnyBreathingDifficultiesAndAsthma(cursor.getInt(cursor.getColumnIndex(KEY_ASTHMA)) == 1);
-                member.setBackOrSpinePains(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
-                member.setAreYouOnAnySortOfMedications(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
-                member.setOtherSignificantIllness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
-                member.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
-                member.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
-                member.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
+                member=getMemberWithValues(cursor);
             } while (cursor.moveToNext());
         }
 
@@ -541,5 +356,102 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
+    //Return member by assigning values to member object from cursor
+    private Member getMemberWithValues( Cursor cursor) {
+        Member member =new Member();
+        member.setMembershipNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_NO)));
+        member.setMembershipRecieptNo(cursor.getString(cursor.getColumnIndex(KEY_MEMBER_RECEIPT_NO)));
+        member.setId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ID)));
+        member.setAddressId(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_ADDRESS_ID)));
+        member.setFirstName(cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME)));
+        member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
+        member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
+        member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
+        member.setCategory(cursor.getString(cursor.getColumnIndex(KEY_CATEGORY)));
+        member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
+        member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
+        member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
+        member.setDOB(cursor.getString(cursor.getColumnIndex(KEY_DOB)));
+        member.setAge(cursor.getInt(cursor.getColumnIndex(KEY_AGE)));
+        member.setGender(cursor.getString(cursor.getColumnIndex(KEY_GENDER)));
+        member.setMarriedStatus(cursor.getString(cursor.getColumnIndex(KEY_MARRIED_STATUS)));
+        member.setProfileImage(cursor.getString(cursor.getColumnIndex(KEY_PROFILE_IMAGE_URL)));
+        member.setHeight(cursor.getFloat(cursor.getColumnIndex(KEY_HEIGHT)));
+        member.setWeight(cursor.getFloat(cursor.getColumnIndex(KEY_WEIGHT)));
+
+        member.setLastPaymentDate(cursor.getString(cursor.getColumnIndex(KEY_LAST_PAYMENT_DATE)));
+        member.setValidStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_VALID_STATUS)) == 1);
+        member.setActiveStatus(cursor.getInt(cursor.getColumnIndex(KEY_MEMBER_IS_ACTIVE)) == 1);
+        member.setMembershipExpiredDate(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_EXPIRY_DATE)));
+
+        member.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
+        member.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
+        member.setHighBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
+        member.setLowBloodPressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
+        member.setHeartProblem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
+        member.setPainInChestWhenExercising(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
+        member.setHeartAttackCoronaryBypass(cursor.getInt(cursor.getColumnIndex(KEY_HEART_ATTACK)) == 1);
+        member.setAnyBreathingDifficultiesAndAsthma(cursor.getInt(cursor.getColumnIndex(KEY_ASTHMA)) == 1);
+        member.setFaintingSpells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
+        member.setBackOrSpinePains(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
+        member.setAreYouOnAnySortOfMedications(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
+        member.setOtherSignificantIllness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
+        member.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
+        member.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
+        member.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
+        member.setMembershipType(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_TYPE)));
+        member.setComments(cursor.getString(cursor.getColumnIndex(KEY_COMMENT)));
+
+        return member;
+    }
+
+    //Return content values from member
+    private ContentValues setContentValues(Member newMember, ContentValues values) {
+
+        values.put(KEY_MEMBER_ID, newMember.getId());
+        values.put(KEY_MEMBERSHIP_NO, newMember.getMembershipNo());
+        values.put(KEY_MEMBER_RECEIPT_NO, newMember.getMembershipRecieptNo());
+        values.put(KEY_MEMBER_ADDRESS_ID, newMember.getAddressId());
+        values.put(KEY_FIRST_NAME, newMember.getFirstName());
+        values.put(KEY_SURNAME, newMember.getSurName());
+        values.put(KEY_LAST_NAME, newMember.getLastName());
+        values.put(KEY_TYPE, newMember.getType());
+        values.put(KEY_CATEGORY, newMember.getCategory());
+        values.put(KEY_MOBILE_1, newMember.getMobile1());
+        values.put(KEY_MOBILE_2, newMember.getMobile2());
+        values.put(KEY_NIC, newMember.getNIC());
+        values.put(KEY_DOB, newMember.getDOB());
+        values.put(KEY_AGE, newMember.getAge());
+        values.put(KEY_MARRIED_STATUS, newMember.getMarriedStatus());
+        values.put(KEY_GENDER, newMember.getGender());
+        values.put(KEY_HEIGHT, newMember.getHeight());
+        values.put(KEY_WEIGHT, newMember.getWeight());
+        values.put(KEY_PROFILE_IMAGE_URL, newMember.getProfileImage());
+        values.put(KEY_MEMBERSHIP_TYPE, newMember.getMembershipType());
+        values.put(KEY_LAST_PAYMENT_DATE, newMember.getLastPaymentDate());
+        if (newMember.getLastPaymentDate() != null) {
+            values.put(KEY_MEMBERSHIP_EXPIRY_DATE, getMembershipExpiryDate(newMember));
+        }
+        values.put(KEY_MEMBER_VALID_STATUS, newMember.getValidStatus());
+        values.put(KEY_MEMBER_IS_ACTIVE, newMember.getActiveStatus());
+        values.put(KEY_DIABETES, newMember.getDiabetes());
+        values.put(KEY_CHOLESTEROL, newMember.getCholesterol());
+        values.put(KEY_HIGH_BLOOD_PRESSURE, newMember.getHighBloodPressure());
+        values.put(KEY_LOW_BLOOD_PRESSURE, newMember.getLowBloodPressure());
+        values.put(KEY_HEART_PROBLEM, newMember.getHeartProblem());
+        values.put(KEY_CHEST_PAIN, newMember.getPainInChestWhenExercising());
+        values.put(KEY_HEART_ATTACK, newMember.getHeartAttackCoronaryBypass());
+        values.put(KEY_ASTHMA, newMember.getAnyBreathingDifficultiesAndAsthma());
+        values.put(KEY_FAINTING, newMember.getFaintingSpells());
+        values.put(KEY_BACK_PAIN, newMember.getBackOrSpinePains());
+        values.put(KEY_MEDICATION, newMember.getAreYouOnAnySortOfMedications());
+        values.put(KEY_OTHER_ILLNESS, newMember.getOtherSignificantIllness());
+        values.put(KEY_SWOLLEN, newMember.getSwollen());
+        values.put(KEY_ARTHRITIS, newMember.getArthritis());
+        values.put(KEY_HERNIA, newMember.getHernia());
+        values.put(KEY_COMMENT, newMember.getComments());
+
+        return values;
+    }
 
 }

@@ -58,4 +58,8 @@
     <dimen name="buttonPadding">10dp</dimen>
     <dimen name="btnFontSize">16sp</dimen>
 
+    <dimen name="selectActiveInactiveBtnSize">50dp</dimen>
+    <dimen name="listSelectButtonTopBottomMargin">15dp</dimen>
+
+
 </resources>

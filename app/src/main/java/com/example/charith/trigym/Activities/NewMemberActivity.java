@@ -23,12 +23,14 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,11 +53,14 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class NewMemberActivity extends AppCompatActivity {
 
@@ -92,7 +97,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
     String navigationType;
 
-    String memberType;
+    List<String> memberTypeList=new ArrayList<>();
+    String memberTypeListString;
 
     RadioButton radioBtnMarried, radioBtnSingle;
     RadioButton radioBtnMale, radioBtnFemale;
@@ -105,6 +111,11 @@ public class NewMemberActivity extends AppCompatActivity {
 
     Address address;
 
+    String memberCategory;
+
+    Switch userActivateSwitch;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +124,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
         navigationType = getIntent().getStringExtra("navigationType");
         memberId = getIntent().getStringExtra("memberId");
-        memberType = getIntent().getStringExtra("memberType");
+        memberTypeListString = getIntent().getStringExtra("memberTypeListString");
+        memberCategory = getIntent().getStringExtra("memberCategory");
 
 
         init();
@@ -123,14 +135,14 @@ public class NewMemberActivity extends AppCompatActivity {
     private void init() {
         member = new Member();
 
-        member.setType(memberType);
+
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
         gson = builder.create();
 
         studentSection = findViewById(R.id.studentSection);
 
-        if (!memberType.equals("Student")) {
+        if (!checkMemberIsStudent()) {
             studentSection.setVisibility(View.GONE);
         }
 
@@ -167,6 +179,7 @@ public class NewMemberActivity extends AppCompatActivity {
         tvAge = findViewById(R.id.tvAge);
         btnEdit = findViewById(R.id.btnEdit);
         profileImage = findViewById(R.id.profileImage);
+        userActivateSwitch = findViewById(R.id.userActivateSwitch);
 
 
         if (navigationType != null) {
@@ -177,11 +190,29 @@ public class NewMemberActivity extends AppCompatActivity {
                 setUserValues();
             }
         } else {
+
+            userActivateSwitch.setVisibility(View.GONE);
+            try {
+                JSONArray jsonArray = new JSONArray(memberTypeListString);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String memberType = jsonArray.getString(i);
+                    memberTypeList.add(memberType);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Collections.sort(memberTypeList);
+
+            member.setType(TextUtils.join(",",memberTypeList));
+            member.setCategory(memberCategory);
             DatabaseHandler db = new DatabaseHandler(this);
-            etMembershipNo.setText(getMembershipNo(memberType));
+            etMembershipNo.setText(getMembershipNo());
             etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-//            setTempValues();
+            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +259,22 @@ public class NewMemberActivity extends AppCompatActivity {
             }
         });
 
+
+        userActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    userActivateSwitch.setText("Activated");
+                    member.setActiveStatus(true);
+                }else {
+
+                    userActivateSwitch.setText("Deactivated");
+                    member.setActiveStatus(false);
+                }
+            }
+        });
+
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,24 +283,46 @@ public class NewMemberActivity extends AppCompatActivity {
         });
     }
 
-    private String getMembershipNo(String memberType) {
+    private boolean checkMemberIsStudent() {
+        for (String str : memberTypeList) {
+            if (str.equals("Student")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getMembershipNo() {
+
+        StringBuilder getMembershipInitials = new StringBuilder();
+
+
+        for (String str : memberTypeList) {
+            String memberTypeInitial = str.substring(0, 1);
+            getMembershipInitials.append(memberTypeInitial);
+        }
+
         DatabaseHandler db = new DatabaseHandler(this);
-        String membershipNo = memberType.substring(0, 1) + String.valueOf(1 + db.getMembersCount(NewMemberActivity.this));
+        String membershipNo = getMembershipInitials.toString() + (1 + db.getMembersCount(NewMemberActivity.this));
 
         return membershipNo;
     }
 
     private String getReciptNo() {
         DatabaseHandler db = new DatabaseHandler(this);
-
-        return "R" + String.valueOf(1+,db.getMembersCount(this));
+        String receiptNo = "R" + (1 + db.getMembersCount(this));
+        return receiptNo;
     }
 
 
     private void setUserValues() {
-
-        DatabaseHandler databaseHandler = new DatabaseHandler(this);
-
+        if(member.getActiveStatus()){
+            userActivateSwitch.setText("Activated");
+            userActivateSwitch.setChecked(true);
+        }else {
+            userActivateSwitch.setText("Deactivated");
+            userActivateSwitch.setChecked(false);
+        }
         if (member.getMarriedStatus().equals("Single")) {
             radioBtnMarried.setChecked(false);
             radioBtnSingle.setChecked(true);
@@ -301,6 +370,8 @@ public class NewMemberActivity extends AppCompatActivity {
         etMobile1.setText(String.valueOf(member.getMobile1()));
         etMobile2.setText(String.valueOf(member.getMobile2()));
 
+        DatabaseHandler databaseHandler=new DatabaseHandler(NewMemberActivity.this);
+
         Address address = databaseHandler.getAddressById(String.valueOf(member.getAddressId()));
 
         etLine1.setText(address.getLine1());
@@ -310,9 +381,6 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void setTempValues() {
-
-        etMembershipNo.setText("m1");
-        etMembershipReciptNo.setText("r1");
 
         etFirstName.setText("charith");
         etLastName.setText("vinodya");

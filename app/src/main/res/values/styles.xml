@@ -35,6 +35,11 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="dialog_warnig_title_style">
+        <item name="android:textColor">@color/buttonRed</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
     <style name="dialog_no_btn_style">
         <item name="android:textColor">@color/radical_red</item>
         <item name="android:textSize">18sp</item>
@@ -80,6 +85,18 @@
     <style name="buttonStyle">
         <item name="android:textSize">@dimen/btnFontSize</item>
         <item name="android:textColor">@color/primaryWhite</item>
+    </style>
+
+    <style name="select_btn_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="deselect_btn_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/platinum</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

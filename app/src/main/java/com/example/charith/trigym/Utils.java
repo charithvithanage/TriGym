@@ -1,7 +1,11 @@
 package com.example.charith.trigym;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,7 @@ import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.CheckImageClickListner;
 import com.example.charith.trigym.Interfaces.DialogListner;
 import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
 
 import org.joda.time.DateTime;
@@ -26,6 +31,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.SEND_SMS;
 
 public class Utils {
 
@@ -48,6 +56,60 @@ public class Utils {
     public static void showWarningMessage(Context context, String string) {
         DialogPlus dialog = DialogPlus.newDialog(context)
                 .setContentBackgroundResource(R.drawable.warning_message_bg)
+                .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
+                .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+        dialog.show();
+
+        View view = dialog.getHolderView();
+
+        TextView message = view.findViewById(R.id.message);
+        message.setText(string);
+    }
+
+    public static void showWarningMessageInMainActivity(Context context, String string) {
+        DialogPlus dialog = DialogPlus.newDialog(context)
+                .setMargin(0,100,0,0)
+                .setContentBackgroundResource(R.drawable.warning_message_bg)
+                .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
+                .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+        dialog.show();
+
+        View view = dialog.getHolderView();
+
+        TextView message = view.findViewById(R.id.message);
+        message.setText(string);
+    }
+
+    public static void showSuccessMessageInMainActivity(Context context, String string) {
+        DialogPlus dialog = DialogPlus.newDialog(context)
+                .setMargin(0,100,0,0)
+                .setContentBackgroundResource(R.drawable.success_message_bg)
+                .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
+                .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+        dialog.show();
+
+        View view = dialog.getHolderView();
+
+        TextView message = view.findViewById(R.id.message);
+        message.setText(string);
+    }
+
+    public static void showWarningMessageWithCancelListner(Context context, String string, final WarningMessageListner listner) {
+        DialogPlus dialog = DialogPlus.newDialog(context)
+                .setMargin(0,100,0,0)
+                .setContentBackgroundResource(R.drawable.warning_message_bg)
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogPlus dialog) {
+                        listner.onCancel(dialog);
+                    }
+                })
                 .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
                 .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
                 .create();
@@ -122,6 +184,7 @@ public class Utils {
         return false;
     }
 
+    //Get payment expired members
     public static List<Member> getInavtiveUsers(Context context, List<Member> members) {
 
         List<Member> inActiveMembers = new ArrayList<>();
@@ -131,11 +194,40 @@ public class Utils {
             if (!checkMemberValidStatus(context, String.valueOf(member.getId()))) {
                 inActiveMembers.add(member);
             }
+        }
+        return inActiveMembers;
+    }
+
+    //Get members list by filtering the active members by gym
+    public static List<Member> getActiveMembers(Context context,List<Member> allMembers) {
+        List<Member> activeMembers = new ArrayList<>();
+
+        for (Member member : allMembers) {
+
+            if (member.getActiveStatus()&&checkMemberValidStatus(context, String.valueOf(member.getId()))) {
+                activeMembers.add(member);
+            }
 
         }
 
-        return inActiveMembers;
+        return activeMembers;
     }
+
+    //Get members list by filtering the ignored members by gym
+    public static List<Member> getDeactiveMembers(List<Member> allMembers) {
+        List<Member> deactiveMembers = new ArrayList<>();
+
+        for (Member member : allMembers) {
+
+            if (!member.getActiveStatus()) {
+                deactiveMembers.add(member);
+            }
+
+        }
+
+        return deactiveMembers;
+    }
+
 
     public static void displayInactiveUserList(final Context context, final List<Member> members, final DialogListner listner) {
 
@@ -222,7 +314,7 @@ public class Utils {
         btnDialogNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listner.onSucces(dialogMessage,getMobileNumbersList(getSelectedMembers(allMembers)));
+                listner.onSucces(dialogMessage, getMobileNumbersList(getSelectedMembers(allMembers)));
             }
         });
 
@@ -233,7 +325,7 @@ public class Utils {
         List<Member> selectedList = new ArrayList<>();
 
         for (Member member : allMembers) {
-            if(member.isSelected()){
+            if (member.isSelected()) {
                 selectedList.add(member);
             }
         }
@@ -286,6 +378,19 @@ public class Utils {
             }
         }
         return numbers.toString();
+    }
+
+    public static boolean checkCallSMSPermission(Context context) {
+        int result = ContextCompat.checkSelfPermission(context, SEND_SMS);
+        int result1 = ContextCompat.checkSelfPermission(context, CALL_PHONE);
+
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static void requestCallSMSPermission(Activity activity, int requestCode) {
+
+        ActivityCompat.requestPermissions(activity, new String[]{SEND_SMS, CALL_PHONE}, requestCode);
+
     }
 
 

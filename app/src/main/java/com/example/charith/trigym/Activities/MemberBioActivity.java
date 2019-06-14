@@ -481,34 +481,44 @@ public class MemberBioActivity extends AppCompatActivity {
         int selectedTypeRadioButton = radioGroupType.getCheckedRadioButtonId();
         RadioButton memberType = findViewById(selectedTypeRadioButton);
 
-
         member.setMembershipType(memberType.getText().toString());
 
         DatabaseHandler databaseHandler = new DatabaseHandler(MemberBioActivity.this);
-        Long memberId = null;
+        Long memberId;
 
         if (navigationType != null) {
             if (navigationType.equals("edit")) {
                 memberId = new Long(member.getId());
 
-                if(Utils.checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))){
+                if (Utils.checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))) {
                     member.setValidStatus(true);
-                }else {
+                } else {
                     member.setValidStatus(false);
                 }
 
                 databaseHandler.updateMember(member);
 
-            } else {
+                Intent intent = new Intent();
+                setResult(200, intent);
+                finish();//finishing activity
 
-                member.setValidStatus(true);
-                memberId = databaseHandler.addMember(member);
+            } else {
+                if (member.getLastPaymentDate() != null) {
+                    Long id = saveMemberLocalStorage(databaseHandler);
+                    savePaymentToLocalStorage(id,databaseHandler);
+                    Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Utils.showWarningMessage(MemberBioActivity.this, getString(R.string.payment_date_not_select_warning));
+                }
             }
         } else {
-            member.setValidStatus(true);
-            memberId = databaseHandler.addMember(member);
+            Utils.showWarningMessage(MemberBioActivity.this, getString(R.string.navigation_error_warning));
         }
+    }
 
+    private void savePaymentToLocalStorage(Long memberId,DatabaseHandler databaseHandler) {
         if (switchPayment.isChecked()) {
 
             Payment payment = new Payment();
@@ -522,23 +532,11 @@ public class MemberBioActivity extends AppCompatActivity {
             databaseHandler.addPayment(payment);
 
         }
+    }
 
-        if (navigationType != null) {
-            if (navigationType.equals("edit")) {
-                Intent intent = new Intent();
-                setResult(200, intent);
-                finish();//finishing activity
-            } else {
-                Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        } else {
-            Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
-
-
+    private Long saveMemberLocalStorage(DatabaseHandler databaseHandler) {
+        member.setValidStatus(true);
+        member.setActiveStatus(true);
+        return databaseHandler.addMember(member);
     }
 }

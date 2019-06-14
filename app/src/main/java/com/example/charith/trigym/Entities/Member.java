@@ -11,6 +11,7 @@ public class Member {
     String membershipRecieptNo;
     String registeredDate;
     String type;
+    String category;
     String firstName;
     String lastName;
     String surName;
@@ -35,6 +36,7 @@ public class Member {
     String lastPaymentDate;
     String membershipExpiredDate;
     Boolean validStatus;
+    Boolean activeStatus;
 
     Boolean diabetes;
     Boolean cholesterol;
@@ -53,6 +55,22 @@ public class Member {
     Boolean hernia;
 
     boolean selected;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Boolean getActiveStatus() {
+        return activeStatus;
+    }
+
+    public void setActiveStatus(Boolean activeStatus) {
+        this.activeStatus = activeStatus;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public boolean isSelected() {
         return selected;

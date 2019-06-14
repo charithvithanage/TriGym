@@ -1,45 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activities.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryWhite"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/bg_color"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/selectActiveBtn"
+                style="@style/select_btn_style"
+                android:layout_width="150dp"
+                android:layout_height="@dimen/selectActiveInactiveBtnSize"
+                android:layout_marginTop="@dimen/listSelectButtonTopBottomMargin"
+                android:layout_marginBottom="@dimen/listSelectButtonTopBottomMargin"
+                android:background="@drawable/select_btn_bg"
+                android:stateListAnimator="@null"
+                android:text="Active Members"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/bg_color"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/selectInactiveBtn"
+                style="@style/deselect_btn_style"
+                android:layout_width="150dp"
+                android:layout_height="@dimen/selectActiveInactiveBtnSize"
+                android:layout_marginTop="@dimen/listSelectButtonTopBottomMargin"
+                android:layout_marginBottom="@dimen/listSelectButtonTopBottomMargin"
+                android:background="@drawable/deselect_btn_bg"
+                android:stateListAnimator="@null"
+                android:text="Inactive Users"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
+        style="@android:style/Widget.Material.SearchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:queryHint="@string/main_page_search_query_hint"
         app:layout_constraintBottom_toTopOf="@+id/memberList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.017"
-        android:queryHint="@string/main_page_search_query_hint"/>
+        app:layout_constraintVertical_bias="0.017" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/memberList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="1.0" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:layout_weight="1">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/inActiveMemberList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/memberList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

@@ -20,7 +20,7 @@
         android:name=".MyApplication"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Splash"
+            android:name=".Test.MyBaseActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -62,11 +62,15 @@
             android:label="@string/title_activity_payment_list"
             android:theme="@style/NoActionBar"></activity>
 
-        <receiver android:name=".Test.NetworkMonitor">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
+        <activity
+            android:name=".Activities.DeactivateMemberListActivity"
+            android:label="@string/title_activity_payment_list"
+            android:theme="@style/NoActionBar"></activity>
+        <!--<receiver android:name=".Test.NetworkMonitor">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

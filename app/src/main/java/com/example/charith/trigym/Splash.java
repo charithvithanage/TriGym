@@ -32,7 +32,7 @@ public class Splash extends AppCompatActivity {
             inActiveMembers = Utils.getInavtiveUsers(getApplicationContext(), allMembers);
         }
 
-        if (allMembers.size() == 0) {
+        if (inActiveMembers.size() == 0) {
             Intent i = new Intent(Splash.this, MainActivity.class);
             startActivity(i);
             finish();

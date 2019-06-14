@@ -23,17 +23,15 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.example.charith.trigym.Activities.MemberViewActivity;
 import com.example.charith.trigym.Convertors.CircleTransform;
 import com.example.charith.trigym.Convertors.DateTimeSerializer;
-import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
-import com.example.charith.trigym.Activities.MemberViewActivity;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.orhanobut.dialogplus.DialogPlus;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -44,7 +42,7 @@ import java.util.Locale;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
-public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleViewHolder> {
+public class DeactivatedMembersAdapter extends RecyclerSwipeAdapter<DeactivatedMembersAdapter.SimpleViewHolder> {
     List<Member> filteredMembers;
     List<Member> members;
     Context context;
@@ -54,40 +52,24 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
     Gson gson = builder.create();
     MemberSelectListner listner;
 
-    public MemberAdapter(Context context, List<Member> members, MemberSelectListner listner) {
+    public DeactivatedMembersAdapter(Context context, List<Member> members, MemberSelectListner listner) {
         this.filteredMembers = members;
         this.members = members;
         this.context = context;
         this.listner = listner;
     }
 
-    public void updateList(List<Member> memberList) {
-        this.filteredMembers = memberList;
-        this.members=memberList;
-        notifyDataSetChanged();
-    }
-
-
     @Override
-    public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.memberlist_item, parent, false);
-        return new SimpleViewHolder(view);
+    public DeactivatedMembersAdapter.SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.deactivated_memberlist_item, parent, false);
+        return new DeactivatedMembersAdapter.SimpleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MemberAdapter.SimpleViewHolder viewHolder, final int position) {
-        Member memberObj = filteredMembers.get(position);
+    public void onBindViewHolder(final DeactivatedMembersAdapter.SimpleViewHolder viewHolder, final int position) {
+        final Member memberObj = filteredMembers.get(position);
         viewHolder.memberName.setText(memberObj.getFirstName() + " " + memberObj.getLastName());
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
-
-//        if(Utils.checkMemberValidStatus(context, String.valueOf(memberObj.getId()))){
-//            viewHolder.memberStatus.setText(context.getResources().getString(R.string.active_user_string));
-//            viewHolder.memberStatus.setBackgroundResource(R.drawable.valid_bg);
-//        }else {
-//            viewHolder.memberStatus.setText(context.getResources().getString(R.string.inactive_user_string));
-//            viewHolder.memberStatus.setBackgroundResource(R.drawable.invalid_bg);
-//        }
-
 
         if (memberObj.getProfileImage() != null) {
             Picasso.get().load(Uri.parse(memberObj.getProfileImage())).transform(new CircleTransform()).into(viewHolder.imageProfile);
@@ -98,6 +80,14 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper));
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper_2));
 
+        viewHolder.memberStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedMember = filteredMembers.get(position);
+                selectedPosition = position;
+                listner.selectMember(memberObj, "activate");
+            }
+        });
 
         viewHolder.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +117,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 selectedMember = filteredMembers.get(position);
                 selectedPosition = position;
 
-                selectUserOptionDialog();
+                listner.selectMember(selectedMember, "delete");
 
                 viewHolder.swipeLayout.close();
             }
@@ -139,21 +129,6 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
 
                 selectedMember = filteredMembers.get(position);
                 selectedPosition = position;
-
-                if(selectedMember.getEmail()!=null){
-                    Intent emailIcon = new Intent(Intent.ACTION_SEND);
-                    emailIcon.putExtra(Intent.EXTRA_EMAIL, new String[]{selectedMember.getEmail()});
-
-
-                    //need this to prompts emailIcon client only
-                    emailIcon.setType("message/rfc822");
-
-                    context.startActivity(Intent.createChooser(emailIcon, "Choose an Email lawyer :"));
-                }else {
-                    Utils.showWarningMessageInMainActivity(context,context.getString(R.string.no_email_warning));
-                }
-
-
                 viewHolder.swipeLayout.close();
             }
         });
@@ -164,24 +139,11 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
 
                 selectedMember = filteredMembers.get(position);
                 selectedPosition = position;
-
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.putExtra("address", String.valueOf(selectedMember.getMobile1()));
+                sendIntent.putExtra("address", selectedMember.getMobile1());
 
                 sendIntent.setType("vnd.android-dir/mms-sms");
-
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-
-                        Utils.showWarningMessageInMainActivity(context, context.getResources().getString(R.string.no_permission_to_call));
-                        return;
-                    } else {
-                        context.startActivity(sendIntent);
-                    }
-                } else {
-                    context.startActivity(sendIntent);
-                }
-
+                context.startActivity(sendIntent);
                 viewHolder.swipeLayout.close();
             }
         });
@@ -197,7 +159,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
-                        Utils.showWarningMessageInMainActivity(context, context.getResources().getString(R.string.no_permission_to_call));
+                        Utils.showWarningMessage(context, context.getResources().getString(R.string.no_permission_to_call));
                         return;
                     } else {
                         context.startActivity(callIntent);
@@ -228,10 +190,18 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
         return R.id.swipe;
     }
 
+    public void updateList(List<Member> memberList) {
+        this.filteredMembers = memberList;
+        this.members=memberList;
+        notifyDataSetChanged();
+    }
+
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
 
         TextView memberName;
         TextView memberPhone;
+        TextView memberStatus;
+
         ImageView imageProfile, messageIcon, deleteIcon, callIcon, emailIcon;
         SwipeLayout swipeLayout;
 
@@ -240,6 +210,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             memberName = convertView.findViewById(R.id.tvName);
             memberPhone = convertView.findViewById(R.id.tvPhone);
             imageProfile = convertView.findViewById(R.id.imageProfile);
+            memberStatus = convertView.findViewById(R.id.tvMemberStatus);
             deleteIcon = convertView.findViewById(R.id.delete);
             messageIcon = convertView.findViewById(R.id.message);
             emailIcon = convertView.findViewById(R.id.email);
@@ -297,59 +268,6 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             }
         }
         notifyDataSetChanged();
-    }
-
-    private void selectUserOptionDialog() {
-
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.delete_or_remove_user_dialog);
-        dialog.setCancelable(true);
-        final LinearLayout btnDeactivate = dialog.findViewById(R.id.btnDeactivate);
-        final LinearLayout btnDelete = dialog.findViewById(R.id.btnDelete);
-        Button btnCancel = dialog.findViewById(R.id.btnCancel);
-
-        btnDeactivate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                listner.selectMember(selectedMember,"deactivate");
-
-
-            }
-        });
-
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                listner.selectMember(selectedMember,"delete");
-            }
-        });
-
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-
-        //close the dialog when pressed the back key
-        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    dialog.dismiss();
-                }
-                return true;
-            }
-        });
-
-        dialog.show();
-
     }
 
 

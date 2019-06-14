@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:gravity="left|center_vertical"
@@ -12,84 +12,209 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="20dp"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:text="Select Member Type"
         android:textColor="@color/azure"
         android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/btnAdult"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="Adult"
-        android:textAllCaps="false"
-        android:textColor="@color/charcoal"
-        android:textSize="18sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnStudent"
+
+        <LinearLayout
+            android:id="@+id/adultLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="Adult"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:clickable="false"/>
+
+            <ImageView
+                android:id="@+id/selectAdultCheckbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/uncheck_bg"
+                android:clickable="false"></ImageView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/studentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="Student"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/selectStudentCheckbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/uncheck_bg"></ImageView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/arobicksLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="Arobicks"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/selectArobicksCheckbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/uncheck_bg"></ImageView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/yogaLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="Yoga"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/selectYogaCheckbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/uncheck_bg"></ImageView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/zumbaLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="Zumba"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/selectZumbaCheckbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/uncheck_bg"></ImageView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="Student"
-        android:textAllCaps="false"
-        android:textColor="@color/charcoal"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnArobicks"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="Arobicks"
-        android:textAllCaps="false"
-        android:textColor="@color/charcoal"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnYoga"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="Yoga"
-        android:textAllCaps="false"
-        android:textColor="@color/charcoal"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnZumba"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="Zumba"
-        android:textAllCaps="false"
-        android:textColor="@color/charcoal"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        style="@style/buttonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:paddingLeft="@dimen/loginButtonLeftMargin"
-        android:paddingRight="@dimen/loginButtonRightMargin"
-        android:text="Cancel"
-        android:textAllCaps="false"
-        android:background="@drawable/button_bg"/>
+        android:orientation="horizontal"
+        android:padding="@dimen/buttonPadding">
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/buttonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/loginButtonLeftMargin"
+            android:paddingRight="@dimen/loginButtonRightMargin"
+            android:text="Cancel"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnOk"
+            style="@style/buttonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/loginButtonLeftMargin"
+            android:paddingRight="@dimen/loginButtonRightMargin"
+            android:text="Next"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
 </LinearLayout>

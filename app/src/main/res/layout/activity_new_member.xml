@@ -75,9 +75,25 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="8dp">
+
+                    <Switch
+                        android:id="@+id/userActivateSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp"
+                        android:switchPadding="4dp"
+                        android:text="Deactivated" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/imageLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
