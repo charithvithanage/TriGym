@@ -43,7 +43,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_MEMBER_ID = "member_id";
     private static final String KEY_FIRST_NAME = "member_first_name";
     private static final String KEY_TYPE = "type";
-    private static final String KEY_CATEGORY = "category";
+    private static final String KEY_CAT = "category";
     private static final String KEY_LAST_NAME = "member_last_name";
     private static final String KEY_SURNAME = "member_surname";
     private static final String KEY_MOBILE_1 = "member_mobile_1";
@@ -98,8 +98,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_FIRST_NAME + " TEXT ,"
             + KEY_SURNAME + " TEXT ,"
             + KEY_LAST_NAME + " TEXT ,"
-            + KEY_TYPE + " TEXT ,"
-            + KEY_CATEGORY + " TEXT ,"
             + KEY_MARRIED_STATUS + " TEXT ,"
             + KEY_MOBILE_1 + " INTEGER,"
             + KEY_MOBILE_2 + " INTEGER,"
@@ -111,6 +109,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_WEIGHT + " INTEGER,"
             + KEY_PROFILE_IMAGE_URL + " TEXT,"
             + KEY_COMMENT + " TEXT,"
+            + KEY_TYPE + " TEXT ,"
+            + KEY_CAT + " TEXT ,"
             + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
             + KEY_MEMBER_VALID_STATUS + " BOOLEAN,"
             + KEY_MEMBERSHIP_TYPE + " TEXT,"
@@ -222,8 +222,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<Member> getAllMembers() {
         List<Member> members = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_MEMBERS;
-        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_MEMBERS;
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -367,7 +367,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         member.setSurName(cursor.getString(cursor.getColumnIndex(KEY_SURNAME)));
         member.setLastName(cursor.getString(cursor.getColumnIndex(KEY_LAST_NAME)));
         member.setType(cursor.getString(cursor.getColumnIndex(KEY_TYPE)));
-        member.setCategory(cursor.getString(cursor.getColumnIndex(KEY_CATEGORY)));
+        if(cursor.getString(cursor.getColumnIndex(KEY_CAT))!=null){
+            member.setCategory(cursor.getString(cursor.getColumnIndex(KEY_CAT)));
+        }
         member.setMobile1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
         member.setMobile2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
         member.setNIC(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
@@ -416,7 +418,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_SURNAME, newMember.getSurName());
         values.put(KEY_LAST_NAME, newMember.getLastName());
         values.put(KEY_TYPE, newMember.getType());
-        values.put(KEY_CATEGORY, newMember.getCategory());
+        values.put(KEY_CAT, newMember.getCategory());
         values.put(KEY_MOBILE_1, newMember.getMobile1());
         values.put(KEY_MOBILE_2, newMember.getMobile2());
         values.put(KEY_NIC, newMember.getNIC());

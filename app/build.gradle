@@ -55,4 +55,5 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation files('libs/httpclient-4.3.3.jar')
+    implementation 'com.orhanobut:dialogplus:1.11'
 }

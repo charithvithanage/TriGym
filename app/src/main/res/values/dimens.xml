@@ -60,6 +60,8 @@
 
     <dimen name="selectActiveInactiveBtnSize">50dp</dimen>
     <dimen name="listSelectButtonTopBottomMargin">15dp</dimen>
-
+    <dimen name="contentTopMargin">10dp</dimen>
+    <dimen name="contentBottomMargin">10dp</dimen>
+    <dimen name="pageMargin">16dp</dimen>
 
 </resources>

@@ -36,4 +36,7 @@
     <color name="darkyellow">#ff9500</color>
     <color name="select_bg">#0a007aff</color>
 
+    <color name="profileBgColor">#FFFBFDFF</color>
+
+
 </resources>

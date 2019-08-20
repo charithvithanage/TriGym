@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.CheckImageClickListner;
 import com.example.charith.trigym.Interfaces.DialogListner;
+import com.example.charith.trigym.Interfaces.ProfileImageListner;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
@@ -70,7 +73,7 @@ public class Utils {
 
     public static void showWarningMessageInMainActivity(Context context, String string) {
         DialogPlus dialog = DialogPlus.newDialog(context)
-                .setMargin(0,100,0,0)
+                .setMargin(0, 100, 0, 0)
                 .setContentBackgroundResource(R.drawable.warning_message_bg)
                 .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
                 .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
@@ -86,7 +89,7 @@ public class Utils {
 
     public static void showSuccessMessageInMainActivity(Context context, String string) {
         DialogPlus dialog = DialogPlus.newDialog(context)
-                .setMargin(0,100,0,0)
+                .setMargin(0, 100, 0, 0)
                 .setContentBackgroundResource(R.drawable.success_message_bg)
                 .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
                 .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
@@ -102,7 +105,7 @@ public class Utils {
 
     public static void showWarningMessageWithCancelListner(Context context, String string, final WarningMessageListner listner) {
         DialogPlus dialog = DialogPlus.newDialog(context)
-                .setMargin(0,100,0,0)
+                .setMargin(0, 100, 0, 0)
                 .setContentBackgroundResource(R.drawable.warning_message_bg)
                 .setOnCancelListener(new OnCancelListener() {
                     @Override
@@ -199,12 +202,12 @@ public class Utils {
     }
 
     //Get members list by filtering the active members by gym
-    public static List<Member> getActiveMembers(Context context,List<Member> allMembers) {
+    public static List<Member> getActiveMembers(Context context, List<Member> allMembers) {
         List<Member> activeMembers = new ArrayList<>();
 
         for (Member member : allMembers) {
 
-            if (member.getActiveStatus()&&checkMemberValidStatus(context, String.valueOf(member.getId()))) {
+            if (member.getActiveStatus() && checkMemberValidStatus(context, String.valueOf(member.getId()))) {
                 activeMembers.add(member);
             }
 
@@ -391,6 +394,52 @@ public class Utils {
 
         ActivityCompat.requestPermissions(activity, new String[]{SEND_SMS, CALL_PHONE}, requestCode);
 
+    }
+
+    public static void displayPasswordDialog(Context context, String firstName, String NIC, final ProfileImageListner listener) {
+        final DialogPlus dialog = DialogPlus.newDialog(context)
+                .setPadding(50, 50, 50, 50)
+                .setMargin(50, 50, 50, 50)
+                .setContentBackgroundResource(R.drawable.confirm_message_bg)
+                .setContentHolder(new ViewHolder(R.layout.profile_name_dialog_layout))
+                .setContentWidth(ViewGroup.LayoutParams.MATCH_PARENT)
+                .setCancelable(false)
+                .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.CENTER)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+        View viewDialog = dialog.getHolderView();
+
+        final EditText etFirstName = viewDialog.findViewById(R.id.etFirstName);
+        final EditText etNIC = viewDialog.findViewById(R.id.etNIC);
+        if (firstName != null) {
+            etFirstName.setText(firstName);
+        }
+
+        if (NIC != null) {
+            etNIC.setText(NIC);
+        }
+
+        Button dialogButtonOk = viewDialog.findViewById(R.id.dialogButtonOK);
+        Button dialogButtonCancel = viewDialog.findViewById(R.id.dialogButtonCancel);
+        // if button is clicked, close the custom dialog
+        dialogButtonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(etFirstName.getText().toString())) {
+                    listener.onSuccess(dialog, etFirstName.getText().toString(), etNIC.getText().toString());
+                }
+            }
+        });
+
+
+        dialogButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onCancel(dialog);
+            }
+        });
+
+        dialog.show();
     }
 
 

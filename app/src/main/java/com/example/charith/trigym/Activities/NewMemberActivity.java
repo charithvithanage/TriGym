@@ -42,6 +42,7 @@ import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
 import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Interfaces.ProfileImageListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
@@ -97,7 +98,7 @@ public class NewMemberActivity extends AppCompatActivity {
 
     String navigationType;
 
-    List<String> memberTypeList=new ArrayList<>();
+    List<String> memberTypeList = new ArrayList<>();
     String memberTypeListString;
 
     RadioButton radioBtnMarried, radioBtnSingle;
@@ -135,6 +136,7 @@ public class NewMemberActivity extends AppCompatActivity {
     private void init() {
         member = new Member();
 
+        displayFirstNameNICDialog(null,null);
 
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
@@ -206,13 +208,13 @@ public class NewMemberActivity extends AppCompatActivity {
 
             Collections.sort(memberTypeList);
 
-            member.setType(TextUtils.join(",",memberTypeList));
+            member.setType(TextUtils.join(",", memberTypeList));
             member.setCategory(memberCategory);
             DatabaseHandler db = new DatabaseHandler(this);
             etMembershipNo.setText(getMembershipNo());
             etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-            setTempValues();
+//            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -233,27 +235,7 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!TextUtils.isEmpty(etFirstName.getText().toString()) && !TextUtils.isEmpty(etNIC.getText().toString())) {
-                    photoFileName = etFirstName.getText().toString() + etNIC.getText().toString() + ".jpg";
-
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                    MY_PERMISSIONS_REQUEST_CAMERA);
-
-                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                            // app-defined int constant
-
-                            return;
-                        } else {
-                            onLaunchCamera();
-                        }
-                    } else {
-                        onLaunchCamera();
-                    }
-                } else {
-                    Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.profileImageSelectWarningMessage));
-                }
+                displayFirstNameNICDialog(member.getFirstName(),member.getNIC());
 
 
             }
@@ -263,10 +245,10 @@ public class NewMemberActivity extends AppCompatActivity {
         userActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     userActivateSwitch.setText("Activated");
                     member.setActiveStatus(true);
-                }else {
+                } else {
 
                     userActivateSwitch.setText("Deactivated");
                     member.setActiveStatus(false);
@@ -279,6 +261,45 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+    }
+
+    private void displayFirstNameNICDialog(String firstName,String NIC) {
+        Utils.displayPasswordDialog(NewMemberActivity.this,firstName,NIC, new ProfileImageListner() {
+            @Override
+            public void onSuccess(DialogPlus dialog, String fistName, String nic) {
+                dialog.dismiss();
+
+                etFirstName.setText(fistName);
+                etNIC.setText(nic);
+                member.setFirstName(fistName);
+                member.setNIC(nic);
+
+                photoFileName = fistName + nic + ".jpg";
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                MY_PERMISSIONS_REQUEST_CAMERA);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant
+
+                        return;
+                    } else {
+                        onLaunchCamera();
+                    }
+                } else {
+                    onLaunchCamera();
+                }
+            }
+
+            @Override
+            public void onCancel(DialogPlus dialogPlus) {
+                dialogPlus.dismiss();
+                finish();
+
             }
         });
     }
@@ -316,10 +337,10 @@ public class NewMemberActivity extends AppCompatActivity {
 
 
     private void setUserValues() {
-        if(member.getActiveStatus()){
+        if (member.getActiveStatus()) {
             userActivateSwitch.setText("Activated");
             userActivateSwitch.setChecked(true);
-        }else {
+        } else {
             userActivateSwitch.setText("Deactivated");
             userActivateSwitch.setChecked(false);
         }
@@ -370,7 +391,7 @@ public class NewMemberActivity extends AppCompatActivity {
         etMobile1.setText(String.valueOf(member.getMobile1()));
         etMobile2.setText(String.valueOf(member.getMobile2()));
 
-        DatabaseHandler databaseHandler=new DatabaseHandler(NewMemberActivity.this);
+        DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
 
         Address address = databaseHandler.getAddressById(String.valueOf(member.getAddressId()));
 
