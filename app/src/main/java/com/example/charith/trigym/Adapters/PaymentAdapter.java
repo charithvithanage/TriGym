@@ -37,7 +37,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((MyViewHolder) holder).tvType.setText(payment.getType());
         ((MyViewHolder) holder).tvAmount.setText(String.valueOf(payment.getAmount()));
         ((MyViewHolder) holder).tvExpiryDate.setText(payment.getPaymentExpiryDate());
-        ((MyViewHolder) holder).tvPaymentDate.setText(payment.getLastPaymentDate());
+        ((MyViewHolder) holder).tvPaymentDate.setText(payment.getLast_payment_date());
 
     }
 

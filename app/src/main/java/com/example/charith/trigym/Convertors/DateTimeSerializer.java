@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
  * Created by charith on 6/14/2017.
  */
 
-public class DateTimeSerializer implements JsonDeserializer<DateTime>, JsonSerializer<DateTime> {
+public class DateTimeSerializer implements JsonDeserializer<DateTime>, JsonSerializer<DateTime>{
     //    private static final DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTime();
     DateTimeZone utc = DateTimeZone.UTC;
     private static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();

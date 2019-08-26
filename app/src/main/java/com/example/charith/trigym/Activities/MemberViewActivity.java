@@ -162,13 +162,13 @@ public class MemberViewActivity extends AppCompatActivity {
 
         databaseHandler = new DatabaseHandler(MemberViewActivity.this);
 
-        address = databaseHandler.getAddressById(String.valueOf(member.getAddressId()));
+        address = databaseHandler.getAddressById(String.valueOf(member.getMember_address_id()));
         setValues();
 
         imgCall1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                call(member.getMobile1());
+                call(member.getMember_mobile_1());
             }
         });
 
@@ -176,7 +176,7 @@ public class MemberViewActivity extends AppCompatActivity {
         imgCall2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                call(member.getMobile2());
+                call(member.getMember_mobile_2());
             }
         });
 
@@ -184,7 +184,7 @@ public class MemberViewActivity extends AppCompatActivity {
         imgMessage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                message(member.getMobile1());
+                message(member.getMember_mobile_1());
             }
         });
 
@@ -192,7 +192,7 @@ public class MemberViewActivity extends AppCompatActivity {
         imgMessage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                message(member.getMobile2());
+                message(member.getMember_mobile_2());
 
             }
         });
@@ -215,7 +215,7 @@ public class MemberViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MemberViewActivity.this, PaymentListActivity.class);
-                intent.putExtra("memberIdString",String.valueOf(member.getId()));
+                intent.putExtra("memberIdString",String.valueOf(member.getMember_id()));
                 startActivity(intent);
             }
         });
@@ -234,7 +234,7 @@ public class MemberViewActivity extends AppCompatActivity {
     private void editProfile() {
         Intent intent = new Intent(MemberViewActivity.this, NewMemberActivity.class);
         intent.putExtra("navigationType","edit");
-        intent.putExtra("memberId",String.valueOf(member.getId()));
+        intent.putExtra("memberId",String.valueOf(member.getMember_id()));
         intent.putExtra("memberType",member.getType());
         startActivityForResult(intent, 200);
     }
@@ -245,7 +245,7 @@ public class MemberViewActivity extends AppCompatActivity {
 
         if(requestCode==200){
 
-            member=databaseHandler.getMemberById(String.valueOf(member.getId()));
+            member=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
             setValues();
         }
 
@@ -291,21 +291,21 @@ public class MemberViewActivity extends AppCompatActivity {
 
 
 
-        tvName.setText(member.getFirstName() + " " + member.getLastName() + " " + member.getSurName());
+        tvName.setText(member.getMember_first_name() + " " + member.getMember_last_name() + " " + member.getMember_surname());
         tvAddress.setText(getAddress(address));
 
         tvCategory.setText(member.getCategory());
         tvType.setText(member.getType());
 
-        if (member.getMobile1() != null || member.getMobile1() != 0) {
-            tvMobile1.setText(String.valueOf(member.getMobile1()));
+        if (member.getMember_mobile_1() != null || member.getMember_mobile_1() != 0) {
+            tvMobile1.setText(String.valueOf(member.getMember_mobile_1()));
         } else {
             mobile1Layout.setVisibility(View.GONE);
         }
 
-        if (member.getMobile2() != null) {
-            if( member.getMobile2() != 0){
-                tvMobile2.setText(String.valueOf(member.getMobile2()));
+        if (member.getMember_mobile_2() != null) {
+            if( member.getMember_mobile_2() != 0){
+                tvMobile2.setText(String.valueOf(member.getMember_mobile_2()));
             }else {
                 mobile2Layout.setVisibility(View.GONE);
             }
@@ -319,32 +319,32 @@ public class MemberViewActivity extends AppCompatActivity {
             emailLayout.setVisibility(View.GONE);
         }
 
-        if(member.getProfileImage()!=null){
-            Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+        if(member.getMember_profile_image_url()!=null){
+            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).into(profileImage);
 
         }
 
-        tvNIC.setText(member.getNIC());
-        tvDOB.setText(member.getDOB());
-        tvAge.setText(String.valueOf(member.getAge()));
-        tvGender.setText(member.getGender());
-        tvMarriedStatus.setText(member.getMarriedStatus());
-        tvHeight.setText(member.getHeight() + " cm");
-        tvWeight.setText(member.getWeight() + " kg");
+        tvNIC.setText(member.getMember_nic());
+        tvDOB.setText(member.getMember_dob());
+        tvAge.setText(String.valueOf(member.getMember_age()));
+        tvGender.setText(member.getMember_gender());
+        tvMarriedStatus.setText(member.getMember_married_status());
+        tvHeight.setText(member.getMember_height() + " cm");
+        tvWeight.setText(member.getMember_weight() + " kg");
 
         tvDiabetes.setText(checkCondition(member.getDiabetes()));
         tvHighCholesterol.setText(checkCondition(member.getCholesterol()));
-        tvHighBloodPressure.setText(checkCondition(member.getHighBloodPressure()));
-        tvLowBloodPressure.setText(checkCondition(member.getLowBloodPressure()));
-        tvHeartProblem.setText(checkCondition(member.getHeartProblem()));
-        tvChestPain.setText(checkCondition(member.getPainInChestWhenExercising()));
-        tvHeartAttack.setText(checkCondition(member.getHeartAttackCoronaryBypass()));
-        tvBreathingProblem.setText(checkCondition(member.getAnyBreathingDifficultiesAndAsthma()));
-        tvFainting.setText(checkCondition(member.getFaintingSpells()));
-        tvBackPain.setText(checkCondition(member.getBackOrSpinePains()));
-        tvMedication.setText(checkCondition(member.getAreYouOnAnySortOfMedications()));
-        tvIllness.setText(checkCondition(member.getOtherSignificantIllness()));
-        tvPainfulJoints.setText(checkCondition(member.getBackOrSpinePains()));
+        tvHighBloodPressure.setText(checkCondition(member.getHigh_blood_pressure()));
+        tvLowBloodPressure.setText(checkCondition(member.getLow_blood_pressure()));
+        tvHeartProblem.setText(checkCondition(member.getHeart_problem()));
+        tvChestPain.setText(checkCondition(member.getChest_pain()));
+        tvHeartAttack.setText(checkCondition(member.getHeart_attack()));
+        tvBreathingProblem.setText(checkCondition(member.getAsthma()));
+        tvFainting.setText(checkCondition(member.getFainting_spells()));
+        tvBackPain.setText(checkCondition(member.getBack_pain()));
+        tvMedication.setText(checkCondition(member.getMedication()));
+        tvIllness.setText(checkCondition(member.getOther_illness()));
+        tvPainfulJoints.setText(checkCondition(member.getBack_pain()));
         tvArthritis.setText(checkCondition(member.getArthritis()));
         tvHernia.setText(checkCondition(member.getHernia()));
 

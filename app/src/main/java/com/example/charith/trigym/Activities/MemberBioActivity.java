@@ -2,8 +2,10 @@ package com.example.charith.trigym.Activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -16,17 +18,21 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.charith.trigym.ApiService;
 import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
+import com.example.charith.trigym.Interfaces.VolleyCallback;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MemberBioActivity extends AppCompatActivity {
 
@@ -52,6 +58,7 @@ public class MemberBioActivity extends AppCompatActivity {
     LinearLayout paymentSection;
 
     RadioGroup radioGroupType;
+    private String TAG = "TriGym";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +137,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchPayment.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                member.setValidStatus(b);
+                member.setMember_valid_status(b);
 
                 if (b) {
 
@@ -141,12 +148,12 @@ public class MemberBioActivity extends AppCompatActivity {
                     getMembershipAmountFromType(memberType.getText().toString());
 
                     tvPaymentDate.setText(today.toString(getString(R.string.date_pattern)));
-                    member.setLastPaymentDate(today.toString(getString(R.string.date_pattern)));
+                    member.setLast_payment_date(today.toString(getString(R.string.date_time_pattern)));
                 } else {
                     paymentSection.setVisibility(View.GONE);
                     etAmount.setText(null);
                     tvPaymentDate.setText(getString(R.string.date_pattern));
-                    member.setLastPaymentDate(null);
+                    member.setLast_payment_date(null);
                 }
             }
         });
@@ -178,7 +185,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchHighBloodPressure.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setHighBloodPressure(isChecked);
+                member.setHigh_blood_pressure(isChecked);
 
             }
         });
@@ -187,7 +194,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchLowBloodPressure.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setLowBloodPressure(isChecked);
+                member.setLow_blood_pressure(isChecked);
 
             }
         });
@@ -196,7 +203,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchHeartProblem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setHeartProblem(isChecked);
+                member.setHeart_problem(isChecked);
 
             }
         });
@@ -204,7 +211,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchChestPain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setPainInChestWhenExercising(isChecked);
+                member.setChest_pain(isChecked);
 
             }
         });
@@ -212,7 +219,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchHeartAttack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setHeartAttackCoronaryBypass(isChecked);
+                member.setHeart_attack(isChecked);
 
             }
         });
@@ -220,7 +227,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchBreathingProblem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setAnyBreathingDifficultiesAndAsthma(isChecked);
+                member.setAsthma(isChecked);
 
             }
         });
@@ -228,7 +235,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchFainting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setFaintingSpells(isChecked);
+                member.setFainting_spells(isChecked);
 
             }
         });
@@ -236,7 +243,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchBackPain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setBackOrSpinePains(isChecked);
+                member.setBack_pain(isChecked);
 
             }
         });
@@ -244,7 +251,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchMedication.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setAreYouOnAnySortOfMedications(isChecked);
+                member.setMedication(isChecked);
 
             }
         });
@@ -252,7 +259,7 @@ public class MemberBioActivity extends AppCompatActivity {
         switchIllness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                member.setOtherSignificantIllness(isChecked);
+                member.setOther_illness(isChecked);
 
             }
         });
@@ -348,8 +355,8 @@ public class MemberBioActivity extends AppCompatActivity {
 //        }
 
 //        etAmount.setText(getValidPaymentAmount());
-//        tvPaymentDate.setText(member.getLastPaymentDate());
-        etSpecialNotes.setText(member.getComments());
+//        tvPaymentDate.setText(member.getLast_payment_date());
+        etSpecialNotes.setText(member.getMember_health_condition());
 
 
     }
@@ -364,38 +371,38 @@ public class MemberBioActivity extends AppCompatActivity {
             switchHighCholesterol.setChecked(true);
         }
 
-        if (member.getHighBloodPressure()) {
+        if (member.getHigh_blood_pressure()) {
             switchHighBloodPressure.setChecked(true);
         }
 
-        if (member.getLowBloodPressure()) {
+        if (member.getLow_blood_pressure()) {
             switchLowBloodPressure.setChecked(true);
         }
 
-        if (member.getHeartProblem()) {
+        if (member.getHeart_problem()) {
             switchHeartProblem.setChecked(true);
         }
-        if (member.getPainInChestWhenExercising()) {
+        if (member.getChest_pain()) {
             switchChestPain.setChecked(true);
         }
-        if (member.getHeartAttackCoronaryBypass()) {
+        if (member.getHeart_attack()) {
             switchHeartAttack.setChecked(true);
         }
-        if (member.getAnyBreathingDifficultiesAndAsthma()) {
+        if (member.getAsthma()) {
             switchBreathingProblem.setChecked(true);
         }
-        if (member.getFaintingSpells()) {
+        if (member.getFainting_spells()) {
             switchFainting.setChecked(true);
         }
-        if (member.getBackOrSpinePains()) {
+        if (member.getBack_pain()) {
             switchBackPain.setChecked(true);
         }
 
-        if (member.getAreYouOnAnySortOfMedications()) {
+        if (member.getMedication()) {
             switchMedication.setChecked(true);
         }
 
-        if (member.getOtherSignificantIllness()) {
+        if (member.getOther_illness()) {
             switchIllness.setChecked(true);
         }
 
@@ -410,7 +417,7 @@ public class MemberBioActivity extends AppCompatActivity {
     }
 
     private void checkMemberType() {
-        switch (member.getMembershipType()) {
+        switch (member.getMembership_type()) {
             case "Daily":
                 radioButton1Day.setChecked(true);
                 break;
@@ -469,43 +476,56 @@ public class MemberBioActivity extends AppCompatActivity {
             final DateTime tempDate = new DateTime(year, monthOfYear + 1, dayOfMonth, today.getHourOfDay(), today.getMinuteOfHour());
 
             tvPaymentDate.setText(tempDate.toString(getString(R.string.date_pattern)));
-            member.setLastPaymentDate(tempDate.toString(getString(R.string.date_pattern)));
+            member.setLast_payment_date(tempDate.toString(getString(R.string.date_time_pattern)));
 
 
         }
     };
 
     private void saveMember() {
-        member.setComments(etSpecialNotes.getText().toString());
+        member.setMember_health_condition(etSpecialNotes.getText().toString());
 
         int selectedTypeRadioButton = radioGroupType.getCheckedRadioButtonId();
         RadioButton memberType = findViewById(selectedTypeRadioButton);
 
-        member.setMembershipType(memberType.getText().toString());
+        member.setMembership_type(memberType.getText().toString());
 
         DatabaseHandler databaseHandler = new DatabaseHandler(MemberBioActivity.this);
         Long memberId;
 
         if (navigationType != null) {
             if (navigationType.equals("edit")) {
-                memberId = new Long(member.getId());
+                memberId = new Long(member.getMember_id());
 
                 if (Utils.checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))) {
-                    member.setValidStatus(true);
+                    member.setMember_valid_status(true);
                 } else {
-                    member.setValidStatus(false);
+                    member.setMember_valid_status(false);
                 }
 
+                member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                 databaseHandler.updateMember(member);
+
+                member=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+
+                new UpdateMemberAsync().execute();
+
 
                 Intent intent = new Intent();
                 setResult(200, intent);
                 finish();//finishing activity
 
             } else {
-                if (member.getLastPaymentDate() != null) {
+                if (member.getLast_payment_date() != null) {
                     Long id = saveMemberLocalStorage(databaseHandler);
-                    savePaymentToLocalStorage(id,databaseHandler);
+
+                    member=databaseHandler.getMemberById(String.valueOf(id));
+
+                    if (id != 0) {
+                        new SaveMemberAsync().execute();
+                    }
+
+                    savePaymentToLocalStorage(id, databaseHandler);
                     Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -518,15 +538,15 @@ public class MemberBioActivity extends AppCompatActivity {
         }
     }
 
-    private void savePaymentToLocalStorage(Long memberId,DatabaseHandler databaseHandler) {
+    private void savePaymentToLocalStorage(Long memberId, DatabaseHandler databaseHandler) {
         if (switchPayment.isChecked()) {
 
             Payment payment = new Payment();
 
             payment.setMember_id((int) (long) memberId);
             payment.setAmount(Float.valueOf(etAmount.getText().toString()));
-            payment.setType(member.getMembershipType());
-            payment.setLastPaymentDate(member.getLastPaymentDate());
+            payment.setType(member.getMembership_type());
+            payment.setLast_payment_date(member.getLast_payment_date());
             payment.setPaymentExpiryDate(Utils.getMembershipExpiryDate(member));
 
             databaseHandler.addPayment(payment);
@@ -535,8 +555,65 @@ public class MemberBioActivity extends AppCompatActivity {
     }
 
     private Long saveMemberLocalStorage(DatabaseHandler databaseHandler) {
-        member.setValidStatus(true);
-        member.setActiveStatus(true);
+        member.setMember_valid_status(true);
+        member.setMember_active_status(true);
+        member.setCreated_at(Utils.dateTimeToString(DateTime.now()));
+        member.setModified_at(Utils.dateTimeToString(DateTime.now()));
         return databaseHandler.addMember(member);
     }
+
+    private class SaveMemberAsync extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            ApiService.getInstance().saveMember(MemberBioActivity.this, member, new VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.d(TAG, response.toString());
+                }
+
+                @Override
+                public void onSuccess(JSONArray response) {
+
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+            return null;
+        }
+    }
+    private class UpdateMemberAsync extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            ApiService.getInstance().updateMember(MemberBioActivity.this, member, new VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.d(TAG, response.toString());
+                    Intent intent = new Intent();
+                    setResult(200, intent);
+                    finish();//finishing activity
+                }
+
+                @Override
+                public void onSuccess(JSONArray response) {
+
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+            return null;
+        }
+    }
+
+
+
+
+
 }

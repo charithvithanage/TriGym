@@ -60,7 +60,7 @@ public class InactiveUserAdapter extends ArrayAdapter<Member> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.lawyerName.setText(selectParticipant.getFirstName()+selectParticipant.getSurName());
+        holder.lawyerName.setText(selectParticipant.getMember_first_name()+selectParticipant.getMember_surname());
 
         if(selectParticipant.isSelected()){
             holder.checkedImage.setImageDrawable(context.getResources().getDrawable(R.drawable.check_with_white_correct));
@@ -70,11 +70,11 @@ public class InactiveUserAdapter extends ArrayAdapter<Member> {
 
         }
 
-        if (selectParticipant.getMobile1() != null ) {
-            if(isEmpty(selectParticipant.getMobile1().toString())){
+        if (selectParticipant.getMember_mobile_1() != null ) {
+            if(isEmpty(selectParticipant.getMember_mobile_1().toString())){
                 holder.lawyerPhone.setText("Can't send a message");
             }else {
-                holder.lawyerPhone.setText(String.valueOf(selectParticipant.getMobile1()));
+                holder.lawyerPhone.setText(String.valueOf(selectParticipant.getMember_mobile_1()));
             }
         } else {
             holder.lawyerPhone.setText("Can't send a message");
@@ -82,9 +82,9 @@ public class InactiveUserAdapter extends ArrayAdapter<Member> {
 
 
 
-        if (selectParticipant.getProfileImage() != null) {
+        if (selectParticipant.getMember_profile_image_url() != null) {
             Picasso.get()
-                    .load(selectParticipant.getProfileImage())
+                    .load(selectParticipant.getMember_profile_image_url())
                     .transform(new CircleTransform())
                     .placeholder(R.mipmap.client_phone_icon)
                     .into(holder.imageProfile);

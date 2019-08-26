@@ -15,7 +15,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:text="Select Member Type"
-        android:textColor="@color/azure"
+        android:textColor="@color/colorPrimary"
         android:textSize="24sp" />
 
     <LinearLayout

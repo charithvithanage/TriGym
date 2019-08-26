@@ -136,7 +136,6 @@ public class NewMemberActivity extends AppCompatActivity {
     private void init() {
         member = new Member();
 
-        displayFirstNameNICDialog(null,null);
 
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
@@ -193,6 +192,8 @@ public class NewMemberActivity extends AppCompatActivity {
             }
         } else {
 
+            displayFirstNameNICDialog(null,null);
+
             userActivateSwitch.setVisibility(View.GONE);
             try {
                 JSONArray jsonArray = new JSONArray(memberTypeListString);
@@ -211,10 +212,10 @@ public class NewMemberActivity extends AppCompatActivity {
             member.setType(TextUtils.join(",", memberTypeList));
             member.setCategory(memberCategory);
             DatabaseHandler db = new DatabaseHandler(this);
-            etMembershipNo.setText(getMembershipNo());
+            etMembershipNo.setText(getMember_membership_no());
             etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-//            setTempValues();
+            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -235,7 +236,7 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                displayFirstNameNICDialog(member.getFirstName(),member.getNIC());
+                displayFirstNameNICDialog(member.getMember_first_name(),member.getMember_nic());
 
 
             }
@@ -247,11 +248,11 @@ public class NewMemberActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     userActivateSwitch.setText("Activated");
-                    member.setActiveStatus(true);
+                    member.setMember_active_status(true);
                 } else {
 
                     userActivateSwitch.setText("Deactivated");
-                    member.setActiveStatus(false);
+                    member.setMember_active_status(false);
                 }
             }
         });
@@ -273,8 +274,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
                 etFirstName.setText(fistName);
                 etNIC.setText(nic);
-                member.setFirstName(fistName);
-                member.setNIC(nic);
+                member.setMember_first_name(fistName);
+                member.setMember_nic(nic);
 
                 photoFileName = fistName + nic + ".jpg";
 
@@ -313,7 +314,7 @@ public class NewMemberActivity extends AppCompatActivity {
         return false;
     }
 
-    private String getMembershipNo() {
+    private String getMember_membership_no() {
 
         StringBuilder getMembershipInitials = new StringBuilder();
 
@@ -337,14 +338,14 @@ public class NewMemberActivity extends AppCompatActivity {
 
 
     private void setUserValues() {
-        if (member.getActiveStatus()) {
+        if (member.getMember_active_status()) {
             userActivateSwitch.setText("Activated");
             userActivateSwitch.setChecked(true);
         } else {
             userActivateSwitch.setText("Deactivated");
             userActivateSwitch.setChecked(false);
         }
-        if (member.getMarriedStatus().equals("Single")) {
+        if (member.getMember_married_status().equals("Single")) {
             radioBtnMarried.setChecked(false);
             radioBtnSingle.setChecked(true);
         } else {
@@ -352,7 +353,7 @@ public class NewMemberActivity extends AppCompatActivity {
             radioBtnSingle.setChecked(false);
         }
 
-        if (member.getGender().equals("Male")) {
+        if (member.getMember_gender().equals("Male")) {
             radioBtnMale.setChecked(true);
             radioBtnFemale.setChecked(false);
 
@@ -362,38 +363,38 @@ public class NewMemberActivity extends AppCompatActivity {
 
         }
 
-        etMembershipNo.setText(member.getMembershipNo());
-        etMembershipReciptNo.setText(member.getMembershipRecieptNo());
+        etMembershipNo.setText(member.getMember_membership_no());
+        etMembershipReciptNo.setText(member.getMember_receipt_no());
 
-        etFirstName.setText(member.getFirstName());
-        etLastName.setText(member.getLastName());
-        etSurName.setText(member.getSurName());
+        etFirstName.setText(member.getMember_first_name());
+        etLastName.setText(member.getMember_last_name());
+        etSurName.setText(member.getMember_surname());
 
-        tvAge.setText(String.valueOf(member.getAge()));
-        tvDOB.setText(member.getDOB());
+        tvAge.setText(String.valueOf(member.getMember_age()));
+        tvDOB.setText(member.getMember_dob());
 
         if (!member.getType().equals("Student")) {
             studentSection.setVisibility(View.GONE);
         } else {
-            etGuardianName.setText(member.getGuardianName());
-            etGuardianTelephone.setText(member.getGuardianTel());
-            etGuardianRelationship.setText(member.getGuardianRelationship());
+            etGuardianName.setText(member.getGuardian_name());
+            etGuardianTelephone.setText(member.getGuardian_tel());
+            etGuardianRelationship.setText(member.getGuardian_relationship());
         }
 
-        if (member.getProfileImage() != null) {
-            Picasso.get().load(Uri.parse(member.getProfileImage())).transform(new CircleTransform()).into(profileImage);
+        if (member.getMember_profile_image_url() != null) {
+            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).into(profileImage);
         }
 
 
-        etHeight.setText(String.valueOf(member.getHeight()));
-        etWeight.setText(String.valueOf(member.getWeight()));
-        etNIC.setText(member.getNIC());
-        etMobile1.setText(String.valueOf(member.getMobile1()));
-        etMobile2.setText(String.valueOf(member.getMobile2()));
+        etHeight.setText(String.valueOf(member.getMember_height()));
+        etWeight.setText(String.valueOf(member.getMember_weight()));
+        etNIC.setText(member.getMember_nic());
+        etMobile1.setText(String.valueOf(member.getMember_mobile_1()));
+        etMobile2.setText(String.valueOf(member.getMember_mobile_2()));
 
         DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
 
-        Address address = databaseHandler.getAddressById(String.valueOf(member.getAddressId()));
+        Address address = databaseHandler.getAddressById(String.valueOf(member.getMember_address_id()));
 
         etLine1.setText(address.getLine1());
         etLine2.setText(address.getLine2());
@@ -457,54 +458,54 @@ public class NewMemberActivity extends AppCompatActivity {
         RadioButton marriedStatus = findViewById(selectedMarriedStatusRadioButton);
 
         if (gender.getText() != null) {
-            member.setGender(gender.getText().toString());
+            member.setMember_gender(gender.getText().toString());
         }
 
-        member.setMarriedStatus(marriedStatus.getText().toString());
+        member.setMember_married_status(marriedStatus.getText().toString());
         member.setEmail(etEmail.getText().toString());
-        member.setSurName(etSurName.getText().toString());
+        member.setMember_surname(etSurName.getText().toString());
 
 
         if (!TextUtils.isEmpty(etMobile2.getText().toString())) {
-            member.setMobile2(Integer.valueOf(etMobile2.getText().toString()));
+            member.setMember_mobile_2(Integer.valueOf(etMobile2.getText().toString()));
         }
 
 
         address = new Address();
 
         if (fileProvider != null) {
-            member.setProfileImage(fileProvider.toString());
+            member.setMember_profile_image_url(fileProvider.toString());
         }
 
-        member.setMembershipNo(etMembershipNo.getText().toString());
-        member.setMembershipRecieptNo(etMembershipReciptNo.getText().toString());
-        member.setFirstName(etFirstName.getText().toString());
-        member.setLastName(etLastName.getText().toString());
+        member.setMember_membership_no(etMembershipNo.getText().toString());
+        member.setMember_receipt_no(etMembershipReciptNo.getText().toString());
+        member.setMember_first_name(etFirstName.getText().toString());
+        member.setMember_last_name(etLastName.getText().toString());
 
 
         if (member.getType().equals("Student")) {
 
-            member.setGuardianName(etGuardianName.getText().toString());
-            member.setGuardianTel(Integer.valueOf(etGuardianTelephone.getText().toString()));
-            member.setGuardianRelationship(etGuardianRelationship.getText().toString());
+            member.setGuardian_name(etGuardianName.getText().toString());
+            member.setGuardian_tel(Integer.valueOf(etGuardianTelephone.getText().toString()));
+            member.setGuardian_relationship(etGuardianRelationship.getText().toString());
 
         }
 
         address.setLine1(etLine1.getText().toString());
 
         if (!TextUtils.isEmpty(etHeight.getText().toString())) {
-            member.setHeight(Float.valueOf(etHeight.getText().toString()));
+            member.setMember_height(Float.valueOf(etHeight.getText().toString()));
 
         }
 
         if (!TextUtils.isEmpty(etWeight.getText().toString())) {
-            member.setWeight(Float.valueOf(etWeight.getText().toString()));
+            member.setMember_weight(Float.valueOf(etWeight.getText().toString()));
 
         }
-        member.setNIC(etNIC.getText().toString());
+        member.setMember_nic(etNIC.getText().toString());
 
         if (!TextUtils.isEmpty(etMobile1.getText().toString())) {
-            member.setMobile1(Integer.valueOf(etMobile1.getText().toString()));
+            member.setMember_mobile_1(Integer.valueOf(etMobile1.getText().toString()));
         }
 
 
@@ -530,8 +531,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
     private void navigateToMemberBioActivity() {
 
-        if (member.getMembershipNo() != null && member.getMembershipRecieptNo() != null && member.getProfileImage() != null && member.getMobile1() != null &&
-                member.getFirstName() != null && member.getSurName() != null && member.getNIC() != null && member.getDOB() != null && member.getHeight() != null && member.getWeight() != null && address.getLine1() != null) {
+        if (member.getMember_membership_no() != null && member.getMember_receipt_no() != null && member.getMember_profile_image_url() != null && member.getMember_mobile_1() != null &&
+                member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && address.getLine1() != null) {
 
             DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
             Integer addressId;
@@ -542,49 +543,48 @@ public class NewMemberActivity extends AppCompatActivity {
 
             addressId = databaseHandler.addAddress(address).intValue();
 
-            member.setAddress(address);
-            member.setAddressId(addressId);
+            member.setMember_address_id(addressId);
             address.setId(addressId);
 
             saveAddressToServer(address);
 
 
         } else {
-            if (member.getMembershipNo() == null) {
+            if (member.getMember_membership_no() == null) {
                 etMembershipNo.setError(getString(R.string.empty_field_alert));
             }
 
-            if (member.getMembershipRecieptNo() == null) {
+            if (member.getMember_receipt_no() == null) {
                 etMembershipReciptNo.setError(getString(R.string.empty_field_alert));
             }
 
-            if (member.getProfileImage() == null) {
+            if (member.getMember_profile_image_url() == null) {
                 Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.capture_image_alert));
             } else {
-                if (member.getDOB() == null) {
+                if (member.getMember_dob() == null) {
                     Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.not_dob_selected_alert));
 
                 }
             }
 
-            if (member.getMobile1() == null) {
+            if (member.getMember_mobile_1() == null) {
                 etMobile1.setError(getString(R.string.empty_field_alert));
             }
 
-            if (member.getFirstName() == null) {
+            if (member.getMember_first_name() == null) {
                 etFirstName.setError(getString(R.string.empty_field_alert));
             }
-            if (member.getSurName() == null) {
+            if (member.getMember_surname() == null) {
                 etSurName.setError(getString(R.string.empty_field_alert));
             }
-            if (member.getNIC() == null) {
+            if (member.getMember_nic() == null) {
                 etNIC.setError(getString(R.string.empty_field_alert));
             }
 
-            if (member.getHeight() == null) {
+            if (member.getMember_height() == null) {
                 etHeight.setError(getString(R.string.empty_field_alert));
             }
-            if (member.getWeight() == null) {
+            if (member.getMember_weight() == null) {
                 etWeight.setError(getString(R.string.empty_field_alert));
             }
 
@@ -641,9 +641,9 @@ public class NewMemberActivity extends AppCompatActivity {
             final DateTime tempDate = new DateTime(year, monthOfYear + 1, dayOfMonth, today.getHourOfDay(), today.getMinuteOfHour());
 
             tvDOB.setText(tempDate.toString(getString(R.string.date_pattern)));
-            member.setAge(calculateAge(tempDate));
+            member.setMember_age(calculateAge(tempDate));
             tvAge.setText(calculateAge(tempDate).toString() + " Yrs");
-            member.setDOB(tempDate.toString(getString(R.string.date_pattern)));
+            member.setMember_dob(tempDate.toString(getString(R.string.date_time_pattern)));
 
 
         }

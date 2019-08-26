@@ -7,6 +7,32 @@ public class Payment {
     Integer member_id;
     String lastPaymentDate;
     String paymentExpiryDate;
+    String created_at;
+    String modified_at;
+
+    public String getLastPaymentDate() {
+        return lastPaymentDate;
+    }
+
+    public void setLastPaymentDate(String lastPaymentDate) {
+        this.lastPaymentDate = lastPaymentDate;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getModified_at() {
+        return modified_at;
+    }
+
+    public void setModified_at(String modified_at) {
+        this.modified_at = modified_at;
+    }
 
     public Integer getId() {
         return id;
@@ -40,11 +66,11 @@ public class Payment {
         this.member_id = member_id;
     }
 
-    public String getLastPaymentDate() {
+    public String getLast_payment_date() {
         return lastPaymentDate;
     }
 
-    public void setLastPaymentDate(String lastPaymentDate) {
+    public void setLast_payment_date(String lastPaymentDate) {
         this.lastPaymentDate = lastPaymentDate;
     }
 

@@ -2,8 +2,8 @@
     <string name="app_name">TriGym</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Tri fit &amp; wellness</string>
+    <string name="nav_header_subtitle">trifit@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -14,7 +14,8 @@
     <string name="lawyer_delete_confirmation_message">Do you wish to delete this member?</string>
     <string name="no_permission_to_call">You have no permission to call</string>
     <string name="profileImageSelectWarningMessage">Please enter first name and NIC number</string>
-    <string name="date_pattern">YYYY/MM/dd</string>
+    <string name="date_pattern">yyyy-MM-dd</string>
+    <string name="date_time_pattern">yyyy-MM-dd HH:mm</string>
     <string name="todoString">TODO</string>
     <string name="deleteString">Delete</string>
     <string name="emailString">Email</string>

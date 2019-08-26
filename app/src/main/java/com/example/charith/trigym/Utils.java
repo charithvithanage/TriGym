@@ -130,41 +130,44 @@ public class Utils {
     }
 
     public static DateTime stringToDateTime(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY/MM/dd");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
         return formatter.parseDateTime(dateString);
     }
 
     public static String dateToString(DateTime dateTime) {
         return dateTime.toString("YYYY/MM/dd");
     }
+    public static String dateTimeToString(DateTime dateTime) {
+        return dateTime.toString("yyyy-MM-dd HH:mm");
+    }
 
 
     public static String getMembershipExpiryDate(Member member) {
 
         String expiryDateString = null;
-        switch (member.getMembershipType()) {
+        switch (member.getMembership_type()) {
             case "Daily":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(1));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusDays(1));
                 break;
 
             case "1 Week":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusDays(7));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusDays(7));
                 break;
 
             case "1 Month":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(1));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusMonths(1));
                 break;
 
             case "3 Month":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(3));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusMonths(3));
                 break;
 
             case "6 Month":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusMonths(6));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusMonths(6));
                 break;
 
             case "1 Year":
-                expiryDateString = Utils.dateToString(Utils.stringToDateTime(member.getLastPaymentDate()).plusYears(1));
+                expiryDateString = Utils.dateTimeToString(Utils.stringToDateTime(member.getLast_payment_date()).plusYears(1));
                 break;
         }
 
@@ -194,7 +197,7 @@ public class Utils {
 
         for (Member member : members) {
 
-            if (!checkMemberValidStatus(context, String.valueOf(member.getId()))) {
+            if (!checkMemberValidStatus(context, String.valueOf(member.getMember_id()))) {
                 inActiveMembers.add(member);
             }
         }
@@ -207,7 +210,7 @@ public class Utils {
 
         for (Member member : allMembers) {
 
-            if (member.getActiveStatus() && checkMemberValidStatus(context, String.valueOf(member.getId()))) {
+            if (member.getMember_active_status() && checkMemberValidStatus(context, String.valueOf(member.getMember_id()))) {
                 activeMembers.add(member);
             }
 
@@ -222,7 +225,7 @@ public class Utils {
 
         for (Member member : allMembers) {
 
-            if (!member.getActiveStatus()) {
+            if (!member.getMember_active_status()) {
                 deactiveMembers.add(member);
             }
 
@@ -375,8 +378,8 @@ public class Utils {
         StringBuilder numbers = new StringBuilder();
         if (members != null) {
             for (Member member : members) {
-                if (member.getMobile1() != null) {
-                    numbers.append(member.getMobile1() + ";");
+                if (member.getMember_mobile_1() != null) {
+                    numbers.append(member.getMember_mobile_1() + ";");
                 }
             }
         }

@@ -56,4 +56,5 @@ dependencies {
     }
     implementation files('libs/httpclient-4.3.3.jar')
     implementation 'com.orhanobut:dialogplus:1.11'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

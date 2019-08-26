@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,17 +31,24 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.example.charith.trigym.Adapters.MemberAdapter;
+import com.example.charith.trigym.ApiService;
+import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.DialogListner;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
+import com.example.charith.trigym.Interfaces.VolleyCallback;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +78,10 @@ public class MainActivity extends AppCompatActivity
     int whiteColorId, blueColorId;
 
     boolean isActiveListShow;
+
+    private String TAG = "TriGym";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,32 +132,15 @@ public class MainActivity extends AppCompatActivity
         memberList = new ArrayList<>();
         inActiveMembers = new ArrayList<>();
 
-        GsonBuilder builder = new GsonBuilder()
-                .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
         gson = builder.create();
-        loadMemberList();
+
+        new GetAllMembersAsync().execute();
 
         loadInActiveMemberList();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                if (isActiveListShow) {
-                    memberAdapter.filter(newText);
-                } else {
-                    inActiveMemberAdapter.filter(newText);
-
-                }
-
-                return false;
-            }
-        });
 
         selectActiveBtn = findViewById(R.id.selectActiveBtn);
         selectInactiveBtn = findViewById(R.id.selectInactiveBtn);
@@ -438,34 +434,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    private void loadMemberList() {
-
-        final DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
-        memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
-        memberAdapter = new MemberAdapter(MainActivity.this, memberList, new MemberSelectListner() {
-            @Override
-            public void selectMember(Member member, String changeStatus) {
-                if (changeStatus.equals("deactivate")) {
-
-                    member.setActiveStatus(false);
-                    databaseHandler.updateMember(member);
-                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
-                    memberAdapter.updateList(memberList);
-                } else {
-                    databaseHandler.deleteMember(String.valueOf(member.getId()));
-                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
-                    memberAdapter.updateList(memberList);
-
-                }
-            }
-        });
-
-        activeMemberListRecycleView.setAdapter(memberAdapter);
-
-
-    }
-
     private void loadInActiveMemberList() {
         final DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
         inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
@@ -474,12 +442,13 @@ public class MainActivity extends AppCompatActivity
             public void selectMember(Member member, String changeStatus) {
                 if (changeStatus.equals("deactivate")) {
 
-                    member.setActiveStatus(false);
+                    member.setMember_active_status(false);
+                    member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
                     inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
                     inActiveMemberAdapter.updateList(inActiveMembers);
                 } else {
-                    databaseHandler.deleteMember(String.valueOf(member.getId()));
+                    databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
                     inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
                     inActiveMemberAdapter.updateList(inActiveMembers);
 
@@ -566,14 +535,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, DeactivateMemberListActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -591,4 +552,108 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+
+    private class GetAllMembersAsync extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            ApiService.getInstance().getAllMembers(MainActivity.this,  new VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+
+                }
+
+                @Override
+                public void onSuccess(JSONArray response) {
+                    try {
+
+                        for (int i = 0; i < response.length(); i++) {
+
+                            Member member=gson.fromJson(response.getString(i),Member.class);
+                            DatabaseHandler databaseHandler=new DatabaseHandler(MainActivity.this);
+                            Member excistingMember=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+                            if(excistingMember.getMember_id()!=null){
+                                databaseHandler.updateMember(member);
+                            }else {
+                               Long id= databaseHandler.addMember(member);
+
+                                savePaymentToLocalStorage(id, databaseHandler);
+
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    loadMemberList();
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+            return null;
+        }
+    }
+
+    private void savePaymentToLocalStorage(Long id, DatabaseHandler databaseHandler) {
+//        Payment payment = new Payment();
+//
+//        payment.setMember_id((int) (long) memberId);
+//        payment.setAmount(Float.valueOf(etAmount.getText().toString()));
+//        payment.setType(member.getMembership_type());
+//        payment.setLast_payment_date(member.getLast_payment_date());
+//        payment.setPaymentExpiryDate(Utils.getMembershipExpiryDate(member));
+//
+//        databaseHandler.addPayment(payment);
+    }
+
+    private void loadMemberList() {
+        final DatabaseHandler databaseHandler=new DatabaseHandler(MainActivity.this);
+
+        memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
+        memberAdapter = new MemberAdapter(MainActivity.this, memberList, new MemberSelectListner() {
+            @Override
+            public void selectMember(Member member, String changeStatus) {
+                if (changeStatus.equals("deactivate")) {
+
+                    member.setMember_active_status(false);
+                    member.setModified_at(Utils.dateTimeToString(DateTime.now()));
+                    databaseHandler.updateMember(member);
+                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
+                    memberAdapter.updateList(memberList);
+                } else {
+                    databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
+                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
+                    memberAdapter.updateList(memberList);
+
+                }
+            }
+        });
+
+        activeMemberListRecycleView.setAdapter(memberAdapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if (isActiveListShow) {
+                    memberAdapter.filter(newText);
+                } else {
+                    inActiveMemberAdapter.filter(newText);
+
+                }
+
+                return false;
+            }
+        });
+    }
+
 }

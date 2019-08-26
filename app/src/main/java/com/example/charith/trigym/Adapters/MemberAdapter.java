@@ -77,10 +77,10 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
     @Override
     public void onBindViewHolder(final MemberAdapter.SimpleViewHolder viewHolder, final int position) {
         Member memberObj = filteredMembers.get(position);
-        viewHolder.memberName.setText(memberObj.getFirstName() + " " + memberObj.getLastName());
-        viewHolder.memberPhone.setText(String.valueOf(memberObj.getMobile1()));
+        viewHolder.memberName.setText(memberObj.getMember_first_name() + " " + memberObj.getMember_last_name());
+        viewHolder.memberPhone.setText(String.valueOf(memberObj.getMember_mobile_1()));
 
-//        if(Utils.checkMemberValidStatus(context, String.valueOf(memberObj.getId()))){
+//        if(Utils.checkMemberValidStatus(context, String.valueOf(memberObj.getMember_id()))){
 //            viewHolder.memberStatus.setText(context.getResources().getString(R.string.active_user_string));
 //            viewHolder.memberStatus.setBackgroundResource(R.drawable.valid_bg);
 //        }else {
@@ -89,8 +89,8 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
 //        }
 
 
-        if (memberObj.getProfileImage() != null) {
-            Picasso.get().load(Uri.parse(memberObj.getProfileImage())).transform(new CircleTransform()).into(viewHolder.imageProfile);
+        if (memberObj.getMember_profile_image_url() != null) {
+            Picasso.get().load(Uri.parse(memberObj.getMember_profile_image_url())).transform(new CircleTransform()).into(viewHolder.imageProfile);
         }
 
 
@@ -110,7 +110,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                     public void run() {
                         Intent i = new Intent(context, MemberViewActivity.class);
                         Member member = filteredMembers.get(position);
-                        i.putExtra("memberId", String.valueOf(member.getId()));
+                        i.putExtra("memberId", String.valueOf(member.getMember_id()));
                         context.startActivity(i);
                         viewHolder.swipeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
                     }
@@ -166,7 +166,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 selectedPosition = position;
 
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.putExtra("address", String.valueOf(selectedMember.getMobile1()));
+                sendIntent.putExtra("address", String.valueOf(selectedMember.getMember_mobile_1()));
 
                 sendIntent.setType("vnd.android-dir/mms-sms");
 
@@ -193,7 +193,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
                 selectedMember = filteredMembers.get(position);
                 selectedPosition = position;
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + selectedMember.getMobile1()));
+                callIntent.setData(Uri.parse("tel:" + selectedMember.getMember_mobile_1()));
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -255,42 +255,42 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
             filteredMembers.addAll(members);
         } else {
             for (Member wp : members) {
-                if (wp.getFirstName() != null && wp.getLastName() != null && wp.getSurName() != null && wp.getNIC() != null) {
-                    if (Utils.removeSpacesAndToLowerCase(wp.getFirstName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName())).contains(charText) || Utils.removeSpacesAndToLowerCase(wp.getNIC()).contains(charText)) {
+                if (wp.getMember_first_name() != null && wp.getMember_last_name() != null && wp.getMember_surname() != null && wp.getMember_nic() != null) {
+                    if (Utils.removeSpacesAndToLowerCase(wp.getMember_first_name()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_last_name())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_surname())).contains(charText) || Utils.removeSpacesAndToLowerCase(wp.getMember_nic()).contains(charText)) {
                         filteredMembers.add(wp);
-                    } else if (wp.getLastName() != null && wp.getSurName() != null) {
-                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName()));
+                    } else if (wp.getMember_last_name() != null && wp.getMember_surname() != null) {
+                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_last_name())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_surname()));
                         if (str.toLowerCase(Locale.getDefault()).contains(charText)) {
                             filteredMembers.add(wp);
                         }
                     }
-                } else if (wp.getFirstName() != null && wp.getLastName() != null && wp.getSurName() != null) {
-                    if (Utils.removeSpacesAndToLowerCase(wp.getFirstName()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName())).contains(charText)) {
+                } else if (wp.getMember_first_name() != null && wp.getMember_last_name() != null && wp.getMember_surname() != null) {
+                    if (Utils.removeSpacesAndToLowerCase(wp.getMember_first_name()).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_last_name())).contains(charText) || Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_surname())).contains(charText)) {
                         filteredMembers.add(wp);
-                    } else if (wp.getLastName() != null && wp.getSurName() != null) {
-                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getLastName())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getSurName()));
+                    } else if (wp.getMember_last_name() != null && wp.getMember_surname() != null) {
+                        String str = Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_last_name())) + " " + Utils.removeSpacesAndToLowerCase(String.valueOf(wp.getMember_surname()));
                         if (str.toLowerCase(Locale.getDefault()).contains(charText)) {
                             filteredMembers.add(wp);
                         }
                     }
-                } else if (wp.getFirstName() != null && wp.getLastName() != null) {
-                    if (wp.getFirstName().toLowerCase(Locale.getDefault()).contains(charText) || String.valueOf(wp.getLastName()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getMember_first_name() != null && wp.getMember_last_name() != null) {
+                    if (wp.getMember_first_name().toLowerCase(Locale.getDefault()).contains(charText) || String.valueOf(wp.getMember_last_name()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getFirstName() != null) {
-                    if (wp.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getMember_first_name() != null) {
+                    if (wp.getMember_first_name().toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getLastName() != null) {
-                    if (String.valueOf(wp.getLastName()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getMember_last_name() != null) {
+                    if (String.valueOf(wp.getMember_last_name()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getSurName() != null) {
-                    if (String.valueOf(wp.getSurName()).toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getMember_surname() != null) {
+                    if (String.valueOf(wp.getMember_surname()).toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
-                } else if (wp.getNIC() != null) {
-                    if (wp.getNIC().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (wp.getMember_nic() != null) {
+                    if (wp.getMember_nic().toLowerCase(Locale.getDefault()).contains(charText)) {
                         filteredMembers.add(wp);
                     }
                 }

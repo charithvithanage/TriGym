@@ -87,13 +87,14 @@ public class DeactivateMemberListActivity extends AppCompatActivity {
             public void selectMember(Member member, String changeStatus) {
                 if (changeStatus.equals("activate")) {
 
-                    member.setActiveStatus(true);
+                    member.setMember_active_status(true);
+                    member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
                     memberList = Utils.getDeactiveMembers( databaseHandler.getAllMembers());
                     memberAdapter.updateList(memberList);
 
                 } else {
-                    databaseHandler.deleteMember(String.valueOf(member.getId()));
+                    databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
                     memberAdapter.notifyDataSetChanged();
 
                 }

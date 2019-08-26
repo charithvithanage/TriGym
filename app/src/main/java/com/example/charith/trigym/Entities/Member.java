@@ -6,102 +6,287 @@ import java.util.Map;
 
 public class Member {
 
-    Integer id;
-    String membershipNo;
-    String membershipRecieptNo;
-    String registeredDate;
+    Long member_id;
+    String member_membership_no;
+    String member_receipt_no;
     String type;
     String category;
-    String firstName;
-    String lastName;
-    String surName;
-    String guardianName;
-    String MarriedStatus;
-    Integer guardianTel;
-    String guardianRelationship;
-    Address address;
-    Integer mobile1;
-    Integer mobile2;
+    String member_first_name;
+    String member_last_name;
+    String member_surname;
+    String guardian_name;
+    String member_married_status;
+    Integer guardian_tel;
+    String guardian_relationship;
+    Integer member_address_id;
+    Integer member_mobile_1;
+    Integer member_mobile_2;
     String email;
-    String NIC;
-    String DOB;
-    Integer age;
-    String gender;
-    Float height;
-    Float weight;
-    String profileImage;
-    String comments;
-    Integer addressId;
-    String membershipType;
-    String lastPaymentDate;
-    String membershipExpiredDate;
-    Boolean validStatus;
-    Boolean activeStatus;
+    String member_nic;
+    String member_dob;
+    Integer member_age;
+    String member_gender;
+    Float member_height;
+    Float member_weight;
+    String member_profile_image_url;
+    String member_health_condition;
+    String membership_type;
+    String last_payment_date;
+    String membership_expiry_date;
+    Boolean member_valid_status;
+    Boolean member_active_status;
 
-    Boolean diabetes;
-    Boolean cholesterol;
-    Boolean highBloodPressure;
-    Boolean lowBloodPressure;
-    Boolean heartProblem;
-    Boolean painInChestWhenExercising;
-    Boolean heartAttackCoronaryBypass;
-    Boolean anyBreathingDifficultiesAndAsthma;
-    Boolean faintingSpells;
-    Boolean backOrSpinePains;
-    Boolean areYouOnAnySortOfMedications;
-    Boolean otherSignificantIllness;
-    Boolean swollen;
-    Boolean arthritis;
-    Boolean hernia;
+    Boolean diabetes=false;
+    Boolean cholesterol=false;
+    Boolean high_blood_pressure=false;
+    Boolean low_blood_pressure=false;
+    Boolean heart_problem=false;
+    Boolean chest_pain=false;
+    Boolean heart_attack=false;
+    Boolean asthma=false;
+    Boolean fainting_spells=false;
+    Boolean back_pain=false;
+    Boolean medication=false;
+    Boolean other_illness=false;
+    Boolean swollen=false;
+    Boolean arthritis=false;
+    Boolean hernia=false;
 
-    boolean selected;
+    boolean selected=false;
+
+    String created_at;
+    String modified_at;
+
+    public Long getMember_id() {
+        return member_id;
+    }
+
+    public void setMember_id(Long member_id) {
+        this.member_id = member_id;
+    }
+
+    public String getMember_membership_no() {
+        return member_membership_no;
+    }
+
+    public void setMember_membership_no(String member_membership_no) {
+        this.member_membership_no = member_membership_no;
+    }
+
+    public String getMember_receipt_no() {
+        return member_receipt_no;
+    }
+
+    public void setMember_receipt_no(String member_receipt_no) {
+        this.member_receipt_no = member_receipt_no;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getCategory() {
         return category;
-    }
-
-    public Boolean getActiveStatus() {
-        return activeStatus;
-    }
-
-    public void setActiveStatus(Boolean activeStatus) {
-        this.activeStatus = activeStatus;
     }
 
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public String getMember_first_name() {
+        return member_first_name;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setMember_first_name(String member_first_name) {
+        this.member_first_name = member_first_name;
     }
 
-    public Boolean getValidStatus() {
-        return validStatus;
+    public String getMember_last_name() {
+        return member_last_name;
     }
 
-    public void setValidStatus(Boolean validStatus) {
-        this.validStatus = validStatus;
+    public void setMember_last_name(String member_last_name) {
+        this.member_last_name = member_last_name;
     }
 
-    public String getMembershipExpiredDate() {
-        return membershipExpiredDate;
+    public String getMember_surname() {
+        return member_surname;
     }
 
-    public void setMembershipExpiredDate(String membershipExpiredDate) {
-        this.membershipExpiredDate = membershipExpiredDate;
+    public void setMember_surname(String member_surname) {
+        this.member_surname = member_surname;
     }
 
-    public String getLastPaymentDate() {
-        return lastPaymentDate;
+    public String getGuardian_name() {
+        return guardian_name;
     }
 
-    public void setLastPaymentDate(String lastPaymentDate) {
-        this.lastPaymentDate = lastPaymentDate;
+    public void setGuardian_name(String guardian_name) {
+        this.guardian_name = guardian_name;
+    }
+
+    public String getMember_married_status() {
+        return member_married_status;
+    }
+
+    public void setMember_married_status(String member_married_status) {
+        this.member_married_status = member_married_status;
+    }
+
+    public Integer getGuardian_tel() {
+        return guardian_tel;
+    }
+
+    public void setGuardian_tel(Integer guardian_tel) {
+        this.guardian_tel = guardian_tel;
+    }
+
+    public String getGuardian_relationship() {
+        return guardian_relationship;
+    }
+
+    public void setGuardian_relationship(String guardian_relationship) {
+        this.guardian_relationship = guardian_relationship;
+    }
+
+    public Integer getMember_address_id() {
+        return member_address_id;
+    }
+
+    public void setMember_address_id(Integer member_address_id) {
+        this.member_address_id = member_address_id;
+    }
+
+    public Integer getMember_mobile_1() {
+        return member_mobile_1;
+    }
+
+    public void setMember_mobile_1(Integer member_mobile_1) {
+        this.member_mobile_1 = member_mobile_1;
+    }
+
+    public Integer getMember_mobile_2() {
+        return member_mobile_2;
+    }
+
+    public void setMember_mobile_2(Integer member_mobile_2) {
+        this.member_mobile_2 = member_mobile_2;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMember_nic() {
+        return member_nic;
+    }
+
+    public void setMember_nic(String member_nic) {
+        this.member_nic = member_nic;
+    }
+
+    public String getMember_dob() {
+        return member_dob;
+    }
+
+    public void setMember_dob(String member_dob) {
+        this.member_dob = member_dob;
+    }
+
+    public Integer getMember_age() {
+        return member_age;
+    }
+
+    public void setMember_age(Integer member_age) {
+        this.member_age = member_age;
+    }
+
+    public String getMember_gender() {
+        return member_gender;
+    }
+
+    public void setMember_gender(String member_gender) {
+        this.member_gender = member_gender;
+    }
+
+    public Float getMember_height() {
+        return member_height;
+    }
+
+    public void setMember_height(Float member_height) {
+        this.member_height = member_height;
+    }
+
+    public Float getMember_weight() {
+        return member_weight;
+    }
+
+    public void setMember_weight(Float member_weight) {
+        this.member_weight = member_weight;
+    }
+
+    public String getMember_profile_image_url() {
+        return member_profile_image_url;
+    }
+
+    public void setMember_profile_image_url(String member_profile_image_url) {
+        this.member_profile_image_url = member_profile_image_url;
+    }
+
+    public String getMember_health_condition() {
+        return member_health_condition;
+    }
+
+    public void setMember_health_condition(String member_health_condition) {
+        this.member_health_condition = member_health_condition;
+    }
+
+    public String getMembership_type() {
+        return membership_type;
+    }
+
+    public void setMembership_type(String membership_type) {
+        this.membership_type = membership_type;
+    }
+
+    public String getLast_payment_date() {
+        return last_payment_date;
+    }
+
+    public void setLast_payment_date(String last_payment_date) {
+        this.last_payment_date = last_payment_date;
+    }
+
+    public String getMembership_expiry_date() {
+        return membership_expiry_date;
+    }
+
+    public void setMembership_expiry_date(String membership_expiry_date) {
+        this.membership_expiry_date = membership_expiry_date;
+    }
+
+    public Boolean getMember_valid_status() {
+        return member_valid_status;
+    }
+
+    public void setMember_valid_status(Boolean member_valid_status) {
+        this.member_valid_status = member_valid_status;
+    }
+
+    public Boolean getMember_active_status() {
+        return member_active_status;
+    }
+
+    public void setMember_active_status(Boolean member_active_status) {
+        this.member_active_status = member_active_status;
     }
 
     public Boolean getDiabetes() {
@@ -120,84 +305,84 @@ public class Member {
         this.cholesterol = cholesterol;
     }
 
-    public Boolean getHighBloodPressure() {
-        return highBloodPressure;
+    public Boolean getHigh_blood_pressure() {
+        return high_blood_pressure;
     }
 
-    public void setHighBloodPressure(Boolean highBloodPressure) {
-        this.highBloodPressure = highBloodPressure;
+    public void setHigh_blood_pressure(Boolean high_blood_pressure) {
+        this.high_blood_pressure = high_blood_pressure;
     }
 
-    public Boolean getLowBloodPressure() {
-        return lowBloodPressure;
+    public Boolean getLow_blood_pressure() {
+        return low_blood_pressure;
     }
 
-    public void setLowBloodPressure(Boolean lowBloodPressure) {
-        this.lowBloodPressure = lowBloodPressure;
+    public void setLow_blood_pressure(Boolean low_blood_pressure) {
+        this.low_blood_pressure = low_blood_pressure;
     }
 
-    public Boolean getHeartProblem() {
-        return heartProblem;
+    public Boolean getHeart_problem() {
+        return heart_problem;
     }
 
-    public void setHeartProblem(Boolean heartProblem) {
-        this.heartProblem = heartProblem;
+    public void setHeart_problem(Boolean heart_problem) {
+        this.heart_problem = heart_problem;
     }
 
-    public Boolean getPainInChestWhenExercising() {
-        return painInChestWhenExercising;
+    public Boolean getChest_pain() {
+        return chest_pain;
     }
 
-    public void setPainInChestWhenExercising(Boolean painInChestWhenExercising) {
-        this.painInChestWhenExercising = painInChestWhenExercising;
+    public void setChest_pain(Boolean chest_pain) {
+        this.chest_pain = chest_pain;
     }
 
-    public Boolean getHeartAttackCoronaryBypass() {
-        return heartAttackCoronaryBypass;
+    public Boolean getHeart_attack() {
+        return heart_attack;
     }
 
-    public void setHeartAttackCoronaryBypass(Boolean heartAttackCoronaryBypass) {
-        this.heartAttackCoronaryBypass = heartAttackCoronaryBypass;
+    public void setHeart_attack(Boolean heart_attack) {
+        this.heart_attack = heart_attack;
     }
 
-    public Boolean getAnyBreathingDifficultiesAndAsthma() {
-        return anyBreathingDifficultiesAndAsthma;
+    public Boolean getAsthma() {
+        return asthma;
     }
 
-    public void setAnyBreathingDifficultiesAndAsthma(Boolean anyBreathingDifficultiesAndAsthma) {
-        this.anyBreathingDifficultiesAndAsthma = anyBreathingDifficultiesAndAsthma;
+    public void setAsthma(Boolean asthma) {
+        this.asthma = asthma;
     }
 
-    public Boolean getFaintingSpells() {
-        return faintingSpells;
+    public Boolean getFainting_spells() {
+        return fainting_spells;
     }
 
-    public void setFaintingSpells(Boolean faintingSpells) {
-        this.faintingSpells = faintingSpells;
+    public void setFainting_spells(Boolean fainting_spells) {
+        this.fainting_spells = fainting_spells;
     }
 
-    public Boolean getBackOrSpinePains() {
-        return backOrSpinePains;
+    public Boolean getBack_pain() {
+        return back_pain;
     }
 
-    public void setBackOrSpinePains(Boolean backOrSpinePains) {
-        this.backOrSpinePains = backOrSpinePains;
+    public void setBack_pain(Boolean back_pain) {
+        this.back_pain = back_pain;
     }
 
-    public Boolean getAreYouOnAnySortOfMedications() {
-        return areYouOnAnySortOfMedications;
+    public Boolean getMedication() {
+        return medication;
     }
 
-    public void setAreYouOnAnySortOfMedications(Boolean areYouOnAnySortOfMedications) {
-        this.areYouOnAnySortOfMedications = areYouOnAnySortOfMedications;
+    public void setMedication(Boolean medication) {
+        this.medication = medication;
     }
 
-    public Boolean getOtherSignificantIllness() {
-        return otherSignificantIllness;
+    public Boolean getOther_illness() {
+        return other_illness;
     }
 
-    public void setOtherSignificantIllness(Boolean otherSignificantIllness) {
-        this.otherSignificantIllness = otherSignificantIllness;
+    public void setOther_illness(Boolean other_illness) {
+        this.other_illness = other_illness;
     }
 
     public Boolean getSwollen() {
@@ -224,211 +409,27 @@ public class Member {
         this.hernia = hernia;
     }
 
-    public String getMembershipType() {
-        return membershipType;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public void setMembershipType(String membershipType) {
-        this.membershipType = membershipType;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
-    public Integer getId() {
-        return id;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
-    public String getMembershipNo() {
-        return membershipNo;
+    public String getModified_at() {
+        return modified_at;
     }
 
-    public void setMembershipNo(String membershipNo) {
-        this.membershipNo = membershipNo;
-    }
-
-    public String getMembershipRecieptNo() {
-        return membershipRecieptNo;
-    }
-
-    public void setMembershipRecieptNo(String membershipRecieptNo) {
-        this.membershipRecieptNo = membershipRecieptNo;
-    }
-
-    public String getRegisteredDate() {
-        return registeredDate;
-    }
-
-    public void setRegisteredDate(String registeredDate) {
-        this.registeredDate = registeredDate;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getSurName() {
-        return surName;
-    }
-
-    public void setSurName(String surName) {
-        this.surName = surName;
-    }
-
-    public String getGuardianName() {
-        return guardianName;
-    }
-
-    public void setGuardianName(String guardianName) {
-        this.guardianName = guardianName;
-    }
-
-    public String getMarriedStatus() {
-        return MarriedStatus;
-    }
-
-    public void setMarriedStatus(String marriedStatus) {
-        MarriedStatus = marriedStatus;
-    }
-
-    public Integer getGuardianTel() {
-        return guardianTel;
-    }
-
-    public void setGuardianTel(Integer guardianTel) {
-        this.guardianTel = guardianTel;
-    }
-
-    public String getGuardianRelationship() {
-        return guardianRelationship;
-    }
-
-    public void setGuardianRelationship(String guardianRelationship) {
-        this.guardianRelationship = guardianRelationship;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Integer getMobile1() {
-        return mobile1;
-    }
-
-    public void setMobile1(Integer mobile1) {
-        this.mobile1 = mobile1;
-    }
-
-    public Integer getMobile2() {
-        return mobile2;
-    }
-
-    public void setMobile2(Integer mobile2) {
-        this.mobile2 = mobile2;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNIC() {
-        return NIC;
-    }
-
-    public void setNIC(String NIC) {
-        this.NIC = NIC;
-    }
-
-    public String getDOB() {
-        return DOB;
-    }
-
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public Float getHeight() {
-        return height;
-    }
-
-    public void setHeight(Float height) {
-        this.height = height;
-    }
-
-    public Float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public Integer getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+    public void setModified_at(String modified_at) {
+        this.modified_at = modified_at;
     }
 }

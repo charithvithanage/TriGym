@@ -40,8 +40,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="left"
-                android:inputType="textPassword"
-                android:password="true" />
+                android:inputType="textPersonName"
+               />
         </LinearLayout>
 
         <TextView
@@ -66,8 +66,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="left"
-                android:inputType="textPassword"
-                android:password="true" />
+                android:inputType="textPostalAddress"
+                 />
         </LinearLayout>
 
     </LinearLayout>
@@ -97,7 +97,7 @@
             android:background="@null"
             android:text="Camera"
             android:textAllCaps="false"
-            android:textColor="@color/azure"
+            android:textColor="@color/colorPrimary"
             android:textSize="@dimen/dialog_button_font_size" />
     </LinearLayout>
 
