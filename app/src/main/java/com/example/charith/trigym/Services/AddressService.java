@@ -1,8 +1,9 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Services;
 
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -10,8 +11,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.charith.trigym.Activities.Splash;
-import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Config;
+import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
 import com.google.gson.Gson;
 
@@ -19,28 +20,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ApiService {
+public class AddressService {
 
     private static final String TAG="TriGym";
 
     Gson gson = new Gson();
 
-    private static ApiService apiService = new ApiService();
+    private static AddressService addressService=new AddressService();
 
-    public ApiService() {
-
+    public AddressService() {
     }
 
-    public static ApiService getInstance() {
-        return apiService;
+    public static AddressService getInstance(){
+        return addressService;
     }
 
-    public void saveMember(Context context, Member member, final VolleyCallback callback) {
+    public void saveAddress(Context context, Address address, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        String jsonString = gson.toJson(member);
+        String jsonString = gson.toJson(address);
         Log.d(TAG, jsonString);
-        Log.d(TAG, Config.save_member_url);
+        Log.d(TAG, Config.save_address_url);
 
         JSONObject object = null;
 
@@ -50,7 +50,7 @@ public class ApiService {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Config.save_member_url, object, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Config.save_address_url, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 callback.onSuccess(response);
@@ -61,18 +61,18 @@ public class ApiService {
                 callback.onError(error.toString());
             }
         });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(jsonObjectRequest);
-
-
     }
 
-    public void updateMember(Context context, Member member, final VolleyCallback callback) {
+
+    public void updateAddress(Context context, Address address, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        String jsonString = gson.toJson(member);
+        String jsonString = gson.toJson(address);
         Log.d(TAG, jsonString);
-        Log.d(TAG, Config.update_member_url+"/"+ member.getMember_id());
+        Log.d(TAG, Config.update_address_url+"/"+ address.getAddress_id());
 
         JSONObject object = null;
 
@@ -82,7 +82,7 @@ public class ApiService {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, Config.update_member_url+"/"+ member.getMember_id(), object, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, Config.update_address_url+"/"+ address.getAddress_id(), object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 callback.onSuccess(response);
@@ -93,37 +93,18 @@ public class ApiService {
                 callback.onError(error.toString());
             }
         });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(jsonObjectRequest);
-
-
     }
 
-    public void getAllMembers(Context context, final VolleyCallback callback){
-        RequestQueue queue = Volley.newRequestQueue(context);
 
-        Log.d(TAG, Config.get_all_members_url);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Config.get_all_members_url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                callback.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(error.toString());
-            }
-        });
-
-        queue.add(jsonArrayRequest);
-    }
-
-    public void updateMembers(Context context, String toJson, int size, final VolleyCallback callback) {
+    public void updateAddresses(Context context, String toJson, int size, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         Log.d(TAG, toJson);
-        Log.d(TAG, Config.update_members_url);
+        Log.d(TAG, Config.update_addresses_url);
 
         JSONArray object = null;
 
@@ -133,7 +114,7 @@ public class ApiService {
             e.printStackTrace();
         }
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, Config.update_members_url+"/"+size, object, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, Config.update_addresses_url+"/"+size, object, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 callback.onSuccess(response);
@@ -145,18 +126,18 @@ public class ApiService {
                 callback.onError(error.toString());
             }
         });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(jsonArrayRequest);
+
     }
 
-
-    public void getPayments(Context context, final VolleyCallback callback) {
-
+    public void getAllAddresses(Context context, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        Log.d(TAG, Config.get_all_payments_url);
+        Log.d(TAG, Config.get_all_addresses_url);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Config.get_all_payments_url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Config.get_all_addresses_url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 callback.onSuccess(response);
@@ -168,14 +149,17 @@ public class ApiService {
             }
         });
 
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(jsonArrayRequest);
+
     }
 
-    public void updatePayments(Context context, String toJson, int size, final VolleyCallback callback) {
+
+    public void addAddresses(Context context, String toJson, int size, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         Log.d(TAG, toJson);
-        Log.d(TAG, Config.update_payments_url);
+        Log.d(TAG, Config.add_addresses_url);
 
         JSONArray object = null;
 
@@ -185,7 +169,7 @@ public class ApiService {
             e.printStackTrace();
         }
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, Config.update_payments_url+"/"+size, object, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, Config.add_addresses_url+"/"+size, object, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 callback.onSuccess(response);
@@ -198,6 +182,7 @@ public class ApiService {
             }
         });
 
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(jsonArrayRequest);
     }
 }

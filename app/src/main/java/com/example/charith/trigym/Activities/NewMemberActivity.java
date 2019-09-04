@@ -35,8 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.charith.trigym.Config;
+import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.Convertors.JSONParser;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
@@ -138,7 +138,7 @@ public class NewMemberActivity extends AppCompatActivity {
 
 
         GsonBuilder builder = new GsonBuilder()
-                .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+                .registerTypeAdapter(DateTime.class, new BooleanTypeAdapter());
         gson = builder.create();
 
         studentSection = findViewById(R.id.studentSection);
@@ -394,11 +394,11 @@ public class NewMemberActivity extends AppCompatActivity {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
 
-        Address address = databaseHandler.getAddressById(String.valueOf(member.getMember_address_id()));
+        address = databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
 
-        etLine1.setText(address.getLine1());
-        etLine2.setText(address.getLine2());
-        etLine3.setText(address.getLine3());
+        etLine1.setText(address.getAddress_line_1());
+        etLine2.setText(address.getAddress_line_2());
+        etLine3.setText(address.getAddress_line_3());
 
     }
 
@@ -491,7 +491,7 @@ public class NewMemberActivity extends AppCompatActivity {
 
         }
 
-        address.setLine1(etLine1.getText().toString());
+        address.setAddress_line_1(etLine1.getText().toString());
 
         if (!TextUtils.isEmpty(etHeight.getText().toString())) {
             member.setMember_height(Float.valueOf(etHeight.getText().toString()));
@@ -532,21 +532,21 @@ public class NewMemberActivity extends AppCompatActivity {
     private void navigateToMemberBioActivity() {
 
         if (member.getMember_membership_no() != null && member.getMember_receipt_no() != null && member.getMember_profile_image_url() != null && member.getMember_mobile_1() != null &&
-                member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && address.getLine1() != null) {
+                member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && address.getAddress_line_1() != null) {
 
-            DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
-            Integer addressId;
+            address.setAddress_line_1(etLine1.getText().toString());
+            address.setAddress_line_2(etLine2.getText().toString());
+            address.setAddress_line_3(etLine3.getText().toString());
+            address.setAddress_line_city(etCity.getText().toString());
 
-            address.setLine2(etLine2.getText().toString());
-            address.setLine3(etLine3.getText().toString());
-            address.setCity(etCity.getText().toString());
+            Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+            intent.putExtra("memberString", gson.toJson(member));
+            intent.putExtra("addressString", gson.toJson(address));
+            intent.putExtra("navigationType", "new");
 
-            addressId = databaseHandler.addAddress(address).intValue();
+            startActivity(intent);
 
-            member.setMember_address_id(addressId);
-            address.setId(addressId);
 
-            saveAddressToServer(address);
 
 
         } else {
@@ -588,7 +588,7 @@ public class NewMemberActivity extends AppCompatActivity {
                 etWeight.setError(getString(R.string.empty_field_alert));
             }
 
-            if (address.getLine1() == null) {
+            if (address.getAddress_line_1() == null) {
                 etLine1.setError(getString(R.string.empty_field_alert));
             }
 
@@ -798,11 +798,11 @@ public class NewMemberActivity extends AppCompatActivity {
             String URL = Config.ServerUrl + Config.save_address_url;
 
             ArrayList params = new ArrayList();
-            params.add(new BasicNameValuePair("id", String.valueOf(address.getId())));
-            params.add(new BasicNameValuePair("line1", address.getLine1()));
-            params.add(new BasicNameValuePair("line2", address.getLine2()));
-            params.add(new BasicNameValuePair("line3", address.getLine3()));
-            params.add(new BasicNameValuePair("city", address.getCity()));
+            params.add(new BasicNameValuePair("id", String.valueOf(address.getAddress_id())));
+            params.add(new BasicNameValuePair("line1", address.getAddress_line_1()));
+            params.add(new BasicNameValuePair("line2", address.getAddress_line_2()));
+            params.add(new BasicNameValuePair("line3", address.getAddress_line_3()));
+            params.add(new BasicNameValuePair("city", address.getAddress_line_city()));
 
             JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
 

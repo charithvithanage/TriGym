@@ -1,21 +1,29 @@
 package com.example.charith.trigym.Entities;
 
 public class Payment {
-    Integer id;
-    Float amount;
-    String type;
-    Integer member_id;
-    String lastPaymentDate;
-    String paymentExpiryDate;
+    Long payment_id;
+    Float payment_amount;
+    String 	membership_type;
+    Long member_id;
+    String last_payment_date;
+    String membership_expiry_date;
     String created_at;
     String modified_at;
 
-    public String getLastPaymentDate() {
-        return lastPaymentDate;
+    public String getLast_payment_date() {
+        return last_payment_date;
     }
 
-    public void setLastPaymentDate(String lastPaymentDate) {
-        this.lastPaymentDate = lastPaymentDate;
+    public void setLast_payment_date(String last_payment_date) {
+        this.last_payment_date = last_payment_date;
+    }
+
+    public String getMembership_expiry_date() {
+        return membership_expiry_date;
+    }
+
+    public void setMembership_expiry_date(String membership_expiry_date) {
+        this.membership_expiry_date = membership_expiry_date;
     }
 
     public String getCreated_at() {
@@ -34,51 +42,37 @@ public class Payment {
         this.modified_at = modified_at;
     }
 
-    public Integer getId() {
-        return id;
+    public Float getPayment_amount() {
+        return payment_amount;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setPayment_amount(Float payment_amount) {
+        this.payment_amount = payment_amount;
     }
 
-    public Float getAmount() {
-        return amount;
+    public String getMembership_type() {
+        return membership_type;
     }
 
-    public void setAmount(Float amount) {
-        this.amount = amount;
+    public void setMembership_type(String membership_type) {
+        this.membership_type = membership_type;
     }
 
-    public String getType() {
-        return type;
+    public Long getPayment_id() {
+        return payment_id;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPayment_id(Long payment_id) {
+        this.payment_id = payment_id;
     }
 
-    public Integer getMember_id() {
+    public Long getMember_id() {
         return member_id;
     }
 
-    public void setMember_id(Integer member_id) {
+    public void setMember_id(Long member_id) {
         this.member_id = member_id;
     }
 
-    public String getLast_payment_date() {
-        return lastPaymentDate;
-    }
 
-    public void setLast_payment_date(String lastPaymentDate) {
-        this.lastPaymentDate = lastPaymentDate;
-    }
-
-    public String getPaymentExpiryDate() {
-        return paymentExpiryDate;
-    }
-
-    public void setPaymentExpiryDate(String paymentExpiryDate) {
-        this.paymentExpiryDate = paymentExpiryDate;
-    }
 }

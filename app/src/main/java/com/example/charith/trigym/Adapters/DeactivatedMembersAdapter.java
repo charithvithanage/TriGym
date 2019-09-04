@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.charith.trigym.Activities.MemberViewActivity;
+import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
 import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.Entities.Member;
@@ -48,7 +49,7 @@ public class DeactivatedMembersAdapter extends RecyclerSwipeAdapter<DeactivatedM
     Context context;
     Member selectedMember;
     int selectedPosition;
-    GsonBuilder builder = new GsonBuilder().registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+    GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
     Gson gson = builder.create();
     MemberSelectListner listner;
 

@@ -12,6 +12,7 @@ import android.widget.SearchView;
 
 import com.example.charith.trigym.Adapters.DeactivatedMembersAdapter;
 import com.example.charith.trigym.Adapters.MemberAdapter;
+import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
@@ -51,7 +52,7 @@ public class DeactivateMemberListActivity extends AppCompatActivity {
 
         memberList = new ArrayList<>();
         GsonBuilder builder = new GsonBuilder()
-                .registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+                .registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
         gson = builder.create();
         loadMemberList();
 

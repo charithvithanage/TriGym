@@ -5,32 +5,29 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
+import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
 
 public class MemberViewActivity extends AppCompatActivity {
 
@@ -55,6 +52,8 @@ public class MemberViewActivity extends AppCompatActivity {
 
     ImageButton backBtn;
 
+    HealthCondition healthCondition=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +61,14 @@ public class MemberViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member_view);
 
 
-        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
         gson = builder.create();
 
         String memberId=getIntent().getStringExtra("memberId");
         DatabaseHandler databaseHandler=new DatabaseHandler(this);
 
         member = databaseHandler.getMemberById(memberId);
+        healthCondition=databaseHandler.getHealthConditionById(String.valueOf(member.getHealth_condition_id()));
 
         init();
     }
@@ -162,7 +162,7 @@ public class MemberViewActivity extends AppCompatActivity {
 
         databaseHandler = new DatabaseHandler(MemberViewActivity.this);
 
-        address = databaseHandler.getAddressById(String.valueOf(member.getMember_address_id()));
+        address = databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
         setValues();
 
         imgCall1.setOnClickListener(new View.OnClickListener() {
@@ -332,21 +332,21 @@ public class MemberViewActivity extends AppCompatActivity {
         tvHeight.setText(member.getMember_height() + " cm");
         tvWeight.setText(member.getMember_weight() + " kg");
 
-        tvDiabetes.setText(checkCondition(member.getDiabetes()));
-        tvHighCholesterol.setText(checkCondition(member.getCholesterol()));
-        tvHighBloodPressure.setText(checkCondition(member.getHigh_blood_pressure()));
-        tvLowBloodPressure.setText(checkCondition(member.getLow_blood_pressure()));
-        tvHeartProblem.setText(checkCondition(member.getHeart_problem()));
-        tvChestPain.setText(checkCondition(member.getChest_pain()));
-        tvHeartAttack.setText(checkCondition(member.getHeart_attack()));
-        tvBreathingProblem.setText(checkCondition(member.getAsthma()));
-        tvFainting.setText(checkCondition(member.getFainting_spells()));
-        tvBackPain.setText(checkCondition(member.getBack_pain()));
-        tvMedication.setText(checkCondition(member.getMedication()));
-        tvIllness.setText(checkCondition(member.getOther_illness()));
-        tvPainfulJoints.setText(checkCondition(member.getBack_pain()));
-        tvArthritis.setText(checkCondition(member.getArthritis()));
-        tvHernia.setText(checkCondition(member.getHernia()));
+        tvDiabetes.setText(checkCondition(healthCondition.getDiabetes()));
+        tvHighCholesterol.setText(checkCondition(healthCondition.getCholesterol()));
+        tvHighBloodPressure.setText(checkCondition(healthCondition.getHigh_blood_pressure()));
+        tvLowBloodPressure.setText(checkCondition(healthCondition.getLow_blood_pressure()));
+        tvHeartProblem.setText(checkCondition(healthCondition.getHeart_problem()));
+        tvChestPain.setText(checkCondition(healthCondition.getChest_pain()));
+        tvHeartAttack.setText(checkCondition(healthCondition.getHeart_attack()));
+        tvBreathingProblem.setText(checkCondition(healthCondition.getAsthma()));
+        tvFainting.setText(checkCondition(healthCondition.getFainting_spells()));
+        tvBackPain.setText(checkCondition(healthCondition.getBack_pain()));
+        tvMedication.setText(checkCondition(healthCondition.getMedication()));
+        tvIllness.setText(checkCondition(healthCondition.getOther_illness()));
+        tvPainfulJoints.setText(checkCondition(healthCondition.getBack_pain()));
+        tvArthritis.setText(checkCondition(healthCondition.getArthritis()));
+        tvHernia.setText(checkCondition(healthCondition.getHernia()));
 
 
     }
@@ -369,20 +369,20 @@ public class MemberViewActivity extends AppCompatActivity {
 
         StringBuilder addressString = new StringBuilder();
 
-        if (address.getLine1() != null || address.getLine1() != "") {
-            addressString.append(address.getLine1());
+        if (address.getAddress_line_1() != null || address.getAddress_line_1() != "") {
+            addressString.append(address.getAddress_line_1());
         }
 
-        if (address.getLine2() != null || address.getLine2() != "") {
-            addressString.append(", " + address.getLine2());
+        if (address.getAddress_line_2() != null || address.getAddress_line_2() != "") {
+            addressString.append(", " + address.getAddress_line_2());
         }
 
-        if (address.getLine3() != null || address.getLine3() != "") {
-            addressString.append(", " + address.getLine3());
+        if (address.getAddress_line_3() != null || address.getAddress_line_3() != "") {
+            addressString.append(", " + address.getAddress_line_3());
         }
 
-        if (address.getCity() != null || address.getCity() != "") {
-            addressString.append(", " + address.getCity());
+        if (address.getAddress_line_city() != null || address.getAddress_line_city() != "") {
+            addressString.append(", " + address.getAddress_line_city());
         }
 
         return addressString.toString();

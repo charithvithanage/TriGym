@@ -1,6 +1,5 @@
 package com.example.charith.trigym.Activities;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,16 +30,14 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.example.charith.trigym.Adapters.MemberAdapter;
-import com.example.charith.trigym.ApiService;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
-import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.DialogListner;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
 import com.example.charith.trigym.R;
+import com.example.charith.trigym.Services.MemberService;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,8 +49,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -557,7 +552,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... voids) {
 
-            ApiService.getInstance().getAllMembers(MainActivity.this,  new VolleyCallback() {
+            MemberService.getInstance().getAllMembers(MainActivity.this,  new VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
 

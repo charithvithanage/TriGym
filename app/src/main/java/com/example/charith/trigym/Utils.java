@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -182,7 +184,7 @@ public class Utils {
         List<Payment> paymentList = databaseHandler.getPaymentsByMemberId(memberId);
 
         for (Payment payment : paymentList) {
-            if (Utils.stringToDateTime(payment.getPaymentExpiryDate()).isAfter(today)) {
+            if (Utils.stringToDateTime(payment.getMembership_expiry_date()).isAfter(today)) {
                 return true;
             }
         }
@@ -443,6 +445,13 @@ public class Utils {
         });
 
         dialog.show();
+    }
+
+    public static boolean isDeviceOnline(Context context) {
+        ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
 
