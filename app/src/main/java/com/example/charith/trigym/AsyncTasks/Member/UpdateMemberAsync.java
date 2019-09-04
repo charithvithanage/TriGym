@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Member;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,25 +11,24 @@ import com.example.charith.trigym.Services.MemberService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class SaveMemberAsync extends AsyncTask<Void, Void, Void> {
+public class UpdateMemberAsync extends AsyncTask<Void,Void,Void> {
 
     AsyncListner listner;
     Context context;
     Member member;
 
-    public SaveMemberAsync(Context context,Member member,AsyncListner listner ) {
+    public UpdateMemberAsync( Context context, Member member,AsyncListner listner) {
         this.listner = listner;
         this.context = context;
-        this.member=member;
+        this.member = member;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-
-        MemberService.getInstance().saveMember(context, member, new VolleyCallback() {
+        MemberService.getInstance().updateMember(context, member, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                listner.onSuccess(response);
+              listner.onSuccess(context,response);
             }
 
             @Override
@@ -39,7 +38,7 @@ public class SaveMemberAsync extends AsyncTask<Void, Void, Void> {
 
             @Override
             public void onError(String error) {
-              listner.onError(error);
+               listner.onError(context,error);
             }
         });
         return null;

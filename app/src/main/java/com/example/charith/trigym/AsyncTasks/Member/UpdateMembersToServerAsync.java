@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Member;
 
 import android.content.Context;
 import android.os.AsyncTask;

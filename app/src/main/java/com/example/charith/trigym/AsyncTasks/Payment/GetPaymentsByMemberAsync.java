@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Payment;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,20 +10,22 @@ import com.example.charith.trigym.Services.PaymentService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class GetAllPaymentsAsync extends AsyncTask<Void, Void, Void> {
+public class GetPaymentsByMemberAsync extends AsyncTask<Void, Void, Void> {
 
     Context context;
     AsyncJsonArrayListner listner;
+    String member_id;
 
-    public GetAllPaymentsAsync(Context context, AsyncJsonArrayListner listner) {
+    public GetPaymentsByMemberAsync(Context context, String member_id, AsyncJsonArrayListner listner) {
         this.context = context;
         this.listner = listner;
+        this.member_id = member_id;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
-        PaymentService.getInstance().getPayments(context, new VolleyCallback() {
+        PaymentService.getInstance().getPaymentsByMemberId(context, member_id, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
 
@@ -43,4 +45,3 @@ public class GetAllPaymentsAsync extends AsyncTask<Void, Void, Void> {
         return null;
     }
 }
-

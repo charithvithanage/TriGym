@@ -36,15 +36,15 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name=".Activities.NewMemberActivity"
+            android:name=".Activities.Member.NewMemberActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".Activities.MemberBioActivity"
+            android:name=".Activities.Member.MemberBioActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".Activities.MemberViewActivity"
+            android:name=".Activities.Member.MemberViewActivity"
             android:theme="@style/NoActionBar" />
 
         <provider
@@ -63,7 +63,7 @@
             android:theme="@style/NoActionBar"></activity>
 
         <activity
-            android:name=".Activities.DeactivateMemberListActivity"
+            android:name=".Activities.Member.DeactivateMemberListActivity"
             android:label="@string/title_activity_payment_list"
             android:theme="@style/NoActionBar"></activity>
         <!--<receiver android:name=".Test.NetworkMonitor">-->

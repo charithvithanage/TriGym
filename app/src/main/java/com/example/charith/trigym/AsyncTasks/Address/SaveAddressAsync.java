@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Address;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -28,7 +28,7 @@ public class SaveAddressAsync extends AsyncTask<Void,Void,Void> {
         AddressService.getInstance().saveAddress(context, address, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                listner.onSuccess(response);
+                listner.onSuccess(context,response);
             }
 
             @Override
@@ -38,7 +38,7 @@ public class SaveAddressAsync extends AsyncTask<Void,Void,Void> {
 
             @Override
             public void onError(String error) {
-                listner.onError(error);
+                listner.onError(context,error);
             }
         });
         return null;

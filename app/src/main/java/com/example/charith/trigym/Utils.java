@@ -26,6 +26,7 @@ import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.CheckImageClickListner;
 import com.example.charith.trigym.Interfaces.DialogListner;
 import com.example.charith.trigym.Interfaces.ProfileImageListner;
+import com.example.charith.trigym.Interfaces.WarningMessageListner;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
@@ -61,6 +62,21 @@ public class Utils {
     public static void showWarningMessage(Context context, String string) {
         DialogPlus dialog = DialogPlus.newDialog(context)
                 .setContentBackgroundResource(R.drawable.warning_message_bg)
+                .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
+                .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+        dialog.show();
+
+        View view = dialog.getHolderView();
+
+        TextView message = view.findViewById(R.id.message);
+        message.setText(string);
+    }
+
+    public static void showSuccessMessage(Context context, String string) {
+        DialogPlus dialog = DialogPlus.newDialog(context)
+                .setContentBackgroundResource(R.drawable.success_message_bg)
                 .setContentHolder(new ViewHolder(R.layout.error_dialog_bg))
                 .setExpanded(true, ViewGroup.LayoutParams.WRAP_CONTENT).setGravity(Gravity.TOP)  // This will enable the expand feature, (similar to android L share dialog)
                 .create();
@@ -127,6 +143,7 @@ public class Utils {
         message.setText(string);
     }
 
+
     public static String removeSpacesAndToLowerCase(String str) {
         return str.trim().toLowerCase();
     }
@@ -135,6 +152,11 @@ public class Utils {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
         return formatter.parseDateTime(dateString);
     }
+
+    public static String dateTimeStringToDateString(String datetimeString){
+        return dateToString(stringToDateTime(datetimeString));
+    }
+
 
     public static String dateToString(DateTime dateTime) {
         return dateTime.toString("YYYY/MM/dd");

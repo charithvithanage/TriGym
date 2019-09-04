@@ -4,8 +4,8 @@ public enum Config {
 
     Instance;
 
-//    public static String ServerUrl="http://10.0.2.2:3000/";
-    public static String ServerUrl="http://192.168.8.101:3000/";
+    public static String ServerUrl="http://10.0.2.2:3000/";
+//    public static String ServerUrl="http://192.168.8.101:3000/";
 
     public static String save_member_url=ServerUrl+"members/savemember";
     public static String update_member_url=ServerUrl+"members/updatemember";
@@ -18,6 +18,7 @@ public enum Config {
     public static String update_payments_url=ServerUrl+"payments/updatepayments";
     public static String save_payment_url=ServerUrl+"payments/savepayment";
     public static String add_payments_url=ServerUrl+"payments/savepayments";
+    public static String get_payments_by_member_id_url=ServerUrl+"payments/getpaymentsbymemberid";
 
     public static String update_addresses_url=ServerUrl+"addresses/updateaddresses";
     public static String update_address_url=ServerUrl+"addresses/updateaddress";

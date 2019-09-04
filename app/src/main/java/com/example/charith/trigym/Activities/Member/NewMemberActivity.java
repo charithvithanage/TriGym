@@ -1,4 +1,4 @@
-package com.example.charith.trigym.Activities;
+package com.example.charith.trigym.Activities.Member;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -116,6 +116,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
     Switch userActivateSwitch;
 
+    DatabaseHandler db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
     private void init() {
         member = new Member();
+
+        db = new DatabaseHandler(NewMemberActivity.this);
 
 
         GsonBuilder builder = new GsonBuilder()
@@ -186,13 +190,12 @@ public class NewMemberActivity extends AppCompatActivity {
         if (navigationType != null) {
             if (navigationType.equals("edit")) {
                 tvTitle.setText(getResources().getString(R.string.edit_user_title));
-                DatabaseHandler db = new DatabaseHandler(this);
                 member = db.getMemberById(memberId);
                 setUserValues();
             }
         } else {
 
-            displayFirstNameNICDialog(null,null);
+            displayFirstNameNICDialog(null, null);
 
             userActivateSwitch.setVisibility(View.GONE);
             try {
@@ -211,11 +214,10 @@ public class NewMemberActivity extends AppCompatActivity {
 
             member.setType(TextUtils.join(",", memberTypeList));
             member.setCategory(memberCategory);
-            DatabaseHandler db = new DatabaseHandler(this);
             etMembershipNo.setText(getMember_membership_no());
             etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-            setTempValues();
+//            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -236,7 +238,7 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                displayFirstNameNICDialog(member.getMember_first_name(),member.getMember_nic());
+                displayFirstNameNICDialog(member.getMember_first_name(), member.getMember_nic());
 
 
             }
@@ -266,8 +268,8 @@ public class NewMemberActivity extends AppCompatActivity {
         });
     }
 
-    private void displayFirstNameNICDialog(String firstName,String NIC) {
-        Utils.displayPasswordDialog(NewMemberActivity.this,firstName,NIC, new ProfileImageListner() {
+    private void displayFirstNameNICDialog(String firstName, String NIC) {
+        Utils.displayPasswordDialog(NewMemberActivity.this, firstName, NIC, new ProfileImageListner() {
             @Override
             public void onSuccess(DialogPlus dialog, String fistName, String nic) {
                 dialog.dismiss();
@@ -324,7 +326,6 @@ public class NewMemberActivity extends AppCompatActivity {
             getMembershipInitials.append(memberTypeInitial);
         }
 
-        DatabaseHandler db = new DatabaseHandler(this);
         String membershipNo = getMembershipInitials.toString() + (1 + db.getMembersCount(NewMemberActivity.this));
 
         return membershipNo;
@@ -371,7 +372,7 @@ public class NewMemberActivity extends AppCompatActivity {
         etSurName.setText(member.getMember_surname());
 
         tvAge.setText(String.valueOf(member.getMember_age()));
-        tvDOB.setText(member.getMember_dob());
+        tvDOB.setText(Utils.dateTimeStringToDateString(member.getMember_dob()));
 
         if (!member.getType().equals("Student")) {
             studentSection.setVisibility(View.GONE);
@@ -392,13 +393,13 @@ public class NewMemberActivity extends AppCompatActivity {
         etMobile1.setText(String.valueOf(member.getMember_mobile_1()));
         etMobile2.setText(String.valueOf(member.getMember_mobile_2()));
 
-        DatabaseHandler databaseHandler = new DatabaseHandler(NewMemberActivity.this);
 
-        address = databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
+        address = db.getAddressById(String.valueOf(member.getAddress_id()));
 
         etLine1.setText(address.getAddress_line_1());
         etLine2.setText(address.getAddress_line_2());
         etLine3.setText(address.getAddress_line_3());
+        etCity.setText(address.getAddress_line_city());
 
     }
 
@@ -470,9 +471,6 @@ public class NewMemberActivity extends AppCompatActivity {
             member.setMember_mobile_2(Integer.valueOf(etMobile2.getText().toString()));
         }
 
-
-        address = new Address();
-
         if (fileProvider != null) {
             member.setMember_profile_image_url(fileProvider.toString());
         }
@@ -509,28 +507,13 @@ public class NewMemberActivity extends AppCompatActivity {
         }
 
 
-        if (navigationType != null) {
-            if (navigationType.equals("edit")) {
-                Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-                intent.putExtra("memberString", gson.toJson(member));
-                intent.putExtra("navigationType", "edit");
-                startActivity(intent);
-                finish();
-            } else {
-
-                navigateToMemberBioActivity();
-
-            }
-        } else {
-            navigateToMemberBioActivity();
-        }
+        checkEditTextField();
 
 
-//        databaseHandler.addMember(member, addressId);
+//        db.addMember(member, addressId);
     }
 
-    private void navigateToMemberBioActivity() {
-
+    private void checkEditTextField() {
         if (member.getMember_membership_no() != null && member.getMember_receipt_no() != null && member.getMember_profile_image_url() != null && member.getMember_mobile_1() != null &&
                 member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && address.getAddress_line_1() != null) {
 
@@ -539,15 +522,22 @@ public class NewMemberActivity extends AppCompatActivity {
             address.setAddress_line_3(etLine3.getText().toString());
             address.setAddress_line_city(etCity.getText().toString());
 
-            Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-            intent.putExtra("memberString", gson.toJson(member));
-            intent.putExtra("addressString", gson.toJson(address));
-            intent.putExtra("navigationType", "new");
+            if (navigationType != null) {
+                if (navigationType.equals("edit")) {
 
-            startActivity(intent);
+                    Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+                    intent.putExtra("memberString", gson.toJson(member));
+                    intent.putExtra("addressString", gson.toJson(address));
+                    intent.putExtra("navigationType", "edit");
+                    startActivity(intent);
+                    finish();
 
-
-
+                } else {
+                    navigateToMemberBioActivity();
+                }
+            } else {
+                navigateToMemberBioActivity();
+            }
 
         } else {
             if (member.getMember_membership_no() == null) {
@@ -593,6 +583,16 @@ public class NewMemberActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    private void navigateToMemberBioActivity() {
+
+        Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
+        intent.putExtra("memberString", gson.toJson(member));
+        intent.putExtra("addressString", gson.toJson(address));
+        intent.putExtra("navigationType", "new");
+
+        startActivity(intent);
 
 
     }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class PaymentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ((MyViewHolder) holder).tvType.setText(payment.getMembership_type());
         ((MyViewHolder) holder).tvAmount.setText(String.valueOf(payment.getPayment_amount()));
-        ((MyViewHolder) holder).tvExpiryDate.setText(payment.getMembership_expiry_date());
-        ((MyViewHolder) holder).tvPaymentDate.setText(payment.getLast_payment_date());
+        ((MyViewHolder) holder).tvExpiryDate.setText(Utils.dateTimeStringToDateString(payment.getMembership_expiry_date()));
+        ((MyViewHolder) holder).tvPaymentDate.setText(Utils.dateTimeStringToDateString(payment.getLast_payment_date()));
 
     }
 

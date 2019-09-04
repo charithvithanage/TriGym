@@ -302,12 +302,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public Address getAddressById(String memberId) {
+    public Address getAddressById(String addressId) {
 
 
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_ADDRESSES+" WHERE "+KEY_MEMBER_ID+" = ?", new String[] {memberId});
-        Cursor c = db.query(TABLE_ADDRESSES, null, KEY_ADDRESS_ID + "=?", new String[]{memberId}, null, null, null);
+        Cursor c = db.query(TABLE_ADDRESSES, null, KEY_ADDRESS_ID + "=?", new String[]{addressId}, null, null, null);
         Address address = new Address();
 
         // looping through all rows and adding to list

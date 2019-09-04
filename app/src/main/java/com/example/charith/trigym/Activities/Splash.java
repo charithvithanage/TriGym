@@ -7,15 +7,18 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.charith.trigym.AsyncTasks.AddMembersToServerAsync;
-import com.example.charith.trigym.AsyncTasks.GetAllAddressesAsync;
-import com.example.charith.trigym.AsyncTasks.GetAllHealthConditionsAsync;
-import com.example.charith.trigym.AsyncTasks.GetAllMembersAsync;
-import com.example.charith.trigym.AsyncTasks.GetAllPaymentsAsync;
-import com.example.charith.trigym.AsyncTasks.UpdateAddresssToServerAsync;
-import com.example.charith.trigym.AsyncTasks.UpdateHealthConditionsToServer;
-import com.example.charith.trigym.AsyncTasks.UpdateMembersToServerAsync;
-import com.example.charith.trigym.AsyncTasks.UpdatePaymentsToServer;
+import com.example.charith.trigym.AsyncTasks.Address.AddAddresssToServerAsync;
+import com.example.charith.trigym.AsyncTasks.HealthCondition.AddHealthConditionsToServer;
+import com.example.charith.trigym.AsyncTasks.Member.AddMembersToServerAsync;
+import com.example.charith.trigym.AsyncTasks.Address.GetAllAddressesAsync;
+import com.example.charith.trigym.AsyncTasks.HealthCondition.GetAllHealthConditionsAsync;
+import com.example.charith.trigym.AsyncTasks.Member.GetAllMembersAsync;
+import com.example.charith.trigym.AsyncTasks.Payment.AddPaymentsToServer;
+import com.example.charith.trigym.AsyncTasks.Payment.GetAllPaymentsAsync;
+import com.example.charith.trigym.AsyncTasks.Address.UpdateAddresssToServerAsync;
+import com.example.charith.trigym.AsyncTasks.HealthCondition.UpdateHealthConditionsToServer;
+import com.example.charith.trigym.AsyncTasks.Member.UpdateMembersToServerAsync;
+import com.example.charith.trigym.AsyncTasks.Payment.UpdatePaymentsToServer;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Address;
@@ -52,106 +55,6 @@ public class Splash extends AppCompatActivity {
 
         if (Utils.isDeviceOnline(Splash.this)) {
 
-            new GetAllPaymentsAsync(Splash.this, new AsyncJsonArrayListner() {
-                @Override
-                public void onSuccess(Context context, JSONArray response) {
-                    List<Payment> updateServerObjects = new ArrayList<>();
-
-                    boolean shouldUpdate = false;
-
-                    DatabaseHandler databaseHandler = new DatabaseHandler(context);
-                    List<Payment> list = databaseHandler.getAllPayments();
-
-                    if (response.length() > 0) {
-                        try {
-
-                            for (int i = 0; i < response.length(); i++) {
-
-                                shouldUpdate = true;
-                                Payment payment = gson.fromJson(response.getString(i), Payment.class);
-                                Log.d(TAG + " SRVR PAYs", gson.toJson(payment));
-
-                                Payment excistingPayment = databaseHandler.getPaymentById(String.valueOf(payment.getPayment_id()), String.valueOf(payment.getMember_id()));
-                                Log.d(TAG + " LOCAL PAYMENT", gson.toJson(excistingPayment));
-
-                                if (excistingPayment.getMember_id() != null) {
-
-                                    if (!Utils.stringToDateTime(payment.getModified_at()).isEqual(Utils.stringToDateTime(excistingPayment.getModified_at()))) {
-                                        if (Utils.stringToDateTime(payment.getModified_at()).isAfter(Utils.stringToDateTime(excistingPayment.getModified_at()))) {
-
-                                            databaseHandler.updatePayment(payment);
-
-                                            Log.d(TAG + " UP PAY TO LOCAL", gson.toJson(databaseHandler.getPaymentById(String.valueOf(payment.getPayment_id()), String.valueOf(payment.getMember_id()))));
-
-                                        } else {
-
-                                            updateServerObjects.add(excistingPayment);
-                                            Log.d(TAG + " UP PAY TO SRVR", gson.toJson(excistingPayment));
-//                                    new UpdateMemberAsync(excistingMember).execute();
-                                        }
-                                    }
-
-                                } else {
-
-                                    if (payment.getMember_id() != null) {
-                                        Long id = databaseHandler.addPayment(payment);
-                                        Log.d(TAG + " ADD PAY TO LOCAL", gson.toJson(databaseHandler.getPaymentById(String.valueOf(id), String.valueOf(payment.getMember_id()))));
-                                    }
-
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-
-                        updateServerObjects = list;
-                    }
-
-
-                    if (updateServerObjects.size() > 0) {
-
-                        if (shouldUpdate) {
-                            new UpdatePaymentsToServer(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-
-                                }
-                            }).execute();
-                        } else {
-                            new AddPaymentsToServer(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-
-                                }
-                            }).execute();
-
-                        }
-                    } else {
-                        goToMainActivity(context);
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    goToMainActivity(context);
-                }
-            }).execute();
 
             new GetAllHealthConditionsAsync(Splash.this, new AsyncJsonArrayListner() {
                 @Override
@@ -263,7 +166,7 @@ public class Splash extends AppCompatActivity {
 
                     List<Address> list = databaseHandler.getAllAddresses();
 
-                    Log.d(TAG+"L DB ADDRESS",gson.toJson(list));
+                    Log.d(TAG + "L DB ADDRESS", gson.toJson(list));
 
                     if (response.length() > 0) {
                         try {
@@ -313,7 +216,7 @@ public class Splash extends AppCompatActivity {
 
                     if (updateServerObjects.size() > 0) {
 
-                        if(shouldUpdate){
+                        if (shouldUpdate) {
                             new UpdateAddresssToServerAsync(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
                                 @Override
                                 public void onSuccess(Context context, JSONArray jsonArray) {
@@ -325,7 +228,7 @@ public class Splash extends AppCompatActivity {
                                     goToMainActivity(context);
                                 }
                             }).execute();
-                        }else {
+                        } else {
                             new AddAddresssToServerAsync(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
                                 @Override
                                 public void onSuccess(Context context, JSONArray jsonArray) {
@@ -419,11 +322,14 @@ public class Splash extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Context context, JSONArray jsonArray) {
                                     goToMainActivity(context);
+                                    getAllPayments();
+
                                 }
 
                                 @Override
                                 public void onError(Context context, String error) {
                                     goToMainActivity(context);
+                                    getAllPayments();
 
                                 }
                             }).execute();
@@ -432,18 +338,21 @@ public class Splash extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Context context, JSONArray jsonArray) {
                                     goToMainActivity(context);
+                                    getAllPayments();
+
                                 }
 
                                 @Override
                                 public void onError(Context context, String error) {
                                     goToMainActivity(context);
-
+                                    getAllPayments();
                                 }
                             }).execute();
                         }
 
                     } else {
                         goToMainActivity(context);
+                        getAllPayments();
                     }
 
                 }
@@ -451,9 +360,10 @@ public class Splash extends AppCompatActivity {
                 @Override
                 public void onError(Context context, String error) {
                     goToMainActivity(context);
-
+                    getAllPayments();
                 }
             }).execute();
+
 
         } else {
             Intent intent = new Intent(Splash.this, MainActivity.class);
@@ -462,6 +372,111 @@ public class Splash extends AppCompatActivity {
         }
 
 
+    }
+
+    private void getAllPayments() {
+
+
+        new GetAllPaymentsAsync(Splash.this, new AsyncJsonArrayListner() {
+            @Override
+            public void onSuccess(Context context, JSONArray response) {
+                List<Payment> updateServerObjects = new ArrayList<>();
+
+                boolean shouldUpdate = false;
+
+                DatabaseHandler databaseHandler = new DatabaseHandler(context);
+                List<Payment> list = databaseHandler.getAllPayments();
+
+                if (response.length() > 0) {
+                    try {
+
+                        for (int i = 0; i < response.length(); i++) {
+
+                            shouldUpdate = true;
+                            Payment payment = gson.fromJson(response.getString(i), Payment.class);
+                            Log.d(TAG + " SRVR PAYs", gson.toJson(payment));
+
+                            Payment excistingPayment = databaseHandler.getPaymentById(String.valueOf(payment.getPayment_id()), String.valueOf(payment.getMember_id()));
+                            Log.d(TAG + " LOCAL PAYMENT", gson.toJson(excistingPayment));
+
+                            if (excistingPayment.getMember_id() != null) {
+
+                                if (!Utils.stringToDateTime(payment.getModified_at()).isEqual(Utils.stringToDateTime(excistingPayment.getModified_at()))) {
+                                    if (Utils.stringToDateTime(payment.getModified_at()).isAfter(Utils.stringToDateTime(excistingPayment.getModified_at()))) {
+
+                                        databaseHandler.updatePayment(payment);
+
+                                        Log.d(TAG + " UP PAY TO LOCAL", gson.toJson(databaseHandler.getPaymentById(String.valueOf(payment.getPayment_id()), String.valueOf(payment.getMember_id()))));
+
+                                    } else {
+
+                                        updateServerObjects.add(excistingPayment);
+                                        Log.d(TAG + " UP PAY TO SRVR", gson.toJson(excistingPayment));
+//                                    new UpdateMemberAsync(excistingMember).execute();
+                                    }
+                                }
+
+                            } else {
+
+                                if (payment.getMember_id() != null) {
+                                    Long id = databaseHandler.addPayment(payment);
+                                    Log.d(TAG + " ADD PAY TO LOCAL", gson.toJson(databaseHandler.getPaymentById(String.valueOf(id), String.valueOf(payment.getMember_id()))));
+                                }
+
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+
+                    updateServerObjects = list;
+                }
+
+
+                if (updateServerObjects.size() > 0) {
+
+                    if (shouldUpdate) {
+                        new UpdatePaymentsToServer(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
+                            @Override
+                            public void onSuccess(Context context, JSONArray jsonArray) {
+                                goToMainActivity(context);
+                            }
+
+                            @Override
+                            public void onError(Context context, String error) {
+                                goToMainActivity(context);
+
+                            }
+                        }).execute();
+                    } else {
+                        new AddPaymentsToServer(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
+                            @Override
+                            public void onSuccess(Context context, JSONArray jsonArray) {
+                                goToMainActivity(context);
+                            }
+
+                            @Override
+                            public void onError(Context context, String error) {
+                                goToMainActivity(context);
+
+                            }
+                        }).execute();
+
+                    }
+                } else {
+                    goToMainActivity(context);
+                }
+
+
+            }
+
+            @Override
+            public void onError(Context context, String error) {
+                goToMainActivity(context);
+            }
+        }).execute();
     }
 
     private void goToMainActivity(Context context) {

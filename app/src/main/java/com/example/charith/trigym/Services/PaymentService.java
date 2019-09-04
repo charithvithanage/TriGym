@@ -61,6 +61,28 @@ public class PaymentService {
         queue.add(jsonArrayRequest);
     }
 
+    public void getPaymentsByMemberId(Context context, String member_id,final VolleyCallback callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.d(TAG, Config.get_payments_by_member_id_url);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Config.get_payments_by_member_id_url+"/"+member_id, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                callback.onSuccess(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(error.toString());
+            }
+        });
+
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(jsonArrayRequest);
+   }
+
     public void updatePayments(Context context, String toJson, int size, final VolleyCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -153,6 +175,7 @@ public class PaymentService {
 
         queue.add(jsonObjectRequest);
     }
+
 
 
 }

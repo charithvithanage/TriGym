@@ -1,4 +1,4 @@
-package com.example.charith.trigym.Activities;
+package com.example.charith.trigym.Activities.Member;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.charith.trigym.Activities.MainActivity;
+import com.example.charith.trigym.Activities.PaymentListActivity;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
 import com.example.charith.trigym.DB.DatabaseHandler;
@@ -25,6 +27,7 @@ import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.R;
+import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -246,6 +249,8 @@ public class MemberViewActivity extends AppCompatActivity {
         if(requestCode==200){
 
             member=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+            address=databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
+            healthCondition=databaseHandler.getHealthConditionById(String.valueOf(member.getHealth_condition_id()));
             setValues();
         }
 
@@ -325,7 +330,7 @@ public class MemberViewActivity extends AppCompatActivity {
         }
 
         tvNIC.setText(member.getMember_nic());
-        tvDOB.setText(member.getMember_dob());
+        tvDOB.setText(Utils.dateToString(Utils.stringToDateTime(member.getMember_dob())));
         tvAge.setText(String.valueOf(member.getMember_age()));
         tvGender.setText(member.getMember_gender());
         tvMarriedStatus.setText(member.getMember_married_status());

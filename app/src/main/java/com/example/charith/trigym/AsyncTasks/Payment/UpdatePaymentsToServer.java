@@ -1,13 +1,13 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Payment;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
-import com.example.charith.trigym.Entities.Address;
+import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.AsyncJsonArrayListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
-import com.example.charith.trigym.Services.AddressService;
+import com.example.charith.trigym.Services.PaymentService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,17 +17,15 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class UpdateAddresssToServerAsync extends AsyncTask<Void,Void,Void> {
-
-    List<Address> updateServerAddresss;
-
+public class UpdatePaymentsToServer extends AsyncTask<Void, Void, Void> {
+    List<Payment> updateServerObjects;
     Context context;
     AsyncJsonArrayListner listner;
     Gson gson;
 
-    public UpdateAddresssToServerAsync( Context context,List<Address> updateServerAddresss, AsyncJsonArrayListner listner) {
-        this.updateServerAddresss = updateServerAddresss;
+    public UpdatePaymentsToServer(Context context, List<Payment> updateServerObjects, AsyncJsonArrayListner listner) {
         this.context = context;
+        this.updateServerObjects = updateServerObjects;
         this.listner = listner;
         GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new BooleanTypeAdapter());
@@ -37,22 +35,25 @@ public class UpdateAddresssToServerAsync extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        AddressService.getInstance().updateAddresses(context, gson.toJson(updateServerAddresss), updateServerAddresss.size(), new VolleyCallback() {
+        PaymentService.getInstance().updatePayments(context, gson.toJson(updateServerObjects), updateServerObjects.size(), new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
+
             }
 
             @Override
             public void onSuccess(JSONArray response) {
                 listner.onSuccess(context,response);
-
             }
 
             @Override
             public void onError(String error) {
                 listner.onError(context,error);
+
             }
         });
+
         return null;
     }
 }
+

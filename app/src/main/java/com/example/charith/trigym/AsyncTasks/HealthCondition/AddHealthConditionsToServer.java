@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.HealthCondition;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -17,14 +17,14 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class UpdateHealthConditionsToServer extends AsyncTask<Void, Void, Void> {
-    List<HealthCondition> updateServerObjects;
+public class AddHealthConditionsToServer extends AsyncTask<Void, Void, Void> {
+    List<HealthCondition> addServerObjects;
     Context context;
     AsyncJsonArrayListner listner;
     Gson gson;
 
-    public UpdateHealthConditionsToServer(Context context, List<HealthCondition> updateServerObjects, AsyncJsonArrayListner listner) {
-        this.updateServerObjects = updateServerObjects;
+    public AddHealthConditionsToServer(Context context, List<HealthCondition> addServerObjects, AsyncJsonArrayListner listner) {
+        this.addServerObjects = addServerObjects;
         this.context = context;
         this.listner = listner;
         GsonBuilder builder = new GsonBuilder()
@@ -35,7 +35,7 @@ public class UpdateHealthConditionsToServer extends AsyncTask<Void, Void, Void> 
     @Override
     protected Void doInBackground(Void... voids) {
 
-        HealthConditionService.getInstance().updateHealthConditions(context, gson.toJson(updateServerObjects), updateServerObjects.size(), new VolleyCallback() {
+        HealthConditionService.getInstance().addHealthConditions(context, gson.toJson(addServerObjects), addServerObjects.size(), new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
 

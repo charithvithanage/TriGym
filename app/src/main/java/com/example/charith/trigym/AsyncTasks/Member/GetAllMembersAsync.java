@@ -1,22 +1,20 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Member;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.charith.trigym.Interfaces.AsyncJsonArrayListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
-import com.example.charith.trigym.Services.HealthConditionService;
+import com.example.charith.trigym.Services.MemberService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class GetAllHealthConditionsAsync extends AsyncTask<Void, Void, Void> {
-
+public class GetAllMembersAsync extends AsyncTask<Void, Void, Void> {
     Context context;
     AsyncJsonArrayListner listner;
 
-
-    public GetAllHealthConditionsAsync(Context context, AsyncJsonArrayListner listner) {
+    public GetAllMembersAsync(Context context, AsyncJsonArrayListner listner) {
         this.context = context;
         this.listner = listner;
     }
@@ -24,7 +22,7 @@ public class GetAllHealthConditionsAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        HealthConditionService.getInstance().getAllHealthConditions(context, new VolleyCallback() {
+        MemberService.getInstance().getAllMembers(context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
 
@@ -32,14 +30,15 @@ public class GetAllHealthConditionsAsync extends AsyncTask<Void, Void, Void> {
 
             @Override
             public void onSuccess(JSONArray response) {
-                listner.onSuccess(context,response);
+                listner.onSuccess(context, response);
             }
 
             @Override
             public void onError(String error) {
-                listner.onError(context,error);
+                listner.onError(context, error);
             }
         });
         return null;
     }
 }
+

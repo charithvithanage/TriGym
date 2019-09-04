@@ -1,5 +1,6 @@
-package com.example.charith.trigym.Activities;
+package com.example.charith.trigym.Activities.Member;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,12 +11,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 
+import com.example.charith.trigym.Activities.MainActivity;
 import com.example.charith.trigym.Adapters.DeactivatedMembersAdapter;
-import com.example.charith.trigym.Adapters.MemberAdapter;
+import com.example.charith.trigym.AsyncTasks.Member.UpdateMemberAsync;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Interfaces.AsyncListner;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
@@ -23,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +94,24 @@ public class DeactivateMemberListActivity extends AppCompatActivity {
                     member.setMember_active_status(true);
                     member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
-                    memberList = Utils.getDeactiveMembers( databaseHandler.getAllMembers());
+
+                    member = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+
+                    if (Utils.isDeviceOnline(DeactivateMemberListActivity.this)) {
+                        new UpdateMemberAsync(DeactivateMemberListActivity.this, member, new AsyncListner() {
+                            @Override
+                            public void onSuccess(Context context, JSONObject jsonObject) {
+                                Utils.showSuccessMessage(context, getResources().getString(R.string.successfully_activated_message));
+                            }
+
+                            @Override
+                            public void onError(Context context, String error) {
+                                Utils.showWarningMessage(context, error);
+                            }
+                        }).execute();
+                    }
+
+                    memberList = Utils.getDeactiveMembers(databaseHandler.getAllMembers());
                     memberAdapter.updateList(memberList);
 
                 } else {

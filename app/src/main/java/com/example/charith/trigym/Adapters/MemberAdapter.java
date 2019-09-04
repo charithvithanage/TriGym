@@ -25,19 +25,14 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
-import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
-import com.example.charith.trigym.Activities.MemberViewActivity;
+import com.example.charith.trigym.Activities.Member.MemberViewActivity;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.orhanobut.dialogplus.DialogPlus;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;

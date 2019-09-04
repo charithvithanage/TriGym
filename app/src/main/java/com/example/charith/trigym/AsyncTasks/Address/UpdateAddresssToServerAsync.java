@@ -1,13 +1,13 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Address;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
-import com.example.charith.trigym.Entities.Member;
+import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Interfaces.AsyncJsonArrayListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
-import com.example.charith.trigym.Services.MemberService;
+import com.example.charith.trigym.Services.AddressService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,16 +17,16 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class AddMembersToServerAsync extends AsyncTask<Void, Void, Void> {
+public class UpdateAddresssToServerAsync extends AsyncTask<Void,Void,Void> {
 
-    List<Member> addServerMembers;
+    List<Address> updateServerAddresss;
 
     Context context;
     AsyncJsonArrayListner listner;
     Gson gson;
 
-    public AddMembersToServerAsync( Context context,List<Member> addServerMembers, AsyncJsonArrayListner listner) {
-        this.addServerMembers = addServerMembers;
+    public UpdateAddresssToServerAsync( Context context,List<Address> updateServerAddresss, AsyncJsonArrayListner listner) {
+        this.updateServerAddresss = updateServerAddresss;
         this.context = context;
         this.listner = listner;
         GsonBuilder builder = new GsonBuilder()
@@ -37,7 +37,7 @@ public class AddMembersToServerAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        MemberService.getInstance().addMembers(context, gson.toJson(addServerMembers), addServerMembers.size(), new VolleyCallback() {
+        AddressService.getInstance().updateAddresses(context, gson.toJson(updateServerAddresss), updateServerAddresss.size(), new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
             }

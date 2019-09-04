@@ -1,34 +1,34 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.Payment;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.example.charith.trigym.Entities.Address;
+import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.AsyncListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
-import com.example.charith.trigym.Services.AddressService;
+import com.example.charith.trigym.Services.PaymentService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class UpdateAddressAsync extends AsyncTask<Void,Void,Void> {
+public class SavePaymentAsync extends AsyncTask<Void,Void,Void> {
     AsyncListner listner;
     Context context;
-    Address address;
+    Payment payment;
 
-    public UpdateAddressAsync(Context context, Address address, AsyncListner listner ) {
+    public SavePaymentAsync(Context context,Payment payment,AsyncListner listner ) {
         this.listner = listner;
         this.context = context;
-        this.address=address;
+        this.payment=payment;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
-        AddressService.getInstance().updateAddress(context, address, new VolleyCallback() {
+        PaymentService.getInstance().savePayment(context, payment, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                listner.onSuccess(response);
+                listner.onSuccess(context,response);
             }
 
             @Override
@@ -38,7 +38,7 @@ public class UpdateAddressAsync extends AsyncTask<Void,Void,Void> {
 
             @Override
             public void onError(String error) {
-                listner.onError(error);
+                listner.onError(context,error);
             }
         });
         return null;

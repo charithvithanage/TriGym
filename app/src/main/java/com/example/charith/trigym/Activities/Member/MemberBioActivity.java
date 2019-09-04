@@ -1,7 +1,8 @@
-package com.example.charith.trigym.Activities;
+package com.example.charith.trigym.Activities.Member;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,13 +19,14 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.charith.trigym.AsyncTasks.SaveAddressAsync;
-import com.example.charith.trigym.AsyncTasks.SaveHealthConditionAsync;
-import com.example.charith.trigym.AsyncTasks.SaveMemberAsync;
-import com.example.charith.trigym.AsyncTasks.SavePaymentAsync;
-import com.example.charith.trigym.AsyncTasks.UpdateAddressAsync;
-import com.example.charith.trigym.AsyncTasks.UpdateHealthConditionAsync;
-import com.example.charith.trigym.AsyncTasks.UpdateMemberAsync;
+import com.example.charith.trigym.Activities.MainActivity;
+import com.example.charith.trigym.AsyncTasks.Address.SaveAddressAsync;
+import com.example.charith.trigym.AsyncTasks.HealthCondition.SaveHealthConditionAsync;
+import com.example.charith.trigym.AsyncTasks.Member.SaveMemberAsync;
+import com.example.charith.trigym.AsyncTasks.Payment.SavePaymentAsync;
+import com.example.charith.trigym.AsyncTasks.Address.UpdateAddressAsync;
+import com.example.charith.trigym.AsyncTasks.HealthCondition.UpdateHealthConditionAsync;
+import com.example.charith.trigym.AsyncTasks.Member.UpdateMemberAsync;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
@@ -108,7 +110,12 @@ public class MemberBioActivity extends AppCompatActivity {
         gson = builder.create();
 
         member = gson.fromJson(memberString, Member.class);
-        address = gson.fromJson(addressString, Address.class);
+
+        if(addressString!=null){
+            address = gson.fromJson(addressString, Address.class);
+        }else {
+            address=databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
+        }
 
         radioGroupType = findViewById(R.id.radioGroupType);
 
@@ -539,17 +546,18 @@ public class MemberBioActivity extends AppCompatActivity {
                 }
 
                 String dateString=Utils.dateTimeToString(DateTime.now());
+                updateHealthConditionToLocalStorage(databaseHandler,dateString);
+                updateAddressToLocalStorage(databaseHandler,dateString);
                 member.setModified_at(dateString);
                 databaseHandler.updateMember(member);
 
                 member = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
-                updateHealthConditionToLocalStorage(databaseHandler,dateString);
-                updateAddressToLocalStorage(databaseHandler,dateString);
+
 
                 if (Utils.isDeviceOnline(MemberBioActivity.this)) {
                     new UpdateMemberAsync(MemberBioActivity.this, member, new AsyncListner() {
                         @Override
-                        public void onSuccess(JSONObject response) {
+                        public void onSuccess(Context context,JSONObject response) {
                             Log.d(TAG, response.toString());
 
                             goBackToPreviousActivity();
@@ -557,7 +565,7 @@ public class MemberBioActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onError(String error) {
+                        public void onError(Context context,String error) {
                             Log.d(TAG, error);
                             goBackToPreviousActivity();
                         }
@@ -565,6 +573,9 @@ public class MemberBioActivity extends AppCompatActivity {
                 } else {
                     goBackToPreviousActivity();
                 }
+
+                savePaymentToLocalStorage(member.getMember_id(), databaseHandler, dateString);
+
 
             } else {
                 if (member.getLast_payment_date() != null) {
@@ -583,12 +594,12 @@ public class MemberBioActivity extends AppCompatActivity {
                         if (id != 0) {
                             new SaveMemberAsync(MemberBioActivity.this, member, new AsyncListner() {
                                 @Override
-                                public void onSuccess(JSONObject jsonObject) {
+                                public void onSuccess(Context context,JSONObject jsonObject) {
                                     goToMainActivity();
                                 }
 
                                 @Override
-                                public void onError(String error) {
+                                public void onError(Context context,String error) {
                                     Log.d(TAG, error);
                                     goToMainActivity();
                                 }
@@ -614,7 +625,7 @@ public class MemberBioActivity extends AppCompatActivity {
     private void goBackToPreviousActivity() {
         counterInteger = atomicInteger.incrementAndGet();
 
-        if (counterInteger == 3) {
+        if (counterInteger == 4) {
             Intent intent = new Intent();
             setResult(200, intent);
             finish();//finishing activity
@@ -630,7 +641,7 @@ public class MemberBioActivity extends AppCompatActivity {
         if (Utils.isDeviceOnline(MemberBioActivity.this)) {
             new UpdateAddressAsync(MemberBioActivity.this, address, new AsyncListner() {
                 @Override
-                public void onSuccess(JSONObject response) {
+                public void onSuccess(Context context,JSONObject response) {
                     Log.d(TAG, response.toString());
 
                     goBackToPreviousActivity();
@@ -638,7 +649,7 @@ public class MemberBioActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(String error) {
+                public void onError(Context context,String error) {
                     Log.d(TAG, error);
                     goBackToPreviousActivity();
                 }
@@ -661,14 +672,14 @@ public class MemberBioActivity extends AppCompatActivity {
             if (addressId != 0) {
                 new SaveAddressAsync(MemberBioActivity.this, address, new AsyncListner() {
                     @Override
-                    public void onSuccess(JSONObject jsonObject) {
+                    public void onSuccess(Context context,JSONObject jsonObject) {
 
                         goToMainActivity();
 
                     }
 
                     @Override
-                    public void onError(String error) {
+                    public void onError(Context context,String error) {
                         Log.d(TAG, error);
                         goToMainActivity();
                     }
@@ -690,7 +701,7 @@ public class MemberBioActivity extends AppCompatActivity {
         if (Utils.isDeviceOnline(MemberBioActivity.this)) {
             new UpdateHealthConditionAsync(MemberBioActivity.this, healthCondition, new AsyncListner() {
                 @Override
-                public void onSuccess(JSONObject response) {
+                public void onSuccess(Context context,JSONObject response) {
                     Log.d(TAG, response.toString());
 
                     goBackToPreviousActivity();
@@ -698,7 +709,7 @@ public class MemberBioActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(String error) {
+                public void onError(Context context,String error) {
                     Log.d(TAG, error);
                     goBackToPreviousActivity();
                 }
@@ -735,12 +746,12 @@ public class MemberBioActivity extends AppCompatActivity {
         if (Utils.isDeviceOnline(MemberBioActivity.this)) {
             new SaveHealthConditionAsync(MemberBioActivity.this, healthCondition, new AsyncListner() {
                 @Override
-                public void onSuccess(JSONObject jsonObject) {
+                public void onSuccess(Context context,JSONObject jsonObject) {
                     goToMainActivity();
                 }
 
                 @Override
-                public void onError(String error) {
+                public void onError(Context context,String error) {
                     Log.d(TAG, error);
                     goToMainActivity();
                 }
@@ -771,20 +782,39 @@ public class MemberBioActivity extends AppCompatActivity {
             if (Utils.isDeviceOnline(MemberBioActivity.this)) {
                 new SavePaymentAsync(MemberBioActivity.this, payment, new AsyncListner() {
                     @Override
-                    public void onSuccess(JSONObject jsonObject) {
-                        goToMainActivity();
+                    public void onSuccess(Context context,JSONObject jsonObject) {
+
+                        if(navigationType.equals("edit")){
+                            goBackToPreviousActivity();
+                        }else {
+                            goToMainActivity();
+                        }
                     }
 
                     @Override
-                    public void onError(String error) {
+                    public void onError(Context context,String error) {
                         Log.d(TAG, error);
-                        goToMainActivity();
+                        if(navigationType.equals("edit")){
+                            goBackToPreviousActivity();
+                        }else {
+                            goToMainActivity();
+                        }
                     }
                 }).execute();
             } else {
-                goToMainActivity();
+                if(navigationType.equals("edit")){
+                    goBackToPreviousActivity();
+                }else {
+                    goToMainActivity();
+                }
             }
 
+        }else {
+            if(navigationType.equals("edit")){
+                goBackToPreviousActivity();
+            }else {
+                goToMainActivity();
+            }
         }
     }
 

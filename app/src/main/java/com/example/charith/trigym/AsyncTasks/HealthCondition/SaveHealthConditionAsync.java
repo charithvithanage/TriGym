@@ -1,4 +1,4 @@
-package com.example.charith.trigym.AsyncTasks;
+package com.example.charith.trigym.AsyncTasks.HealthCondition;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,12 +11,12 @@ import com.example.charith.trigym.Services.HealthConditionService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class UpdateHealthConditionAsync extends AsyncTask<Void,Void,Void> {
+public class SaveHealthConditionAsync extends AsyncTask<Void,Void,Void> {
     AsyncListner listner;
     Context context;
     HealthCondition healthCondition;
 
-    public UpdateHealthConditionAsync(Context context, HealthCondition healthCondition, AsyncListner listner ) {
+    public SaveHealthConditionAsync(Context context, HealthCondition healthCondition, AsyncListner listner ) {
         this.listner = listner;
         this.context = context;
         this.healthCondition=healthCondition;
@@ -25,10 +25,10 @@ public class UpdateHealthConditionAsync extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        HealthConditionService.getInstance().updateHealthCondition(context, healthCondition, new VolleyCallback() {
+        HealthConditionService.getInstance().saveHealthCondition(context, healthCondition, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                listner.onSuccess(response);
+                listner.onSuccess(context,response);
             }
 
             @Override
@@ -38,7 +38,7 @@ public class UpdateHealthConditionAsync extends AsyncTask<Void,Void,Void> {
 
             @Override
             public void onError(String error) {
-                listner.onError(error);
+                listner.onError(context,error);
             }
         });
         return null;

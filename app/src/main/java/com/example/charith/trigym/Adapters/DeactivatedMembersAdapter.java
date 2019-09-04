@@ -1,9 +1,7 @@
 package com.example.charith.trigym.Adapters;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,21 +10,17 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.example.charith.trigym.Activities.MemberViewActivity;
+import com.example.charith.trigym.Activities.Member.MemberViewActivity;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
-import com.example.charith.trigym.Convertors.DateTimeSerializer;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
 import com.example.charith.trigym.R;
@@ -34,8 +28,6 @@ import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.charith.trigym;
+package com.example.charith.trigym.Interfaces;
 
 import com.orhanobut.dialogplus.DialogPlus;
 

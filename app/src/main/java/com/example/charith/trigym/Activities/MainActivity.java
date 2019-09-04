@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import com.example.charith.trigym.Activities.Member.DeactivateMemberListActivity;
+import com.example.charith.trigym.Activities.Member.NewMemberActivity;
 import com.example.charith.trigym.Adapters.MemberAdapter;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;

@@ -1,4 +1,4 @@
-package com.example.charith.trigym.Activities;
+package com.example.charith.trigym.AsyncTasks.Payment;
 
 import android.content.Context;
 import android.os.AsyncTask;
