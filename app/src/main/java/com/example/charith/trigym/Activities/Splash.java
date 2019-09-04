@@ -72,6 +72,8 @@ public class Splash extends AppCompatActivity {
                                 Log.d(TAG + " SRVR PAYs", gson.toJson(payment));
 
                                 Payment excistingPayment = databaseHandler.getPaymentById(String.valueOf(payment.getPayment_id()), String.valueOf(payment.getMember_id()));
+                                Log.d(TAG + " LOCAL PAYMENT", gson.toJson(excistingPayment));
+
                                 if (excistingPayment.getMember_id() != null) {
 
                                     if (!Utils.stringToDateTime(payment.getModified_at()).isEqual(Utils.stringToDateTime(excistingPayment.getModified_at()))) {
@@ -171,6 +173,7 @@ public class Splash extends AppCompatActivity {
                                 Log.d(TAG + " SRVR HCS", gson.toJson(healthCondition));
 
                                 HealthCondition existingHealthCondition = databaseHandler.getHealthConditionById(String.valueOf(healthCondition.getHealth_condition_id()));
+
                                 if (existingHealthCondition.getHealth_condition_id() != null) {
 
                                     if (!Utils.stringToDateTime(healthCondition.getModified_at()).isEqual(Utils.stringToDateTime(existingHealthCondition.getModified_at()))) {

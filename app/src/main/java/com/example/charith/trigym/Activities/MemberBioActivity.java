@@ -1,6 +1,7 @@
 package com.example.charith.trigym.Activities;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -78,6 +79,8 @@ public class MemberBioActivity extends AppCompatActivity {
 
     Integer counterInteger = 0;
 
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,10 @@ public class MemberBioActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        progressDialog=new ProgressDialog(MemberBioActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Wait.....");
 
         atomicInteger = new AtomicInteger(0);
 
@@ -572,9 +579,6 @@ public class MemberBioActivity extends AppCompatActivity {
 
                     member = databaseHandler.getMemberById(String.valueOf(id));
 
-                    savePaymentToLocalStorage(id, databaseHandler, dateString);
-
-
                     if (Utils.isDeviceOnline(MemberBioActivity.this)) {
                         if (id != 0) {
                             new SaveMemberAsync(MemberBioActivity.this, member, new AsyncListner() {
@@ -593,6 +597,9 @@ public class MemberBioActivity extends AppCompatActivity {
                     } else {
                         goToMainActivity();
                     }
+
+                    savePaymentToLocalStorage(id, databaseHandler, dateString);
+
 
 
                 } else {
@@ -706,6 +713,9 @@ public class MemberBioActivity extends AppCompatActivity {
         counterInteger = atomicInteger.incrementAndGet();
 
         if (counterInteger == 4) {
+
+            progressDialog.dismiss();
+
             Intent intent = new Intent(MemberBioActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -715,10 +725,11 @@ public class MemberBioActivity extends AppCompatActivity {
     }
 
     private Long saveHealthConditionToLocalStorage(DatabaseHandler databaseHandler, String dateString) {
-        Long healthConditionId = databaseHandler.addHealthCondition(healthCondition);
-        healthCondition.setHealth_condition_id(healthConditionId);
         healthCondition.setCreated_at(dateString);
         healthCondition.setModified_at(dateString);
+        Long healthConditionId = databaseHandler.addHealthCondition(healthCondition);
+        healthCondition.setHealth_condition_id(healthConditionId);
+
 
 
         if (Utils.isDeviceOnline(MemberBioActivity.this)) {

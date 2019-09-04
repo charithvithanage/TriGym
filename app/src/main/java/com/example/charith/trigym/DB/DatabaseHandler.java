@@ -489,6 +489,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Return member by assigning values to member object from cursor
     private Member getMemberWithValues(Cursor cursor) {
         Member member = new Member();
+        member.setHealth_condition_id(cursor.getLong(cursor.getColumnIndex(KEY_HEALTH_CONDITION_ID)));
+        member.setAddress_id(cursor.getLong(cursor.getColumnIndex(KEY_ADDRESS_ID)));
         member.setMember_membership_no(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_NO)));
         member.setMember_receipt_no(cursor.getString(cursor.getColumnIndex(KEY_MEMBER_RECEIPT_NO)));
         member.setMember_id(cursor.getLong(cursor.getColumnIndex(KEY_MEMBER_ID)));

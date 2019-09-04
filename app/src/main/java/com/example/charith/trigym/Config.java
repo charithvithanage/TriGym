@@ -4,8 +4,8 @@ public enum Config {
 
     Instance;
 
-    public static String ServerUrl="http://10.0.2.2:3000/";
-//    public static String ServerUrl="http://192.168.8.100:3000/";
+//    public static String ServerUrl="http://10.0.2.2:3000/";
+    public static String ServerUrl="http://192.168.8.101:3000/";
 
     public static String save_member_url=ServerUrl+"members/savemember";
     public static String update_member_url=ServerUrl+"members/updatemember";
