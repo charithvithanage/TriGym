@@ -6,10 +6,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,11 +22,10 @@ import android.widget.Toast;
 
 import com.example.charith.trigym.Activities.MainActivity;
 import com.example.charith.trigym.Activities.PaymentListActivity;
+import com.example.charith.trigym.Activities.ScheduleListActivity;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.Convertors.CircleTransform;
 import com.example.charith.trigym.DB.DatabaseHandler;
-import com.example.charith.trigym.Entities.Address;
-import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
@@ -34,14 +35,12 @@ import com.squareup.picasso.Picasso;
 
 public class MemberViewActivity extends AppCompatActivity {
 
-    TextView tvName, tvMobile1, tvMobile2, tvEmail, tvMarriedStatus, tvAddress, tvNIC, tvDOB, tvAge, tvGender, tvHeight, tvWeight, tvComments,tvType,tvCategory;
-    TextView tvDiabetes, tvHighCholesterol, tvHighBloodPressure, tvLowBloodPressure, tvHeartProblem, tvChestPain, tvHeartAttack, tvBreathingProblem, tvFainting, tvBackPain;
-    TextView tvMedication, tvIllness, tvPainfulJoints, tvArthritis, tvHernia;
+    TextView tvName, tvMobile1, tvMobile2, tvEmail, tvMarriedStatus, tvAddress, tvNIC, tvDOB, tvAge, tvGender, tvHeight, tvWeight, tvComments, tvType, tvCategory;
+
     DatabaseHandler databaseHandler;
 
     Member member;
     Gson gson;
-    Address address = null;
 
     LinearLayout mobile1Layout, mobile2Layout, emailLayout;
 
@@ -49,13 +48,11 @@ public class MemberViewActivity extends AppCompatActivity {
 
     ImageButton editButton;
 
-    Button btnPaymentHistory;
+    Button btnPaymentHistory,btnSchedules;
 
     ImageView profileImage;
 
     ImageButton backBtn;
-
-    HealthCondition healthCondition=null;
 
 
     @Override
@@ -67,12 +64,10 @@ public class MemberViewActivity extends AppCompatActivity {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
         gson = builder.create();
 
-        String memberId=getIntent().getStringExtra("memberId");
-        DatabaseHandler databaseHandler=new DatabaseHandler(this);
+        String memberId = getIntent().getStringExtra("memberId");
+        DatabaseHandler databaseHandler = new DatabaseHandler(this);
 
         member = databaseHandler.getMemberById(memberId);
-        healthCondition=databaseHandler.getHealthConditionById(String.valueOf(member.getHealth_condition_id()));
-
         init();
     }
 
@@ -111,7 +106,6 @@ public class MemberViewActivity extends AppCompatActivity {
     }
 
 
-
     private void init() {
 
         backBtn = findViewById(R.id.backBtn);
@@ -119,6 +113,7 @@ public class MemberViewActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profileImage);
         editButton = findViewById(R.id.editBtn);
         btnPaymentHistory = findViewById(R.id.btnHistory);
+        btnSchedules = findViewById(R.id.btnShedules);
 
         mobile1Layout = findViewById(R.id.mobile1Layout);
         mobile2Layout = findViewById(R.id.mobile2Layout);
@@ -147,25 +142,8 @@ public class MemberViewActivity extends AppCompatActivity {
         tvType = findViewById(R.id.tvType);
         tvCategory = findViewById(R.id.tvCategory);
 
-        tvDiabetes = findViewById(R.id.tvDiabetes);
-        tvHighCholesterol = findViewById(R.id.tvHighCholesterol);
-        tvHighBloodPressure = findViewById(R.id.tvHighBloodPressure);
-        tvLowBloodPressure = findViewById(R.id.tvComtvLowBloodPressurements);
-        tvHeartProblem = findViewById(R.id.tvComtvHeartProblemments);
-        tvChestPain = findViewById(R.id.tvChestPain);
-        tvHeartAttack = findViewById(R.id.tvHeartAttack);
-        tvBreathingProblem = findViewById(R.id.tvCtvBreathingProblemomments);
-        tvFainting = findViewById(R.id.tvCommenttvFaintings);
-        tvBackPain = findViewById(R.id.tvBackPain);
-        tvMedication = findViewById(R.id.tvMedication);
-        tvIllness = findViewById(R.id.tvIllness);
-        tvPainfulJoints = findViewById(R.id.tvPainfulJoints);
-        tvArthritis = findViewById(R.id.tvArthritis);
-        tvHernia = findViewById(R.id.tvCommetvHerniants);
-
         databaseHandler = new DatabaseHandler(MemberViewActivity.this);
 
-        address = databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
         setValues();
 
         imgCall1.setOnClickListener(new View.OnClickListener() {
@@ -192,53 +170,37 @@ public class MemberViewActivity extends AppCompatActivity {
         });
 
 
-        imgMessage2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                message(member.getMember_mobile_2());
+        imgMessage2.setOnClickListener(v -> message(member.getMember_mobile_2()));
 
-            }
+        imgEmail.setOnClickListener(v -> email(member.getEmail()));
+
+        editButton.setOnClickListener(v -> editProfile());
+
+        btnPaymentHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MemberViewActivity.this, PaymentListActivity.class);
+            intent.putExtra("memberIdString", String.valueOf(member.getMember_id()));
+            startActivity(intent);
         });
 
-        imgEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                email(member.getEmail());
-            }
+        btnSchedules.setOnClickListener(v -> {
+            Intent intent = new Intent(MemberViewActivity.this, ScheduleListActivity.class);
+            intent.putExtra("memberString", gson.toJson(member));
+            startActivity(intent);
         });
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editProfile();
-            }
-        });
-
-        btnPaymentHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MemberViewActivity.this, PaymentListActivity.class);
-                intent.putExtra("memberIdString",String.valueOf(member.getMember_id()));
-                startActivity(intent);
-            }
-        });
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MemberViewActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MemberViewActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
 
     }
 
     private void editProfile() {
         Intent intent = new Intent(MemberViewActivity.this, NewMemberActivity.class);
-        intent.putExtra("navigationType","edit");
-        intent.putExtra("memberId",String.valueOf(member.getMember_id()));
-        intent.putExtra("memberType",member.getType());
+        intent.putExtra("navigationType", "edit");
+        intent.putExtra("memberId", String.valueOf(member.getMember_id()));
+        intent.putExtra("memberType", member.getType());
         startActivityForResult(intent, 200);
     }
 
@@ -246,11 +208,9 @@ public class MemberViewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==200){
+        if (requestCode == 200) {
 
-            member=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
-            address=databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
-            healthCondition=databaseHandler.getHealthConditionById(String.valueOf(member.getHealth_condition_id()));
+            member = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
             setValues();
         }
 
@@ -295,9 +255,8 @@ public class MemberViewActivity extends AppCompatActivity {
     private void setValues() {
 
 
-
         tvName.setText(member.getMember_first_name() + " " + member.getMember_last_name() + " " + member.getMember_surname());
-        tvAddress.setText(getAddress(address));
+        tvAddress.setText(getAddress(member));
 
         tvCategory.setText(member.getCategory());
         tvType.setText(member.getType());
@@ -309,9 +268,9 @@ public class MemberViewActivity extends AppCompatActivity {
         }
 
         if (member.getMember_mobile_2() != null) {
-            if( member.getMember_mobile_2() != 0){
+            if (member.getMember_mobile_2() != 0) {
                 tvMobile2.setText(String.valueOf(member.getMember_mobile_2()));
-            }else {
+            } else {
                 mobile2Layout.setVisibility(View.GONE);
             }
         } else {
@@ -324,8 +283,8 @@ public class MemberViewActivity extends AppCompatActivity {
             emailLayout.setVisibility(View.GONE);
         }
 
-        if(member.getMember_profile_image_url()!=null){
-            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).into(profileImage);
+        if (member.getMember_profile_image_url() != null) {
+            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).rotate(90).into(profileImage);
 
         }
 
@@ -336,23 +295,6 @@ public class MemberViewActivity extends AppCompatActivity {
         tvMarriedStatus.setText(member.getMember_married_status());
         tvHeight.setText(member.getMember_height() + " cm");
         tvWeight.setText(member.getMember_weight() + " kg");
-
-        tvDiabetes.setText(checkCondition(healthCondition.getDiabetes()));
-        tvHighCholesterol.setText(checkCondition(healthCondition.getCholesterol()));
-        tvHighBloodPressure.setText(checkCondition(healthCondition.getHigh_blood_pressure()));
-        tvLowBloodPressure.setText(checkCondition(healthCondition.getLow_blood_pressure()));
-        tvHeartProblem.setText(checkCondition(healthCondition.getHeart_problem()));
-        tvChestPain.setText(checkCondition(healthCondition.getChest_pain()));
-        tvHeartAttack.setText(checkCondition(healthCondition.getHeart_attack()));
-        tvBreathingProblem.setText(checkCondition(healthCondition.getAsthma()));
-        tvFainting.setText(checkCondition(healthCondition.getFainting_spells()));
-        tvBackPain.setText(checkCondition(healthCondition.getBack_pain()));
-        tvMedication.setText(checkCondition(healthCondition.getMedication()));
-        tvIllness.setText(checkCondition(healthCondition.getOther_illness()));
-        tvPainfulJoints.setText(checkCondition(healthCondition.getBack_pain()));
-        tvArthritis.setText(checkCondition(healthCondition.getArthritis()));
-        tvHernia.setText(checkCondition(healthCondition.getHernia()));
-
 
     }
 
@@ -370,24 +312,24 @@ public class MemberViewActivity extends AppCompatActivity {
         return string;
     }
 
-    private String getAddress(Address address) {
+    private String getAddress(Member member) {
 
         StringBuilder addressString = new StringBuilder();
 
-        if (address.getAddress_line_1() != null || address.getAddress_line_1() != "") {
-            addressString.append(address.getAddress_line_1());
+        if (member.getAddress_line_1() != null && member.getAddress_line_1() != "") {
+            addressString.append(member.getAddress_line_1());
         }
 
-        if (address.getAddress_line_2() != null || address.getAddress_line_2() != "") {
-            addressString.append(", " + address.getAddress_line_2());
+        if (member.getAddress_line_2() != null  &&  member.getAddress_line_2() != "") {
+            addressString.append(", " + member.getAddress_line_2());
         }
 
-        if (address.getAddress_line_3() != null || address.getAddress_line_3() != "") {
-            addressString.append(", " + address.getAddress_line_3());
+        if (member.getAddress_line_3() != null  &&  member.getAddress_line_3() != "") {
+            addressString.append(", " + member.getAddress_line_3());
         }
 
-        if (address.getAddress_line_city() != null || address.getAddress_line_city() != "") {
-            addressString.append(", " + address.getAddress_line_city());
+        if (member.getCity() != null  &&  member.getCity() != "") {
+            addressString.append(", " + member.getCity());
         }
 
         return addressString.toString();

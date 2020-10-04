@@ -30,6 +30,19 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    <style name="input_text_title_style">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
+    <style name="input_edittext_title_style" parent="android:Widget.EditText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
     <style name="dialog_title_style">
         <item name="android:textColor">@color/charcoal</item>
         <item name="android:textSize">18sp</item>
@@ -111,8 +124,12 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/ic_launcher_background</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowFullscreen">true</item>
     </style>
-
+    <style name="dialog_button_text_style"  parent="android:Widget.TextView">
+        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
 </resources>

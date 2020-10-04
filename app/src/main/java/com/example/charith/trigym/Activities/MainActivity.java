@@ -1,5 +1,6 @@
 package com.example.charith.trigym.Activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,18 +8,8 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -28,19 +19,38 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.charith.trigym.Activities.Member.DeactivateMemberListActivity;
 import com.example.charith.trigym.Activities.Member.NewMemberActivity;
 import com.example.charith.trigym.Adapters.MemberAdapter;
+import com.example.charith.trigym.AsyncTasks.Member.DeleteMemberAsync;
+import com.example.charith.trigym.AsyncTasks.SyncAsync;
+import com.example.charith.trigym.Constants;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Interfaces.DialogListner;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
+import com.example.charith.trigym.Interfaces.SuccessListner;
 import com.example.charith.trigym.Interfaces.VolleyCallback;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Services.MemberService;
 import com.example.charith.trigym.Utils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -51,6 +61,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.charith.trigym.Constants.REQUEST_WRITE_STORAGE;
+import static com.example.charith.trigym.Utils.displayInactiveUserList;
+import static com.example.charith.trigym.Utils.getDeactiveMembers;
+import static com.example.charith.trigym.Utils.getInavtiveUsers;
+import static com.example.charith.trigym.Utils.showAlertWithoutTitleDialog;
+import static com.example.charith.trigym.Utils.showWarningMessageInMainActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,12 +95,14 @@ public class MainActivity extends AppCompatActivity
 
     private String TAG = "TriGym";
 
+    boolean permissionGranted = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         init();
 
@@ -114,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Utils.checkCallSMSPermission(MainActivity.this)) {
-                Utils.requestCallSMSPermission(MainActivity.this,PERMISSION_REQUEST_CODE);
+                Utils.requestCallSMSPermission(MainActivity.this, PERMISSION_REQUEST_CODE);
             }
         }
 
@@ -133,10 +152,11 @@ public class MainActivity extends AppCompatActivity
         builder.registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
         gson = builder.create();
 
-        new GetAllMembersAsync().execute();
+//        new GetAllMembersAsync().execute();
+
+        loadMemberList();
 
         loadInActiveMemberList();
-
 
 
         selectActiveBtn = findViewById(R.id.selectActiveBtn);
@@ -165,22 +185,46 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
 
-                if(grantResults.length>0){
+                if (grantResults.length > 0) {
                     boolean send_sms_accepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean call_accepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean write_storage_accepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
 
-                    if(send_sms_accepted&&call_accepted){
-                        Utils.showSuccessMessageInMainActivity(MainActivity.this,getString(R.string.permission_granted));
+                    if (send_sms_accepted && call_accepted && write_storage_accepted) {
+                        Utils.showSuccessMessageInMainActivity(MainActivity.this, getString(R.string.permission_granted));
 
-                    }else {
-                        Utils.showWarningMessageInMainActivity(MainActivity.this,getString(R.string.no_permission_granted));
+                    } else {
+                        showWarningMessageInMainActivity(MainActivity.this, getString(R.string.no_permission_granted));
 
                     }
                 }
+
+                break;
+
+            case REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "The app was allowed to write to your storage!", Toast.LENGTH_LONG).show();
+                    permissionGranted = true;
+                    new SyncAsync(MainActivity.this, () -> {
+                        new Handler(Looper.getMainLooper()).post(() -> showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.syncsuccessfully), Constants.SUCCESS, (dialog, which) -> {
+                            startActivity(getIntent());
+                            finish();
+                        }));
+                    }).execute();
+                    // Reload the activity with permission granted or use the features what required the permission
+                } else {
+                    Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                    permissionGranted = false;
+
+                }
+
+                break;
+
+            }
         }
     }
 
@@ -433,7 +477,7 @@ public class MainActivity extends AppCompatActivity
 
     private void loadInActiveMemberList() {
         final DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
-        inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
+        inActiveMembers = getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
         inActiveMemberAdapter = new MemberAdapter(MainActivity.this, inActiveMembers, new MemberSelectListner() {
             @Override
             public void selectMember(Member member, String changeStatus) {
@@ -442,14 +486,15 @@ public class MainActivity extends AppCompatActivity
                     member.setMember_active_status(false);
                     member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
-                    inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
-                    inActiveMemberAdapter.updateList(inActiveMembers);
                 } else {
                     databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
-                    inActiveMembers = Utils.getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
-                    inActiveMemberAdapter.updateList(inActiveMembers);
+                    new DeleteMemberAsync(MainActivity.this, member, () -> {
+
+                    }).execute();
 
                 }
+                inActiveMembers = getInavtiveUsers(MainActivity.this, databaseHandler.getAllMembers());
+                inActiveMemberAdapter.updateList(inActiveMembers);
             }
         });
 
@@ -499,10 +544,10 @@ public class MainActivity extends AppCompatActivity
 
             if (inActiveMembers.size() == 0) {
 
-                Utils.showWarningMessageInMainActivity(getApplicationContext(), getResources().getString(R.string.no_inactive_users_alert));
+                showWarningMessageInMainActivity(MainActivity.this, getString(R.string.no_inactive_users_alert));
 
             } else {
-                Utils.displayInactiveUserList(MainActivity.this, inActiveMembers, new DialogListner() {
+                displayInactiveUserList(MainActivity.this, inActiveMembers, new DialogListner() {
                     @Override
                     public void onSucces(Dialog dialog, String numberList) {
                         dialog.dismiss();
@@ -528,9 +573,29 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (id == R.id.deactivated_members) {
+            final DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
 
-            Intent intent = new Intent(MainActivity.this, DeactivateMemberListActivity.class);
-            startActivity(intent);
+            List<Member> deActiveMembers = getDeactiveMembers(databaseHandler.getAllMembers());
+
+            if (deActiveMembers.size() == 0) {
+                showWarningMessageInMainActivity(MainActivity.this, getString(R.string.no_deactivated_users));
+
+            } else {
+                Intent intent = new Intent(MainActivity.this, DeactivateMemberListActivity.class);
+                startActivity(intent);
+            }
+
+
+        } else if (id == R.id.sync_members) {
+            requestPermission();
+
+            if (permissionGranted)
+                new SyncAsync(MainActivity.this, () -> {
+                    new Handler(Looper.getMainLooper()).post(() -> showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.syncsuccessfully), Constants.SUCCESS, (dialog, which) -> {
+                        startActivity(getIntent());
+                        finish();
+                    }));
+                }).execute();
 
         }
 
@@ -554,7 +619,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... voids) {
 
-            MemberService.getInstance().getAllMembers(MainActivity.this,  new VolleyCallback() {
+            MemberService.getInstance().getAllMembers(MainActivity.this, new VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
 
@@ -566,13 +631,13 @@ public class MainActivity extends AppCompatActivity
 
                         for (int i = 0; i < response.length(); i++) {
 
-                            Member member=gson.fromJson(response.getString(i),Member.class);
-                            DatabaseHandler databaseHandler=new DatabaseHandler(MainActivity.this);
-                            Member excistingMember=databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
-                            if(excistingMember.getMember_id()!=null){
+                            Member member = gson.fromJson(response.getString(i), Member.class);
+                            DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
+                            Member excistingMember = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+                            if (excistingMember.getMember_id() != null) {
                                 databaseHandler.updateMember(member);
-                            }else {
-                               Long id= databaseHandler.addMember(member);
+                            } else {
+                                Long id = databaseHandler.addMember(member);
 
                                 savePaymentToLocalStorage(id, databaseHandler);
 
@@ -608,7 +673,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadMemberList() {
-        final DatabaseHandler databaseHandler=new DatabaseHandler(MainActivity.this);
+        final DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
 
         memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
         memberAdapter = new MemberAdapter(MainActivity.this, memberList, new MemberSelectListner() {
@@ -619,14 +684,20 @@ public class MainActivity extends AppCompatActivity
                     member.setMember_active_status(false);
                     member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
-                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
-                    memberAdapter.updateList(memberList);
                 } else {
+
                     databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
-                    memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
-                    memberAdapter.updateList(memberList);
+
+                    new DeleteMemberAsync(MainActivity.this, member, new SuccessListner() {
+                        @Override
+                        public void onFinished() {
+
+                        }
+                    }).execute();
 
                 }
+                memberList = Utils.getActiveMembers(MainActivity.this, databaseHandler.getAllMembers());
+                memberAdapter.updateList(memberList);
             }
         });
 
@@ -651,6 +722,17 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    private void requestPermission() {
+        boolean hasPermission = (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        } else {
+            permissionGranted = true;
+        }
     }
 
 }

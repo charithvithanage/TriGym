@@ -3,26 +3,19 @@ package com.example.charith.trigym.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.charith.trigym.AsyncTasks.Address.AddAddresssToServerAsync;
-import com.example.charith.trigym.AsyncTasks.HealthCondition.AddHealthConditionsToServer;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.charith.trigym.AsyncTasks.Member.AddMembersToServerAsync;
-import com.example.charith.trigym.AsyncTasks.Address.GetAllAddressesAsync;
-import com.example.charith.trigym.AsyncTasks.HealthCondition.GetAllHealthConditionsAsync;
 import com.example.charith.trigym.AsyncTasks.Member.GetAllMembersAsync;
+import com.example.charith.trigym.AsyncTasks.Member.UpdateMembersToServerAsync;
 import com.example.charith.trigym.AsyncTasks.Payment.AddPaymentsToServer;
 import com.example.charith.trigym.AsyncTasks.Payment.GetAllPaymentsAsync;
-import com.example.charith.trigym.AsyncTasks.Address.UpdateAddresssToServerAsync;
-import com.example.charith.trigym.AsyncTasks.HealthCondition.UpdateHealthConditionsToServer;
-import com.example.charith.trigym.AsyncTasks.Member.UpdateMembersToServerAsync;
 import com.example.charith.trigym.AsyncTasks.Payment.UpdatePaymentsToServer;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
-import com.example.charith.trigym.Entities.Address;
-import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
 import com.example.charith.trigym.Interfaces.AsyncJsonArrayListner;
@@ -54,207 +47,6 @@ public class Splash extends AppCompatActivity {
         gson = builder.create();
 
         if (Utils.isDeviceOnline(Splash.this)) {
-
-
-            new GetAllHealthConditionsAsync(Splash.this, new AsyncJsonArrayListner() {
-                @Override
-                public void onSuccess(Context context, JSONArray response) {
-                    List<HealthCondition> updateServerObjects = new ArrayList<>();
-                    boolean shouldUpdate = false;
-
-                    DatabaseHandler databaseHandler = new DatabaseHandler(context);
-
-                    List<HealthCondition> list = databaseHandler.getAllHealthConditions();
-
-                    if (response.length() > 0) {
-                        try {
-
-
-                            for (int i = 0; i < response.length(); i++) {
-                                shouldUpdate = true;
-                                HealthCondition healthCondition = gson.fromJson(response.getString(i), HealthCondition.class);
-                                Log.d(TAG + " SRVR HCS", gson.toJson(healthCondition));
-
-                                HealthCondition existingHealthCondition = databaseHandler.getHealthConditionById(String.valueOf(healthCondition.getHealth_condition_id()));
-
-                                if (existingHealthCondition.getHealth_condition_id() != null) {
-
-                                    if (!Utils.stringToDateTime(healthCondition.getModified_at()).isEqual(Utils.stringToDateTime(existingHealthCondition.getModified_at()))) {
-                                        if (Utils.stringToDateTime(healthCondition.getModified_at()).isAfter(Utils.stringToDateTime(existingHealthCondition.getModified_at()))) {
-
-                                            databaseHandler.updateHealthCondition(healthCondition);
-
-                                            Log.d(TAG + " UP HCS TO LOCAL", gson.toJson(databaseHandler.getHealthConditionById(String.valueOf(healthCondition.getHealth_condition_id()))));
-
-                                        } else {
-
-                                            updateServerObjects.add(existingHealthCondition);
-                                            Log.d(TAG + " UP HCS TO SRVR", gson.toJson(existingHealthCondition));
-//                                    new UpdateMemberAsync(excistingMember).execute();
-                                        }
-                                    }
-
-                                } else {
-
-                                    if (healthCondition.getHealth_condition_id() != null) {
-                                        Long id = databaseHandler.addHealthCondition(healthCondition);
-                                        Log.d(TAG + " ADD HCS TO LOCAL", gson.toJson(databaseHandler.getHealthConditionById(String.valueOf(healthCondition.getHealth_condition_id()))));
-                                    }
-
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    } else {
-                        updateServerObjects = list;
-                    }
-
-
-                    if (updateServerObjects.size() > 0) {
-
-                        if (shouldUpdate) {
-                            new UpdateHealthConditionsToServer(context, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-                                }
-                            }).execute();
-                        } else {
-                            new AddHealthConditionsToServer(context, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-                                }
-                            }).execute();
-                        }
-
-                    } else {
-                        goToMainActivity(context);
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    goToMainActivity(context);
-
-                }
-            }).execute();
-
-            new GetAllAddressesAsync(Splash.this, new AsyncJsonArrayListner() {
-                @Override
-                public void onSuccess(Context context, JSONArray response) {
-                    boolean shouldUpdate = false;
-
-                    List<Address> updateServerObjects = new ArrayList<>();
-
-                    DatabaseHandler databaseHandler = new DatabaseHandler(Splash.this);
-
-                    List<Address> list = databaseHandler.getAllAddresses();
-
-                    Log.d(TAG + "L DB ADDRESS", gson.toJson(list));
-
-                    if (response.length() > 0) {
-                        try {
-
-                            for (int i = 0; i < response.length(); i++) {
-
-                                Address address = gson.fromJson(response.getString(i), Address.class);
-                                Log.d(TAG + " SRVR ADRS", gson.toJson(address));
-                                shouldUpdate = true;
-
-                                Address excistingAddress = databaseHandler.getAddressById(String.valueOf(address.getAddress_id()));
-                                if (excistingAddress.getAddress_id() != null) {
-
-                                    if (!Utils.stringToDateTime(address.getModified_at()).isEqual(Utils.stringToDateTime(excistingAddress.getModified_at()))) {
-                                        if (Utils.stringToDateTime(address.getModified_at()).isAfter(Utils.stringToDateTime(excistingAddress.getModified_at()))) {
-
-                                            databaseHandler.updateAddress(address);
-
-                                            Log.d(TAG + " UP ADRS TO LOCAL", gson.toJson(databaseHandler.getAddressById(String.valueOf(address.getAddress_id()))));
-
-                                        } else {
-
-                                            updateServerObjects.add(excistingAddress);
-                                            Log.d(TAG + " UP ADRS TO SRVR", gson.toJson(excistingAddress));
-//                                    new UpdateMemberAsync(excistingMember).execute();
-                                        }
-                                    }
-
-                                } else {
-
-                                    if (address.getAddress_id() != null) {
-                                        Long id = databaseHandler.addAddress(address);
-                                        Log.d(TAG + " ADD ADR TO LOCAL", gson.toJson(databaseHandler.getAddressById(String.valueOf(address.getAddress_id()))));
-                                    }
-
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    } else {
-                        updateServerObjects = list;
-                    }
-
-
-                    if (updateServerObjects.size() > 0) {
-
-                        if (shouldUpdate) {
-                            new UpdateAddresssToServerAsync(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-                                }
-                            }).execute();
-                        } else {
-                            new AddAddresssToServerAsync(Splash.this, updateServerObjects, new AsyncJsonArrayListner() {
-                                @Override
-                                public void onSuccess(Context context, JSONArray jsonArray) {
-                                    goToMainActivity(context);
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    goToMainActivity(context);
-                                }
-                            }).execute();
-                        }
-
-                    } else {
-                        goToMainActivity(context);
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    goToMainActivity(context);
-                }
-            }).execute();
-
             new GetAllMembersAsync(Splash.this, new AsyncJsonArrayListner() {
                 @Override
                 public void onSuccess(Context context, JSONArray response) {

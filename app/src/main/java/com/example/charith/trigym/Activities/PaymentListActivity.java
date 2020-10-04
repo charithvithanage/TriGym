@@ -2,9 +2,9 @@ package com.example.charith.trigym.Activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -82,38 +82,43 @@ public class PaymentListActivity extends AppCompatActivity {
 
     private void setValues() {
 
-        if (Utils.isDeviceOnline(PaymentListActivity.this)) {
-            new GetPaymentsByMemberAsync(PaymentListActivity.this, memberId, new AsyncJsonArrayListner() {
-                @Override
-                public void onSuccess(Context context, JSONArray jsonArray) {
+        paymentList = databaseHandler.getPaymentsByMemberId(memberId);
+        paymentAdapter = new PaymentAdapter(paymentList, PaymentListActivity.this);
+        paymentListRecycleView.setAdapter(paymentAdapter);
+        paymentListRecycleView.setLayoutManager(layoutManager);
 
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        try {
-                            Payment payment = gson.fromJson(jsonArray.getString(i), Payment.class);
-                            paymentList.add(payment);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    paymentAdapter = new PaymentAdapter(paymentList, PaymentListActivity.this);
-                    paymentListRecycleView.setAdapter(paymentAdapter);
-                    paymentListRecycleView.setLayoutManager(layoutManager);
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    Log.d(TAG, error);
-                }
-            }).execute();
-        } else {
-            paymentList = databaseHandler.getPaymentsByMemberId(memberId);
-            paymentAdapter = new PaymentAdapter(paymentList, PaymentListActivity.this);
-            paymentListRecycleView.setAdapter(paymentAdapter);
-            paymentListRecycleView.setLayoutManager(layoutManager);
-        }
+//        if (Utils.isDeviceOnline(PaymentListActivity.this)) {
+//            new GetPaymentsByMemberAsync(PaymentListActivity.this, memberId, new AsyncJsonArrayListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONArray jsonArray) {
+//
+//
+//                    for (int i = 0; i < jsonArray.length(); i++) {
+//
+//                        try {
+//                            Payment payment = gson.fromJson(jsonArray.getString(i), Payment.class);
+//                            paymentList.add(payment);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    paymentAdapter = new PaymentAdapter(paymentList, PaymentListActivity.this);
+//                    paymentListRecycleView.setAdapter(paymentAdapter);
+//                    paymentListRecycleView.setLayoutManager(layoutManager);
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//                    Log.d(TAG, error);
+//                }
+//            }).execute();
+//        } else {
+//            paymentList = databaseHandler.getPaymentsByMemberId(memberId);
+//            paymentAdapter = new PaymentAdapter(paymentList, PaymentListActivity.this);
+//            paymentListRecycleView.setAdapter(paymentAdapter);
+//            paymentListRecycleView.setLayoutManager(layoutManager);
+//        }
 
 
 

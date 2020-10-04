@@ -47,4 +47,10 @@
     <string name="permission_granted">Permission granted</string>
     <string name="no_permission_granted">No permission granted. You can\'t send sms and get call</string>
     <string name="successfully_activated_message">Successfully Activated the user</string>
+    <string name="preference_file_key">TriFitness</string>
+    <string name="membersavedsuccessfully">Member Saved Successfully</string>
+    <string name="syncsuccessfully">Sync Success</string>
+    <string name="cantsaveimagewithoutnicandfirstname">Can\'t save photo without nic and first name</string>
+    <string name="no_deactivated_users">No Deactivated Users</string>
+    <string name="shedules">Schedules</string>
 </resources>

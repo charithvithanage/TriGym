@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#1565c0</color>
+    <color name="colorPrimaryDark">#003C8F</color>
+    <color name="colorAccent">#003c8f</color>
 
     <color name="primaryWhite">#ffffff</color>
+    <color name="white">#ffffff</color>
 
 
     //Dialog bg colors
     <color name="error_message_bg_color">#F25050</color>
     <color name="warning_message_bg_color">#FFF3C34E</color>
     <color name="success_message_bg_color">#FF60C43A</color>
+    <color name="whitesmoke">#f5f5f6</color>
 
     <color name="cadet_grey">#8CA5C1</color>
     <color name="charcoal">#324152</color>

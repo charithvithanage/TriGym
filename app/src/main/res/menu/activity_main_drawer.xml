@@ -13,6 +13,11 @@
             android:icon="@mipmap/deactivate"
             android:title="Deactivated Users" />
 
+        <item
+            android:id="@+id/sync_members"
+            android:icon="@mipmap/sync"
+            android:title="Sync" />
+
     </group>
 
 </menu>

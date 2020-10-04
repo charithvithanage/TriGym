@@ -1,8 +1,8 @@
 package com.example.charith.trigym.Adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +85,7 @@ public class InactiveUserAdapter extends ArrayAdapter<Member> {
         if (selectParticipant.getMember_profile_image_url() != null) {
             Picasso.get()
                     .load(selectParticipant.getMember_profile_image_url())
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform()).rotate(90)
                     .placeholder(R.mipmap.client_phone_icon)
                     .into(holder.imageProfile);
         }

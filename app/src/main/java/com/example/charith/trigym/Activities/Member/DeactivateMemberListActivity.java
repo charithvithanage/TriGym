@@ -3,22 +3,24 @@ package com.example.charith.trigym.Activities.Member;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import com.example.charith.trigym.Activities.MainActivity;
 import com.example.charith.trigym.Adapters.DeactivatedMembersAdapter;
+import com.example.charith.trigym.AsyncTasks.Member.DeleteMemberAsync;
 import com.example.charith.trigym.AsyncTasks.Member.UpdateMemberAsync;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Interfaces.AsyncListner;
 import com.example.charith.trigym.Interfaces.MemberSelectListner;
+import com.example.charith.trigym.Interfaces.SuccessListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
@@ -29,6 +31,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.charith.trigym.Utils.getDeactiveMembers;
 
 public class DeactivateMemberListActivity extends AppCompatActivity {
     private RecyclerView memberListRecycleView;
@@ -85,7 +89,7 @@ public class DeactivateMemberListActivity extends AppCompatActivity {
     private void loadMemberList() {
 
         final DatabaseHandler databaseHandler = new DatabaseHandler(DeactivateMemberListActivity.this);
-        memberList = Utils.getDeactiveMembers(databaseHandler.getAllMembers());
+        memberList = getDeactiveMembers(databaseHandler.getAllMembers());
         memberAdapter = new DeactivatedMembersAdapter(DeactivateMemberListActivity.this, memberList, new MemberSelectListner() {
             @Override
             public void selectMember(Member member, String changeStatus) {
@@ -95,28 +99,34 @@ public class DeactivateMemberListActivity extends AppCompatActivity {
                     member.setModified_at(Utils.dateTimeToString(DateTime.now()));
                     databaseHandler.updateMember(member);
 
-                    member = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
+//                    if (Utils.isDeviceOnline(DeactivateMemberListActivity.this)) {
+//                        new UpdateMemberAsync(DeactivateMemberListActivity.this, member, new AsyncListner() {
+//                            @Override
+//                            public void onSuccess(Context context, JSONObject jsonObject) {
+//                                Utils.showSuccessMessage(context, getResources().getString(R.string.successfully_activated_message));
+//                            }
+//
+//                            @Override
+//                            public void onError(Context context, String error) {
+//                                Utils.showWarningMessage(context, error);
+//                            }
+//                        }).execute();
+//                    }
 
-                    if (Utils.isDeviceOnline(DeactivateMemberListActivity.this)) {
-                        new UpdateMemberAsync(DeactivateMemberListActivity.this, member, new AsyncListner() {
-                            @Override
-                            public void onSuccess(Context context, JSONObject jsonObject) {
-                                Utils.showSuccessMessage(context, getResources().getString(R.string.successfully_activated_message));
-                            }
-
-                            @Override
-                            public void onError(Context context, String error) {
-                                Utils.showWarningMessage(context, error);
-                            }
-                        }).execute();
-                    }
-
-                    memberList = Utils.getDeactiveMembers(databaseHandler.getAllMembers());
+                    memberList = getDeactiveMembers(databaseHandler.getAllMembers());
                     memberAdapter.updateList(memberList);
 
                 } else {
                     databaseHandler.deleteMember(String.valueOf(member.getMember_id()));
-                    memberAdapter.notifyDataSetChanged();
+
+                    new DeleteMemberAsync(DeactivateMemberListActivity.this, member, new SuccessListner() {
+                        @Override
+                        public void onFinished() {
+                            memberAdapter.notifyDataSetChanged();
+                        }
+                    }).execute();
+
+
 
                 }
             }

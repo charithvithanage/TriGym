@@ -7,8 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.charith.trigym.Entities.Address;
-import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
 
@@ -31,35 +29,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TRYGYM";
 
     private static final String TABLE_MEMBERS = "table_members";
-    private static final String TABLE_ADDRESSES = "table_addresses";
     private static final String TABLE_PAYMENT = "table_payment";
-    private static final String TABLE_HEALTH_CONDITION = "table_health_condition";
-
-    private static final String KEY_ADDRESS_ID = "address_id";
-    private static final String KEY_ADDRESS_LINE_1 = "address_line_1";
-    private static final String KEY_ADDRESS_LINE_2 = "address_line_2";
-    private static final String KEY_ADDRESS_LINE_3 = "address_line_3";
-    private static final String KEY_ADDRESS_LINE_CITY = "address_line_city";
 
     private static final String KEY_PAYMENT_AMOUNT = "payment_amount";
     private static final String KEY_PAYMENT_ID = "payment_id";
-
-    private static final String KEY_HEALTH_CONDITION_ID = "health_condition_id";
-    private static final String KEY_DIABETES = "diabetes";
-    private static final String KEY_CHOLESTEROL = "cholesterol";
-    private static final String KEY_HIGH_BLOOD_PRESSURE = "high_blood_pressure";
-    private static final String KEY_LOW_BLOOD_PRESSURE = "low_blood_pressure";
-    private static final String KEY_HEART_PROBLEM = "heart_problem";
-    private static final String KEY_CHEST_PAIN = "chest_pain";
-    private static final String KEY_HEART_ATTACK = "heart_attack";
-    private static final String KEY_ASTHMA = "asthma";
-    private static final String KEY_FAINTING = "fainting_spells";
-    private static final String KEY_BACK_PAIN = "back_pain";
-    private static final String KEY_MEDICATION = "medication";
-    private static final String KEY_OTHER_ILLNESS = "other_illness";
-    private static final String KEY_SWOLLEN = "swollen";
-    private static final String KEY_ARTHRITIS = "arthritis";
-    private static final String KEY_HERNIA = "hernia";
 
     // NOTE_TAGS Table - column names
 
@@ -71,6 +44,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_CAT = "category";
     private static final String KEY_LAST_NAME = "member_last_name";
     private static final String KEY_SURNAME = "member_surname";
+    private static final String KEY_ADDRESS_LINE_1 = "address_line_1";
+    private static final String KEY_ADDRESS_LINE_2 = "address_line_2";
+    private static final String KEY_ADDRESS_LINE_3 = "address_line_3";
+    private static final String KEY_ADDRESS_CITY = "address_line_city";
     private static final String KEY_GUARDIAN_NAME = "guardian_name";
     private static final String KEY_GUARDIAN_TEL = "guardian_tel";
     private static final String KEY_GUARDIAN_RELATIONSHIP = "guardian_relationship";
@@ -98,8 +75,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String CREATE_MEMBER_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEMBERS + "("
             + KEY_MEMBER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_HEALTH_CONDITION_ID + " INTEGER ,"
-            + KEY_ADDRESS_ID + " INTEGER ,"
             + KEY_MEMBERSHIP_NO + " INTEGER ,"
             + KEY_MEMBER_RECEIPT_NO + " INTEGER ,"
             + KEY_FIRST_NAME + " TEXT ,"
@@ -121,45 +96,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_COMMENT + " TEXT,"
             + KEY_TYPE + " TEXT ,"
             + KEY_CAT + " TEXT ,"
+            + KEY_ADDRESS_LINE_1 + " TEXT ,"
+            + KEY_ADDRESS_LINE_2 + " TEXT ,"
+            + KEY_ADDRESS_LINE_3 + " TEXT ,"
+            + KEY_ADDRESS_CITY + " TEXT ,"
             + KEY_MEMBERSHIP_EXPIRY_DATE + " TEXT,"
             + KEY_MEMBER_VALID_STATUS + " BOOLEAN,"
             + KEY_MEMBERSHIP_TYPE + " TEXT,"
             + KEY_LAST_PAYMENT_DATE + " TEXT,"
             + KEY_MEMBER_IS_ACTIVE + " BOOLEAN,"
             + KEY_CREATED_AT + " TEXT,"
-            + KEY_MODIFIED_AT + " TEXT, " +
-            "FOREIGN KEY(" + KEY_HEALTH_CONDITION_ID + ") REFERENCES " + TABLE_HEALTH_CONDITION + "(" + KEY_HEALTH_CONDITION_ID + ") ON DELETE CASCADE"+
-            ", FOREIGN KEY(" + KEY_ADDRESS_ID + ") REFERENCES " + TABLE_ADDRESSES + "(" + KEY_ADDRESS_ID + ") ON DELETE CASCADE"
-            +")";
-
-    public static final String CREATE_HEALTH_CONDITION_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_HEALTH_CONDITION + "("
-            + KEY_HEALTH_CONDITION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_DIABETES + " INTEGER DEFAULT 0,"
-            + KEY_CHOLESTEROL + " INTEGER DEFAULT 0,"
-            + KEY_HIGH_BLOOD_PRESSURE + " INTEGER DEFAULT 0,"
-            + KEY_LOW_BLOOD_PRESSURE + " INTEGER DEFAULT 0,"
-            + KEY_HEART_PROBLEM + " INTEGER DEFAULT 0,"
-            + KEY_CHEST_PAIN + " INTEGER DEFAULT 0,"
-            + KEY_HEART_ATTACK + " INTEGER DEFAULT 0,"
-            + KEY_ASTHMA + " INTEGER DEFAULT 0,"
-            + KEY_FAINTING + " INTEGER DEFAULT 0,"
-            + KEY_BACK_PAIN + " INTEGER DEFAULT 0,"
-            + KEY_MEDICATION + " INTEGER DEFAULT 0,"
-            + KEY_OTHER_ILLNESS + " INTEGER DEFAULT 0,"
-            + KEY_SWOLLEN + " INTEGER DEFAULT 0,"
-            + KEY_ARTHRITIS + " INTEGER DEFAULT 0,"
-            + KEY_CREATED_AT + " TEXT,"
-            + KEY_MODIFIED_AT + " TEXT,"
-            + KEY_HERNIA + " INTEGER DEFAULT 0)";
-
-    public static final String CREATE_TABLE_ADDRESSES = "CREATE TABLE IF NOT EXISTS " + TABLE_ADDRESSES + "("
-            + KEY_ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_ADDRESS_LINE_1 + " TEXT ,"
-            + KEY_ADDRESS_LINE_2 + " TEXT,"
-            + KEY_ADDRESS_LINE_3 + " TEXT,"
-            + KEY_CREATED_AT + " TEXT,"
-            + KEY_MODIFIED_AT + " TEXT,"
-            + KEY_ADDRESS_LINE_CITY + " TEXT)";
+            + KEY_MODIFIED_AT + " TEXT"
+            + ")";
 
     public static final String CREATE_TABLE_PAYMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_PAYMENT + "("
             + KEY_PAYMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -186,17 +134,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(CREATE_MEMBER_TABLE);
-        db.execSQL(CREATE_TABLE_ADDRESSES);
         db.execSQL(CREATE_TABLE_PAYMENT);
-        db.execSQL(CREATE_HEALTH_CONDITION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDRESSES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAYMENT);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HEALTH_CONDITION);
 
         onCreate(db);
     }
@@ -283,51 +227,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
-
-    // Adding new Lawyer
-    public Long addAddress(Address address) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_ADDRESS_LINE_1, address.getAddress_line_1());
-        values.put(KEY_ADDRESS_LINE_2, address.getAddress_line_2());
-        values.put(KEY_ADDRESS_LINE_3, address.getAddress_line_3());
-        values.put(KEY_ADDRESS_LINE_CITY, address.getAddress_line_city());
-        values.put(KEY_CREATED_AT, address.getCreated_at());
-        values.put(KEY_MODIFIED_AT, address.getModified_at());
-
-        Long id = db.insert(TABLE_ADDRESSES, null, values);
-
-        return id;
-    }
-
-
-    public Address getAddressById(String addressId) {
-
-
-        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_ADDRESSES+" WHERE "+KEY_MEMBER_ID+" = ?", new String[] {memberId});
-        Cursor c = db.query(TABLE_ADDRESSES, null, KEY_ADDRESS_ID + "=?", new String[]{addressId}, null, null, null);
-        Address address = new Address();
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                address.setAddress_id(c.getLong(c.getColumnIndex(KEY_ADDRESS_ID)));
-                address.setAddress_line_1(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_1)));
-                address.setAddress_line_2(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_2)));
-                address.setAddress_line_3(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_3)));
-                address.setAddress_line_city(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_CITY)));
-                address.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
-                address.setModified_at(c.getString(c.getColumnIndex(KEY_MODIFIED_AT)));
-            } while (c.moveToNext());
-        }
-
-        c.close();
-
-        return address;
-    }
-
     public List<Payment> getAllPayments() {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -411,67 +310,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return id;
     }
 
-    public Long addHealthCondition(HealthCondition healthCondition) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        setContentValuesForHealthCondition(healthCondition, values);
-
-        return db.insert(TABLE_HEALTH_CONDITION, null, values);
-    }
-
-    public void updateHealthCondition(HealthCondition healthCondition) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values = setContentValuesForHealthCondition(healthCondition, values);
-
-        db.update(TABLE_HEALTH_CONDITION, values, KEY_HEALTH_CONDITION_ID + "=?" , new String[]{String.valueOf(healthCondition.getHealth_condition_id())});
-
-    }
-
-    public HealthCondition getHealthConditionById(String id) {
-
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.query(TABLE_HEALTH_CONDITION, null, KEY_HEALTH_CONDITION_ID + "=?", new String[]{id}, null, null, null);
-        HealthCondition healthCondition = new HealthCondition();
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                healthCondition = setValuesToHealthCondition(c);
-
-            } while (c.moveToNext());
-        }
-
-        c.close();
-
-        return healthCondition;
-    }
-
-    public List<HealthCondition> getAllHealthConditions() {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String selectQuery = "SELECT * FROM " + TABLE_HEALTH_CONDITION;
-        Cursor c = db.rawQuery(selectQuery, null);
-        List<HealthCondition> healthConditions = new ArrayList<>();
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                HealthCondition healthCondition = setValuesToHealthCondition(c);
-                healthConditions.add(healthCondition);
-            } while (c.moveToNext());
-        }
-
-        c.close();
-
-        return healthConditions;
-    }
-
     private Payment setValuesToPayment(Cursor c) {
         Payment payment = new Payment();
         payment.setPayment_id(c.getLong(c.getColumnIndex(KEY_PAYMENT_ID)));
@@ -489,8 +327,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Return member by assigning values to member object from cursor
     private Member getMemberWithValues(Cursor cursor) {
         Member member = new Member();
-        member.setHealth_condition_id(cursor.getLong(cursor.getColumnIndex(KEY_HEALTH_CONDITION_ID)));
-        member.setAddress_id(cursor.getLong(cursor.getColumnIndex(KEY_ADDRESS_ID)));
         member.setMember_membership_no(cursor.getString(cursor.getColumnIndex(KEY_MEMBERSHIP_NO)));
         member.setMember_receipt_no(cursor.getString(cursor.getColumnIndex(KEY_MEMBER_RECEIPT_NO)));
         member.setMember_id(cursor.getLong(cursor.getColumnIndex(KEY_MEMBER_ID)));
@@ -501,6 +337,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.getString(cursor.getColumnIndex(KEY_CAT)) != null) {
             member.setCategory(cursor.getString(cursor.getColumnIndex(KEY_CAT)));
         }
+
+        if (cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_1)) != null) {
+            member.setAddress_line_1(cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_1)));
+        }
+
+        if (cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_2)) != null) {
+            member.setAddress_line_2(cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_2)));
+        }
+
+        if (cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_3)) != null) {
+            member.setAddress_line_3(cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_LINE_3)));
+        }
+
+        if (cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_CITY)) != null) {
+            member.setCity(cursor.getString(cursor.getColumnIndex(KEY_ADDRESS_CITY)));
+        }
+
         member.setMember_mobile_1(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_1)));
         member.setMember_mobile_2(cursor.getInt(cursor.getColumnIndex(KEY_MOBILE_2)));
         member.setMember_nic(cursor.getString(cursor.getColumnIndex(KEY_NIC)));
@@ -526,32 +379,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return member;
     }
 
-    private HealthCondition setValuesToHealthCondition(Cursor cursor) {
-        HealthCondition healthCondition = new HealthCondition();
-        healthCondition.setHealth_condition_id(cursor.getLong(cursor.getColumnIndex(KEY_HEALTH_CONDITION_ID)));
-        healthCondition.setDiabetes(cursor.getInt(cursor.getColumnIndex(KEY_DIABETES)) == 1);
-        healthCondition.setCholesterol(cursor.getInt(cursor.getColumnIndex(KEY_CHOLESTEROL)) == 1);
-        healthCondition.setHigh_blood_pressure(cursor.getInt(cursor.getColumnIndex(KEY_HIGH_BLOOD_PRESSURE)) == 1);
-        healthCondition.setLow_blood_pressure(cursor.getInt(cursor.getColumnIndex(KEY_LOW_BLOOD_PRESSURE)) == 1);
-        healthCondition.setHeart_problem(cursor.getInt(cursor.getColumnIndex(KEY_HEART_PROBLEM)) == 1);
-        healthCondition.setChest_pain(cursor.getInt(cursor.getColumnIndex(KEY_CHEST_PAIN)) == 1);
-        healthCondition.setHeart_attack(cursor.getInt(cursor.getColumnIndex(KEY_HEART_ATTACK)) == 1);
-        healthCondition.setAsthma(cursor.getInt(cursor.getColumnIndex(KEY_ASTHMA)) == 1);
-        healthCondition.setFainting_spells(cursor.getInt(cursor.getColumnIndex(KEY_FAINTING)) == 1);
-        healthCondition.setBack_pain(cursor.getInt(cursor.getColumnIndex(KEY_BACK_PAIN)) == 1);
-        healthCondition.setMedication(cursor.getInt(cursor.getColumnIndex(KEY_MEDICATION)) == 1);
-        healthCondition.setOther_illness(cursor.getInt(cursor.getColumnIndex(KEY_OTHER_ILLNESS)) == 1);
-        healthCondition.setSwollen(cursor.getInt(cursor.getColumnIndex(KEY_SWOLLEN)) == 1);
-        healthCondition.setArthritis(cursor.getInt(cursor.getColumnIndex(KEY_ARTHRITIS)) == 1);
-        healthCondition.setHernia(cursor.getInt(cursor.getColumnIndex(KEY_HERNIA)) == 1);
-
-        healthCondition.setCreated_at(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
-        healthCondition.setModified_at(cursor.getString(cursor.getColumnIndex(KEY_MODIFIED_AT)));
-        return healthCondition;
-    }
-
-
-
     //Return content values from member
     private ContentValues setContentValuesForMember(Member newMember, ContentValues values) {
 
@@ -563,6 +390,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LAST_NAME, newMember.getMember_last_name());
         values.put(KEY_TYPE, newMember.getType());
         values.put(KEY_CAT, newMember.getCategory());
+        values.put(KEY_ADDRESS_LINE_1, newMember.getAddress_line_1());
+        values.put(KEY_ADDRESS_LINE_2, newMember.getAddress_line_2());
+        values.put(KEY_ADDRESS_LINE_3, newMember.getAddress_line_3());
+        values.put(KEY_ADDRESS_CITY, newMember.getCity());
         values.put(KEY_MOBILE_1, newMember.getMember_mobile_1());
         values.put(KEY_MOBILE_2, newMember.getMember_mobile_2());
         values.put(KEY_NIC, newMember.getMember_nic());
@@ -591,34 +422,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(KEY_GUARDIAN_RELATIONSHIP, newMember.getGuardian_relationship());
         }
 
-        values.put(KEY_HEALTH_CONDITION_ID,newMember.getHealth_condition_id());
-        values.put(KEY_ADDRESS_ID,newMember.getAddress_id());
-
         values.put(KEY_CREATED_AT, newMember.getCreated_at());
         values.put(KEY_MODIFIED_AT, newMember.getModified_at());
-        return values;
-    }
-
-    private ContentValues setContentValuesForHealthCondition(HealthCondition healthCondition, ContentValues values) {
-
-        values.put(KEY_DIABETES, healthCondition.getDiabetes());
-        values.put(KEY_CHOLESTEROL, healthCondition.getCholesterol());
-        values.put(KEY_HIGH_BLOOD_PRESSURE, healthCondition.getHigh_blood_pressure());
-        values.put(KEY_LOW_BLOOD_PRESSURE, healthCondition.getLow_blood_pressure());
-        values.put(KEY_HEART_PROBLEM, healthCondition.getHeart_problem());
-        values.put(KEY_CHEST_PAIN, healthCondition.getChest_pain());
-        values.put(KEY_HEART_ATTACK, healthCondition.getHeart_attack());
-        values.put(KEY_ASTHMA, healthCondition.getAsthma());
-        values.put(KEY_FAINTING, healthCondition.getFainting_spells());
-        values.put(KEY_BACK_PAIN, healthCondition.getBack_pain());
-        values.put(KEY_MEDICATION, healthCondition.getMedication());
-        values.put(KEY_OTHER_ILLNESS, healthCondition.getOther_illness());
-        values.put(KEY_SWOLLEN, healthCondition.getSwollen());
-        values.put(KEY_ARTHRITIS, healthCondition.getArthritis());
-        values.put(KEY_HERNIA, healthCondition.getHernia());
-
-        values.put(KEY_CREATED_AT, healthCondition.getCreated_at());
-        values.put(KEY_MODIFIED_AT, healthCondition.getModified_at());
         return values;
     }
 
@@ -633,63 +438,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return values;
     }
-
-
-    public void updateAddress(Address address) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values = setContentValuesForAddress(address, values);
-
-        db.update(TABLE_ADDRESSES, values, KEY_ADDRESS_ID + "=?" , new String[]{String.valueOf(address.getAddress_id())});
-    }
-
-    public List<Address> getAllAddresses() {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String selectQuery = "SELECT * FROM " + TABLE_ADDRESSES;
-        Cursor c = db.rawQuery(selectQuery, null);
-        List<Address> addresses = new ArrayList<>();
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                Address address = getAddressWithValue(c);
-                addresses.add(address);
-            } while (c.moveToNext());
-        }
-
-        c.close();
-
-        return addresses;
-    }
-
-    private Address getAddressWithValue(Cursor c) {
-
-        Address address=new Address();
-        address.setAddress_id(c.getLong(c.getColumnIndex(KEY_ADDRESS_ID)));
-        address.setAddress_line_1(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_1)));
-        address.setAddress_line_2(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_2)));
-        address.setAddress_line_3(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_3)));
-        address.setAddress_line_city(c.getString(c.getColumnIndex(KEY_ADDRESS_LINE_CITY)));
-        address.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
-        address.setModified_at(c.getString(c.getColumnIndex(KEY_MODIFIED_AT)));
-
-        return address;
-
-    }
-
-    private ContentValues setContentValuesForAddress(Address address, ContentValues values) {
-        values.put(KEY_ADDRESS_LINE_1, address.getAddress_line_1());
-        values.put(KEY_ADDRESS_LINE_2, address.getAddress_line_2());
-        values.put(KEY_ADDRESS_LINE_3, address.getAddress_line_3());
-        values.put(KEY_ADDRESS_LINE_CITY, address.getAddress_line_city());
-        values.put(KEY_CREATED_AT, address.getCreated_at());
-        values.put(KEY_MODIFIED_AT, address.getModified_at());
-        return values;
-    }
-
 
 
 }

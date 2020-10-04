@@ -95,7 +95,7 @@
 
             android:layout_weight="1"
             android:background="@null"
-            android:text="Camera"
+            android:text="Next"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/dialog_button_font_size" />

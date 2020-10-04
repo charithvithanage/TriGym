@@ -7,14 +7,14 @@
     tools:context=".Activities.Member.NewMemberActivity"
    >
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/actionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/actionBarSize"
@@ -51,8 +51,8 @@
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true" />
             </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -123,7 +123,7 @@
 
             </RelativeLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -133,17 +133,19 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                android:textColorHint="@color/input_layout_lable_color"
+                >
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMembershipNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Membership No"
                     android:inputType="text" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -153,15 +155,18 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Membership Recipt No"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMembershipReciptNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Membership Recipt No"
                     android:inputType="text" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <LinearLayout
@@ -170,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -180,17 +185,20 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
+                    app:layout_constraintVertical_bias="0.0"
+                    android:textColorHint="@color/input_layout_lable_color"
+                    android:hint="Guardian's Name"
 
-                    <android.support.design.widget.TextInputEditText
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etGuardianName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Guardian's Name"
                         android:inputType="textPersonName" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -200,21 +208,26 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
+                    app:layout_constraintVertical_bias="0.0"
+                    android:textColorHint="@color/input_layout_lable_color"
+                    android:hint="Guardian's Telephone  No"
 
-                    <android.support.design.widget.TextInputEditText
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etGuardianTel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Guardian's Telephone  No"
                         android:inputType="phone" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:hint="Guardian's Relationship"
+                    android:textColorHint="@color/input_layout_lable_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -222,20 +235,21 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etGuardianRelationship"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Guardian's Relationship"
                         android:inputType="text" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:hint="First Name"
+                android:textColorHint="@color/input_layout_lable_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -243,16 +257,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First Name"
                     android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -262,17 +275,20 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Surname"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSurname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Surname"
                     android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -282,15 +298,18 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Last Name"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last Name"
                     android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -349,64 +368,75 @@
                 android:layout_marginBottom="8dp"
                 android:text="Address" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Line 1"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLine1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Line 1"
                     android:inputType="textPostalAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputLayout3"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Line 2"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLine2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Line 2"
                     android:inputType="textPostalAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Line 3"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLine3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Line 3"
                     android:inputType="textPostalAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="City"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="City"
                     android:inputType="textPostalAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 style="@style/edittext_title_style"
@@ -463,61 +493,73 @@
                 android:layout_marginBottom="8dp"
                 android:text="Mobile Number" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Mobile 1"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMobile1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mobile 1"
                     android:inputType="phone" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Mobile 2"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMobile2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mobile 2"
                     android:inputType="phone" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="Email"
 
-                <android.support.design.widget.TextInputEditText
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
                     android:inputType="textEmailAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:textColorHint="@color/input_layout_lable_color"
+                android:hint="NIC Number"
+                >
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNIC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="NIC Number" />
-            </android.support.design.widget.TextInputLayout>
+                  />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView6"
@@ -567,37 +609,42 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:textColorHint="@color/input_layout_lable_color"
+                    android:hint="Height(cm)"
 
-                    <android.support.design.widget.TextInputEditText
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etHeight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Height(cm)"
                         android:inputType="number" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputLayout3"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:textColorHint="@color/input_layout_lable_color"
+                    android:hint="Weight(kg)"
 
-                    <android.support.design.widget.TextInputEditText
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etWeight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Weight(kg)"
                         android:inputType="number" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
 

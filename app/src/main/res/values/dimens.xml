@@ -63,5 +63,12 @@
     <dimen name="contentTopMargin">10dp</dimen>
     <dimen name="contentBottomMargin">10dp</dimen>
     <dimen name="pageMargin">16dp</dimen>
-
+    <dimen name="dialog_corner_radius">5dp</dimen>
+    <dimen name="dialog_horizontal_padding">64dp</dimen>
+    <dimen name="dialog_top_padding">40dp</dimen>
+    <dimen name="dialog_bottom_padding">40dp</dimen>
+    <dimen name="reset_dialog_bottom_padding">48dp</dimen>
+    <dimen name="dialog_horizontal_margin">40dp</dimen>
+    <dimen name="dialog_vertical_margin">80dp</dimen>
+    <dimen name="shadowBorderRadius">5dp</dimen>
 </resources>

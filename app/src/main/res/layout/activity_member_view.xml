@@ -5,13 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/actionBarSize"
@@ -61,8 +61,8 @@
                     android:src="@mipmap/edit" />
 
             </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -467,393 +467,6 @@
                     android:paddingRight="@dimen/lablePadding"
                     android:paddingBottom="@dimen/lablePadding" />
 
-
-                <TextView
-
-                    style="@style/client_view_lable_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/lablePadding"
-                    android:paddingTop="@dimen/titleTopPadding"
-                    android:paddingRight="@dimen/lablePadding"
-                    android:paddingBottom="@dimen/titleBottomPadding"
-                    android:text="Health Condition" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:text="Diabetes" />
-
-
-                    <TextView
-                        android:id="@+id/tvDiabetes"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="High Cholesterol" />
-
-
-                    <TextView
-                        android:id="@+id/tvHighCholesterol"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="High blood pressure" />
-
-
-                    <TextView
-                        android:id="@+id/tvHighBloodPressure"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Low blood pressure" />
-
-
-                    <TextView
-                        android:id="@+id/tvComtvLowBloodPressurements"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Heart problem" />
-
-
-                    <TextView
-                        android:id="@+id/tvComtvHeartProblemments"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Pain in chest when exercising" />
-
-
-                    <TextView
-                        android:id="@+id/tvChestPain"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Heart attack, coronary bypass" />
-
-
-                    <TextView
-                        android:id="@+id/tvHeartAttack"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Any breathing difficulties and asthma" />
-
-
-                    <TextView
-                        android:id="@+id/tvCtvBreathingProblemomments"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Fainting spells" />
-
-
-                    <TextView
-                        android:id="@+id/tvCommenttvFaintings"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Back or spine pains/injuries" />
-
-
-                    <TextView
-                        android:id="@+id/tvBackPain"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Are you on any sort of medication" />
-
-
-                    <TextView
-                        android:id="@+id/tvMedication"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Other significant illness/operation" />
-
-
-                    <TextView
-                        android:id="@+id/tvIllness"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Swollen,stiff or painful joints" />
-
-
-                    <TextView
-                        android:id="@+id/tvPainfulJoints"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Arthritis" />
-
-
-                    <TextView
-                        android:id="@+id/tvArthritis"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <TextView
-                        style="@style/client_view_text_style"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/lablePadding"
-                        android:paddingRight="@dimen/lablePadding"
-                        android:text="Hernia" />
-
-
-                    <TextView
-                        android:id="@+id/tvCommetvHerniants"
-                        style="@style/client_view_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:paddingRight="@dimen/lablePadding" />
-                </LinearLayout>
-
-
                 <TextView
 
                     style="@style/client_view_lable_style"
@@ -875,9 +488,22 @@
                     android:paddingRight="@dimen/lablePadding" />
 
                 <Button
+                    android:id="@+id/btnShedules"
+                    style="@style/buttonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/buttonPadding"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/button_bg"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:text="@string/shedules"
+                    android:textAllCaps="false" />
+
+                <Button
                     android:id="@+id/btnHistory"
                     style="@style/buttonStyle"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/buttonPadding"

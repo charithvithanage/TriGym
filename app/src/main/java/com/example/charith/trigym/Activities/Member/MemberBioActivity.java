@@ -1,12 +1,12 @@
 package com.example.charith.trigym.Activities.Member;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -18,37 +18,35 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.charith.trigym.Activities.MainActivity;
-import com.example.charith.trigym.AsyncTasks.Address.SaveAddressAsync;
-import com.example.charith.trigym.AsyncTasks.HealthCondition.SaveHealthConditionAsync;
-import com.example.charith.trigym.AsyncTasks.Member.SaveMemberAsync;
-import com.example.charith.trigym.AsyncTasks.Payment.SavePaymentAsync;
-import com.example.charith.trigym.AsyncTasks.Address.UpdateAddressAsync;
-import com.example.charith.trigym.AsyncTasks.HealthCondition.UpdateHealthConditionAsync;
-import com.example.charith.trigym.AsyncTasks.Member.UpdateMemberAsync;
 import com.example.charith.trigym.Convertors.BooleanTypeAdapter;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
-import com.example.charith.trigym.Entities.Address;
-import com.example.charith.trigym.Entities.HealthCondition;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Entities.Payment;
-import com.example.charith.trigym.Interfaces.AsyncListner;
 import com.example.charith.trigym.R;
 import com.example.charith.trigym.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
-import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.example.charith.trigym.Constants.REQUEST_WRITE_STORAGE;
+import static com.example.charith.trigym.Constants.SUCCESS;
+import static com.example.charith.trigym.Utils.checkMemberValidStatus;
+import static com.example.charith.trigym.Utils.showAlertWithoutTitleDialog;
+
 public class MemberBioActivity extends AppCompatActivity {
 
-    Switch switchDiabetes, switchHighCholesterol, switchHighBloodPressure, switchLowBloodPressure, switchHeartProblem, switchChestPain, switchHeartAttack, switchBreathingProblem, switchFainting, switchBackPain;
-    Switch switchMedication, switchIllness, switchPainfulJoints, switchArthritis, switchHernia, switchPayment;
+    Switch switchPayment;
     TextView tvPaymentDate, tvTitle;
 
     EditText etAmount;
@@ -57,9 +55,7 @@ public class MemberBioActivity extends AppCompatActivity {
     Button btnSave;
 
     String memberString = null;
-    String addressString = null;
     Member member = null;
-    Address address = null;
     Gson gson;
 
     String navigationType;
@@ -73,8 +69,6 @@ public class MemberBioActivity extends AppCompatActivity {
     RadioGroup radioGroupType;
     private String TAG = "TriGym";
 
-    HealthCondition healthCondition;
-
     DatabaseHandler databaseHandler;
 
     AtomicInteger atomicInteger;
@@ -83,23 +77,37 @@ public class MemberBioActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
+    boolean permissionGranted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_bio);
         memberString = getIntent().getStringExtra("memberString");
-        addressString = getIntent().getStringExtra("addressString");
         navigationType = getIntent().getStringExtra("navigationType");
 
         databaseHandler = new DatabaseHandler(MemberBioActivity.this);
 
         init();
+
+
+    }
+
+    private void requestPermission() {
+        boolean hasPermission = (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        } else {
+            permissionGranted = true;
+        }
     }
 
     private void init() {
 
-        progressDialog=new ProgressDialog(MemberBioActivity.this);
+        progressDialog = new ProgressDialog(MemberBioActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Wait.....");
 
@@ -110,12 +118,6 @@ public class MemberBioActivity extends AppCompatActivity {
         gson = builder.create();
 
         member = gson.fromJson(memberString, Member.class);
-
-        if(addressString!=null){
-            address = gson.fromJson(addressString, Address.class);
-        }else {
-            address=databaseHandler.getAddressById(String.valueOf(member.getAddress_id()));
-        }
 
         radioGroupType = findViewById(R.id.radioGroupType);
 
@@ -135,21 +137,6 @@ public class MemberBioActivity extends AppCompatActivity {
         etAmount = findViewById(R.id.etAmount);
 
         switchPayment = findViewById(R.id.switchPayment);
-        switchDiabetes = findViewById(R.id.switchDiabetes);
-        switchHighCholesterol = findViewById(R.id.switchHighCholesterol);
-        switchHighBloodPressure = findViewById(R.id.switchHighBloodPressure);
-        switchLowBloodPressure = findViewById(R.id.switchLowBloodPressure);
-        switchHeartProblem = findViewById(R.id.switchHeartProblem);
-        switchChestPain = findViewById(R.id.switchChestPain);
-        switchHeartAttack = findViewById(R.id.switchHeartAttack);
-        switchBreathingProblem = findViewById(R.id.switchBreathingProblem);
-        switchFainting = findViewById(R.id.switchFainting);
-        switchBackPain = findViewById(R.id.switchBackPain);
-        switchMedication = findViewById(R.id.switchMedication);
-        switchIllness = findViewById(R.id.switchIllness);
-        switchPainfulJoints = findViewById(R.id.switchPainfulJoints);
-        switchArthritis = findViewById(R.id.switchArthritis);
-        switchHernia = findViewById(R.id.switchHernia);
         etSpecialNotes = findViewById(R.id.etSpecialNotes);
         btnSave = findViewById(R.id.btnSave);
 
@@ -161,7 +148,6 @@ public class MemberBioActivity extends AppCompatActivity {
             setUserValues();
         } else {
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-            healthCondition = new HealthCondition();
         }
 
 
@@ -206,133 +192,15 @@ public class MemberBioActivity extends AppCompatActivity {
             }
         });
 
-        switchDiabetes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setDiabetes(isChecked);
-            }
-        });
-
-
-        switchHighCholesterol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setCholesterol(isChecked);
-
-            }
-        });
-
-
-        switchHighBloodPressure.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setHigh_blood_pressure(isChecked);
-
-            }
-        });
-
-
-        switchLowBloodPressure.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setLow_blood_pressure(isChecked);
-
-            }
-        });
-
-
-        switchHeartProblem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setHeart_problem(isChecked);
-
-            }
-        });
-
-        switchChestPain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setChest_pain(isChecked);
-
-            }
-        });
-
-        switchHeartAttack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setHeart_attack(isChecked);
-
-            }
-        });
-
-        switchBreathingProblem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setAsthma(isChecked);
-
-            }
-        });
-
-        switchFainting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setFainting_spells(isChecked);
-
-            }
-        });
-
-        switchBackPain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setBack_pain(isChecked);
-
-            }
-        });
-
-        switchMedication.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setMedication(isChecked);
-
-            }
-        });
-
-        switchIllness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setOther_illness(isChecked);
-
-            }
-        });
-
-        switchPainfulJoints.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setSwollen(isChecked);
-
-            }
-        });
-
-        switchArthritis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setArthritis(isChecked);
-
-            }
-        });
-
-        switchHernia.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                healthCondition.setHernia(isChecked);
-
-            }
-        });
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveMember();
+
+                requestPermission();
+
+                if (permissionGranted)
+                    saveMember();
             }
         });
 
@@ -386,10 +254,7 @@ public class MemberBioActivity extends AppCompatActivity {
 
     private void setUserValues() {
 
-        healthCondition = databaseHandler.getHealthConditionById(String.valueOf(member.getHealth_condition_id()));
-
         checkMemberType();
-        checkHealthCondition();
 
 //        if (member.getValidStatus()) {
 //            switchPayment.setChecked(true);
@@ -401,61 +266,6 @@ public class MemberBioActivity extends AppCompatActivity {
 //        tvPaymentDate.setText(member.getLast_payment_date());
         etSpecialNotes.setText(member.getMember_health_condition());
 
-
-    }
-
-
-    private void checkHealthCondition() {
-        if (healthCondition.getDiabetes()) {
-            switchDiabetes.setChecked(true);
-        }
-
-        if (healthCondition.getCholesterol()) {
-            switchHighCholesterol.setChecked(true);
-        }
-
-        if (healthCondition.getHigh_blood_pressure()) {
-            switchHighBloodPressure.setChecked(true);
-        }
-
-        if (healthCondition.getLow_blood_pressure()) {
-            switchLowBloodPressure.setChecked(true);
-        }
-
-        if (healthCondition.getHeart_problem()) {
-            switchHeartProblem.setChecked(true);
-        }
-        if (healthCondition.getChest_pain()) {
-            switchChestPain.setChecked(true);
-        }
-        if (healthCondition.getHeart_attack()) {
-            switchHeartAttack.setChecked(true);
-        }
-        if (healthCondition.getAsthma()) {
-            switchBreathingProblem.setChecked(true);
-        }
-        if (healthCondition.getFainting_spells()) {
-            switchFainting.setChecked(true);
-        }
-        if (healthCondition.getBack_pain()) {
-            switchBackPain.setChecked(true);
-        }
-
-        if (healthCondition.getMedication()) {
-            switchMedication.setChecked(true);
-        }
-
-        if (healthCondition.getOther_illness()) {
-            switchIllness.setChecked(true);
-        }
-
-        if (healthCondition.getSwollen()) {
-            switchPainfulJoints.setChecked(true);
-        }
-
-        if (healthCondition.getArthritis()) {
-            switchArthritis.setChecked(true);
-        }
 
     }
 
@@ -539,42 +349,19 @@ public class MemberBioActivity extends AppCompatActivity {
             if (navigationType.equals("edit")) {
                 memberId = new Long(member.getMember_id());
 
-                if (Utils.checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))) {
+                if (checkMemberValidStatus(MemberBioActivity.this, String.valueOf(memberId))) {
                     member.setMember_valid_status(true);
                 } else {
                     member.setMember_valid_status(false);
                 }
 
-                String dateString=Utils.dateTimeToString(DateTime.now());
-                updateHealthConditionToLocalStorage(databaseHandler,dateString);
-                updateAddressToLocalStorage(databaseHandler,dateString);
+                String dateString = Utils.dateTimeToString(DateTime.now());
                 member.setModified_at(dateString);
                 databaseHandler.updateMember(member);
-
                 member = databaseHandler.getMemberById(String.valueOf(member.getMember_id()));
-
-
-                if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-                    new UpdateMemberAsync(MemberBioActivity.this, member, new AsyncListner() {
-                        @Override
-                        public void onSuccess(Context context,JSONObject response) {
-                            Log.d(TAG, response.toString());
-
-                            goBackToPreviousActivity();
-
-                        }
-
-                        @Override
-                        public void onError(Context context,String error) {
-                            Log.d(TAG, error);
-                            goBackToPreviousActivity();
-                        }
-                    }).execute();
-                } else {
-                    goBackToPreviousActivity();
-                }
-
                 savePaymentToLocalStorage(member.getMember_id(), databaseHandler, dateString);
+
+                goBackToPreviousActivity();
 
 
             } else {
@@ -582,34 +369,14 @@ public class MemberBioActivity extends AppCompatActivity {
 
                     String dateString = Utils.dateTimeToString(DateTime.now());
 
-                    member.setHealth_condition_id(saveHealthConditionToLocalStorage(databaseHandler, dateString));
-
-                    member.setAddress_id(saveAddressToLocalStorage(databaseHandler, dateString));
-
                     Long id = saveMemberLocalStorage(databaseHandler, dateString);
 
                     member = databaseHandler.getMemberById(String.valueOf(id));
-
-                    if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-                        if (id != 0) {
-                            new SaveMemberAsync(MemberBioActivity.this, member, new AsyncListner() {
-                                @Override
-                                public void onSuccess(Context context,JSONObject jsonObject) {
-                                    goToMainActivity();
-                                }
-
-                                @Override
-                                public void onError(Context context,String error) {
-                                    Log.d(TAG, error);
-                                    goToMainActivity();
-                                }
-                            }).execute();
-                        }
-                    } else {
-                        goToMainActivity();
-                    }
-
                     savePaymentToLocalStorage(id, databaseHandler, dateString);
+
+                    goToMainActivity();
+
+
 
 
 
@@ -622,108 +389,30 @@ public class MemberBioActivity extends AppCompatActivity {
         }
     }
 
+
     private void goBackToPreviousActivity() {
         counterInteger = atomicInteger.incrementAndGet();
 
-        if (counterInteger == 4) {
-            Intent intent = new Intent();
-            setResult(200, intent);
-            finish();//finishing activity
+        if (counterInteger == 2) {
+            showAlertWithoutTitleDialog(MemberBioActivity.this, getString(R.string.membersavedsuccessfully), SUCCESS, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    setResult(200, intent);
+                    finish();//finishing activity
+                }
+            });
+
         }
 
 
-    }
-
-    private void updateAddressToLocalStorage(DatabaseHandler databaseHandler, String dateString) {
-        address.setModified_at(dateString);
-        databaseHandler.updateAddress(address);
-
-        if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-            new UpdateAddressAsync(MemberBioActivity.this, address, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context,JSONObject response) {
-                    Log.d(TAG, response.toString());
-
-                    goBackToPreviousActivity();
-
-                }
-
-                @Override
-                public void onError(Context context,String error) {
-                    Log.d(TAG, error);
-                    goBackToPreviousActivity();
-                }
-            }).execute();
-        } else {
-            goBackToPreviousActivity();
-        }
-
-    }
-
-    private Long saveAddressToLocalStorage(DatabaseHandler databaseHandler, String dateString) {
-
-        address.setCreated_at(dateString);
-        address.setModified_at(dateString);
-        final Long addressId = databaseHandler.addAddress(address);
-
-        address.setAddress_id(addressId);
-
-        if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-            if (addressId != 0) {
-                new SaveAddressAsync(MemberBioActivity.this, address, new AsyncListner() {
-                    @Override
-                    public void onSuccess(Context context,JSONObject jsonObject) {
-
-                        goToMainActivity();
-
-                    }
-
-                    @Override
-                    public void onError(Context context,String error) {
-                        Log.d(TAG, error);
-                        goToMainActivity();
-                    }
-                }).execute();
-            }
-        } else {
-            goToMainActivity();
-        }
-
-        return addressId;
-    }
-
-    private void updateHealthConditionToLocalStorage(DatabaseHandler databaseHandler, String dateString) {
-
-        healthCondition.setModified_at(dateString);
-
-        databaseHandler.updateHealthCondition(healthCondition);
-
-        if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-            new UpdateHealthConditionAsync(MemberBioActivity.this, healthCondition, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context,JSONObject response) {
-                    Log.d(TAG, response.toString());
-
-                    goBackToPreviousActivity();
-
-                }
-
-                @Override
-                public void onError(Context context,String error) {
-                    Log.d(TAG, error);
-                    goBackToPreviousActivity();
-                }
-            }).execute();
-        } else {
-            goBackToPreviousActivity();
-        }
     }
 
     private void goToMainActivity() {
 
         counterInteger = atomicInteger.incrementAndGet();
 
-        if (counterInteger == 4) {
+        if (counterInteger == 2) {
 
             progressDialog.dismiss();
 
@@ -735,34 +424,9 @@ public class MemberBioActivity extends AppCompatActivity {
 
     }
 
-    private Long saveHealthConditionToLocalStorage(DatabaseHandler databaseHandler, String dateString) {
-        healthCondition.setCreated_at(dateString);
-        healthCondition.setModified_at(dateString);
-        Long healthConditionId = databaseHandler.addHealthCondition(healthCondition);
-        healthCondition.setHealth_condition_id(healthConditionId);
 
-
-
-        if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-            new SaveHealthConditionAsync(MemberBioActivity.this, healthCondition, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context,JSONObject jsonObject) {
-                    goToMainActivity();
-                }
-
-                @Override
-                public void onError(Context context,String error) {
-                    Log.d(TAG, error);
-                    goToMainActivity();
-                }
-            }).execute();
-        } else {
-            goToMainActivity();
-        }
-        return healthConditionId;
-    }
-
-    private void savePaymentToLocalStorage(Long memberId, DatabaseHandler databaseHandler, String dateString) {
+    private void savePaymentToLocalStorage(Long memberId, DatabaseHandler
+            databaseHandler, String dateString) {
         if (switchPayment.isChecked()) {
 
             Payment payment = new Payment();
@@ -779,42 +443,12 @@ public class MemberBioActivity extends AppCompatActivity {
 
             payment.setPayment_id(id);
 
-            if (Utils.isDeviceOnline(MemberBioActivity.this)) {
-                new SavePaymentAsync(MemberBioActivity.this, payment, new AsyncListner() {
-                    @Override
-                    public void onSuccess(Context context,JSONObject jsonObject) {
+        }
 
-                        if(navigationType.equals("edit")){
-                            goBackToPreviousActivity();
-                        }else {
-                            goToMainActivity();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Context context,String error) {
-                        Log.d(TAG, error);
-                        if(navigationType.equals("edit")){
-                            goBackToPreviousActivity();
-                        }else {
-                            goToMainActivity();
-                        }
-                    }
-                }).execute();
-            } else {
-                if(navigationType.equals("edit")){
-                    goBackToPreviousActivity();
-                }else {
-                    goToMainActivity();
-                }
-            }
-
-        }else {
-            if(navigationType.equals("edit")){
-                goBackToPreviousActivity();
-            }else {
-                goToMainActivity();
-            }
+        if (navigationType.equals("edit")) {
+            goBackToPreviousActivity();
+        } else {
+            goToMainActivity();
         }
     }
 
@@ -826,5 +460,24 @@ public class MemberBioActivity extends AppCompatActivity {
         return databaseHandler.addMember(member);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        switch (requestCode) {
+            case REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "The app was allowed to write to your storage!", Toast.LENGTH_LONG).show();
+                    permissionGranted = true;
+                    // Reload the activity with permission granted or use the features what required the permission
+                } else {
+                    Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                    permissionGranted = false;
+
+                }
+            }
+        }
+
+
+    }
 }

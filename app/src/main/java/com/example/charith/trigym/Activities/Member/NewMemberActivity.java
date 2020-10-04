@@ -2,6 +2,7 @@ package com.example.charith.trigym.Activities.Member;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,10 +14,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+
+import com.example.charith.trigym.Constants;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -40,7 +47,6 @@ import com.example.charith.trigym.Convertors.CircleTransform;
 import com.example.charith.trigym.Convertors.JSONParser;
 import com.example.charith.trigym.DB.DatabaseHandler;
 import com.example.charith.trigym.DatePickerFragment;
-import com.example.charith.trigym.Entities.Address;
 import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Interfaces.ProfileImageListner;
 import com.example.charith.trigym.R;
@@ -50,6 +56,7 @@ import com.google.gson.GsonBuilder;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnCancelListener;
 import com.orhanobut.dialogplus.ViewHolder;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -62,6 +69,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.example.charith.trigym.Utils.showAlertWithoutTitleDialog;
 
 public class NewMemberActivity extends AppCompatActivity {
 
@@ -94,6 +103,13 @@ public class NewMemberActivity extends AppCompatActivity {
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 200;
 
+    public  final static int PERMISSION_ALL = 1;
+
+    String[] PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     String memberId;
 
     String navigationType;
@@ -110,8 +126,6 @@ public class NewMemberActivity extends AppCompatActivity {
 
     JSONParser jsonParser = new JSONParser();
 
-    Address address;
-
     String memberCategory;
 
     Switch userActivateSwitch;
@@ -124,6 +138,9 @@ public class NewMemberActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_member);
 
+        if (!Utils.hasPermissions(NewMemberActivity.this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(NewMemberActivity.this, PERMISSIONS, PERMISSION_ALL);
+        }
 
         navigationType = getIntent().getStringExtra("navigationType");
         memberId = getIntent().getStringExtra("memberId");
@@ -217,7 +234,7 @@ public class NewMemberActivity extends AppCompatActivity {
             etMembershipNo.setText(getMember_membership_no());
             etMembershipReciptNo.setText(getReciptNo());
             tvTitle.setText(getResources().getString(R.string.new_user_title));
-//            setTempValues();
+            setTempValues();
         }
 
         tvDOB.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +255,32 @@ public class NewMemberActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                displayFirstNameNICDialog(member.getMember_first_name(), member.getMember_nic());
+                if (member.getMember_first_name() != null && member.getMember_nic() != null) {
+                    photoFileName = member.getMember_first_name() + member.getMember_nic() + ".jpg";
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                    MY_PERMISSIONS_REQUEST_CAMERA);
+
+                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                            // app-defined int constant
+
+                            return;
+                        } else {
+                            openCameraForImage();
+                        }
+                    } else {
+                        openCameraForImage();
+                    }
+                } else {
+                    showAlertWithoutTitleDialog(NewMemberActivity.this, getString(R.string.cantsaveimagewithoutnicandfirstname), Constants.FAIL, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                }
 
 
             }
@@ -279,23 +321,7 @@ public class NewMemberActivity extends AppCompatActivity {
                 member.setMember_first_name(fistName);
                 member.setMember_nic(nic);
 
-                photoFileName = fistName + nic + ".jpg";
 
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                MY_PERMISSIONS_REQUEST_CAMERA);
-
-                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                        // app-defined int constant
-
-                        return;
-                    } else {
-                        onLaunchCamera();
-                    }
-                } else {
-                    onLaunchCamera();
-                }
             }
 
             @Override
@@ -383,7 +409,7 @@ public class NewMemberActivity extends AppCompatActivity {
         }
 
         if (member.getMember_profile_image_url() != null) {
-            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).into(profileImage);
+            Picasso.get().load(Uri.parse(member.getMember_profile_image_url())).transform(new CircleTransform()).rotate(90).into(profileImage);
         }
 
 
@@ -393,13 +419,10 @@ public class NewMemberActivity extends AppCompatActivity {
         etMobile1.setText(String.valueOf(member.getMember_mobile_1()));
         etMobile2.setText(String.valueOf(member.getMember_mobile_2()));
 
-
-        address = db.getAddressById(String.valueOf(member.getAddress_id()));
-
-        etLine1.setText(address.getAddress_line_1());
-        etLine2.setText(address.getAddress_line_2());
-        etLine3.setText(address.getAddress_line_3());
-        etCity.setText(address.getAddress_line_city());
+        etLine1.setText(member.getAddress_line_1());
+        etLine2.setText(member.getAddress_line_2());
+        etLine3.setText(member.getAddress_line_3());
+        etCity.setText(member.getCity());
 
     }
 
@@ -448,6 +471,31 @@ public class NewMemberActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private Uri getOutputMediaFileUri() {
+        photoFile = getPhotoFileUri(photoFileName);
+
+        return FileProvider.getUriForFile(NewMemberActivity.this, getApplicationContext().getPackageName() + ".provider", photoFile);
+    }
+
+    private void openCameraForImage() {
+        // create new Intentwith with Standard Intent action that can be
+        // sent to have the camera application capture an video and return it.
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // create a file to save the video
+        fileProvider = getOutputMediaFileUri();
+
+        // set the image file name
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+
+
+        // start the Video Capture Intent
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
     private void saveMember() {
 
         final RadioGroup rbgGender = findViewById(R.id.radioGroupGender);
@@ -489,7 +537,8 @@ public class NewMemberActivity extends AppCompatActivity {
 
         }
 
-        address.setAddress_line_1(etLine1.getText().toString());
+
+        member.setAddress_line_1(etLine1.getText().toString());
 
         if (!TextUtils.isEmpty(etHeight.getText().toString())) {
             member.setMember_height(Float.valueOf(etHeight.getText().toString()));
@@ -514,20 +563,19 @@ public class NewMemberActivity extends AppCompatActivity {
     }
 
     private void checkEditTextField() {
-        if (member.getMember_membership_no() != null && member.getMember_receipt_no() != null && member.getMember_profile_image_url() != null && member.getMember_mobile_1() != null &&
-                member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && address.getAddress_line_1() != null) {
+        if (member.getMember_membership_no() != null && member.getMember_receipt_no() != null && member.getMember_mobile_1() != null &&
+                member.getMember_first_name() != null && member.getMember_surname() != null && member.getMember_nic() != null && member.getMember_dob() != null && member.getMember_height() != null && member.getMember_weight() != null && member.getAddress_line_1() != null) {
 
-            address.setAddress_line_1(etLine1.getText().toString());
-            address.setAddress_line_2(etLine2.getText().toString());
-            address.setAddress_line_3(etLine3.getText().toString());
-            address.setAddress_line_city(etCity.getText().toString());
+            member.setAddress_line_1(etLine1.getText().toString());
+            member.setAddress_line_2(etLine2.getText().toString());
+            member.setAddress_line_3(etLine3.getText().toString());
+            member.setCity(etCity.getText().toString());
 
             if (navigationType != null) {
                 if (navigationType.equals("edit")) {
 
                     Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
                     intent.putExtra("memberString", gson.toJson(member));
-                    intent.putExtra("addressString", gson.toJson(address));
                     intent.putExtra("navigationType", "edit");
                     startActivity(intent);
                     finish();
@@ -548,13 +596,9 @@ public class NewMemberActivity extends AppCompatActivity {
                 etMembershipReciptNo.setError(getString(R.string.empty_field_alert));
             }
 
-            if (member.getMember_profile_image_url() == null) {
-                Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.capture_image_alert));
-            } else {
-                if (member.getMember_dob() == null) {
-                    Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.not_dob_selected_alert));
+                     if (member.getMember_dob() == null) {
+                Utils.showWarningMessage(NewMemberActivity.this, getString(R.string.not_dob_selected_alert));
 
-                }
             }
 
             if (member.getMember_mobile_1() == null) {
@@ -578,7 +622,7 @@ public class NewMemberActivity extends AppCompatActivity {
                 etWeight.setError(getString(R.string.empty_field_alert));
             }
 
-            if (address.getAddress_line_1() == null) {
+            if (member.getAddress_line_1() == null) {
                 etLine1.setError(getString(R.string.empty_field_alert));
             }
 
@@ -589,21 +633,10 @@ public class NewMemberActivity extends AppCompatActivity {
 
         Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
         intent.putExtra("memberString", gson.toJson(member));
-        intent.putExtra("addressString", gson.toJson(address));
         intent.putExtra("navigationType", "new");
 
         startActivity(intent);
 
-
-    }
-
-    private void saveAddressToServer(Address address) {
-        Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-        intent.putExtra("memberString", gson.toJson(member));
-        intent.putExtra("navigationType", "new");
-
-        startActivity(intent);
-//        new SaveAddressToServerAsync(address).execute();
 
     }
 
@@ -699,7 +732,7 @@ public class NewMemberActivity extends AppCompatActivity {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), Constants.MEMBERS_PHOTOS);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
@@ -729,12 +762,14 @@ public class NewMemberActivity extends AppCompatActivity {
 //    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             // by this point we have the camera photo on disk
             Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             // RESIZE BITMAP, see section below
             // Load the taken image into a preview
-            Picasso.get().load(fileProvider).transform(new CircleTransform()).into(profileImage);
+            member.setMember_profile_image_url(fileProvider.toString());
+            Picasso.get().load(fileProvider).memoryPolicy(MemoryPolicy.NO_CACHE).transform(new CircleTransform()).rotate(90).into(profileImage);
 
 //            profileImage.setImageBitmap(takenImage);
         } else { // Result was a failure
@@ -751,7 +786,7 @@ public class NewMemberActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_CAMERA: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! do the
-                    onLaunchCamera();
+                    openCameraForImage();
 
                 } else {
 
@@ -780,54 +815,22 @@ public class NewMemberActivity extends AppCompatActivity {
                 return;
             }
 
-        }
-    }
+            case PERMISSION_ALL: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
-
-    private class SaveAddressToServerAsync extends AsyncTask<Void, Void, JSONObject> {
-
-        Address address;
-
-        public SaveAddressToServerAsync(Address address) {
-            this.address = address;
-        }
-
-        @Override
-        protected JSONObject doInBackground(Void... voids) {
-
-            String URL = Config.ServerUrl + Config.save_address_url;
-
-            ArrayList params = new ArrayList();
-            params.add(new BasicNameValuePair("id", String.valueOf(address.getAddress_id())));
-            params.add(new BasicNameValuePair("line1", address.getAddress_line_1()));
-            params.add(new BasicNameValuePair("line2", address.getAddress_line_2()));
-            params.add(new BasicNameValuePair("line3", address.getAddress_line_3()));
-            params.add(new BasicNameValuePair("city", address.getAddress_line_city()));
-
-            JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
-
-
-            return json;
-        }
-
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            try {
-                if (jsonObject != null) {
-
-                    Intent intent = new Intent(NewMemberActivity.this, MemberBioActivity.class);
-                    intent.putExtra("memberString", gson.toJson(member));
-                    intent.putExtra("navigationType", "new");
-
-                    startActivity(intent);
-                    Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Unable to retrieve any data from server", Toast.LENGTH_LONG).show();
+
+                    showAlertWithoutTitleDialog(NewMemberActivity.this, "Until you grant the permission, we cannot proceed further", Constants.FAIL, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+                return;
             }
+
         }
     }
+
 }

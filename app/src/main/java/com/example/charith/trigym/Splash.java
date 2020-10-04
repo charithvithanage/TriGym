@@ -3,8 +3,8 @@ package com.example.charith.trigym;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.example.charith.trigym.Activities.MainActivity;
@@ -13,6 +13,8 @@ import com.example.charith.trigym.Entities.Member;
 import com.example.charith.trigym.Interfaces.DialogListner;
 
 import java.util.List;
+
+import static com.example.charith.trigym.Utils.displayInactiveUserList;
 
 public class Splash extends AppCompatActivity {
 
@@ -23,7 +25,6 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         allMembers = databaseHandler.getAllMembers();
@@ -37,7 +38,7 @@ public class Splash extends AppCompatActivity {
             startActivity(i);
             finish();
         } else {
-            Utils.displayInactiveUserList(Splash.this, inActiveMembers, new DialogListner() {
+            displayInactiveUserList(Splash.this, inActiveMembers, new DialogListner() {
                 @Override
                 public void onSucces(Dialog dialog, String numberList) {
                     dialog.dismiss();

@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".Activities.Member.NewMemberActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/actionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/actionBarSize"
@@ -50,8 +50,8 @@
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true" />
             </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -201,116 +201,9 @@
             </LinearLayout>
 
 
-            <TextView
-                style="@style/edittext_title_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Health Condition" />
-
-            <Switch
-                android:id="@+id/switchDiabetes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Diabetes" />
-
-            <Switch
-                android:id="@+id/switchHighCholesterol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="High Cholesterol" />
-
-            <Switch
-                android:id="@+id/switchHighBloodPressure"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="High blood pressure" />
-
-            <Switch
-                android:id="@+id/switchLowBloodPressure"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Low blood pressure" />
-
-            <Switch
-                android:id="@+id/switchHeartProblem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Heart problem" />
-
-            <Switch
-                android:id="@+id/switchChestPain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pain in chest when exercising" />
-
-            <Switch
-                android:id="@+id/switchHeartAttack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Heart attack, coronary bypass" />
-
-            <Switch
-                android:id="@+id/switchBreathingProblem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Any breathing difficulties and asthma" />
 
 
-            <Switch
-                android:id="@+id/switchFainting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Fainting spells" />
-
-
-            <Switch
-                android:id="@+id/switchBackPain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back or spine pains/injuries" />
-
-
-            <Switch
-                android:id="@+id/switchMedication"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Are you on any sort of medication" />
-
-
-            <Switch
-                android:id="@+id/switchIllness"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Other significant illness/operation" />
-
-
-            <Switch
-                android:id="@+id/switchPainfulJoints"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Swollen,stiff or painful joints" />
-
-
-            <Switch
-                android:id="@+id/switchArthritis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Arthritis" />
-
-            <Switch
-                android:id="@+id/switchHernia"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hernia" />
-
-
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -318,13 +211,13 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSpecialNotes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Special Notes"
                     android:inputType="textMultiLine" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </ScrollView>
 

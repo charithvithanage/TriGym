@@ -8,8 +8,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 public class DeactivatedMembersAdapter extends RecyclerSwipeAdapter<DeactivatedMembersAdapter.SimpleViewHolder> {
     List<Member> filteredMembers;
@@ -65,7 +65,7 @@ public class DeactivatedMembersAdapter extends RecyclerSwipeAdapter<DeactivatedM
         viewHolder.memberPhone.setText(String.valueOf(memberObj.getMember_mobile_1()));
 
         if (memberObj.getMember_profile_image_url() != null) {
-            Picasso.get().load(Uri.parse(memberObj.getMember_profile_image_url())).transform(new CircleTransform()).into(viewHolder.imageProfile);
+            Picasso.get().load(Uri.parse(memberObj.getMember_profile_image_url())).rotate(90).transform(new CircleTransform()).into(viewHolder.imageProfile);
         }
 
 

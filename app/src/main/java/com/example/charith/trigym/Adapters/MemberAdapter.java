@@ -10,8 +10,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleViewHolder> {
     List<Member> filteredMembers;
@@ -86,7 +86,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter.SimpleView
 
 
         if (memberObj.getMember_profile_image_url() != null) {
-            Picasso.get().load(Uri.parse(memberObj.getMember_profile_image_url())).transform(new CircleTransform()).into(viewHolder.imageProfile);
+            Picasso.get().load(Uri.parse(memberObj.getMember_profile_image_url())).rotate(90).transform(new CircleTransform()).into(viewHolder.imageProfile);
         }
 
 
